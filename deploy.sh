@@ -1,1 +1,1 @@
-gitpull && gitbook build
+git pull && gitbook build
