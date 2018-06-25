@@ -1,0 +1,1 @@
+gitpull && gitbook build

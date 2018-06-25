@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+- '8'
+notifications:
+  email: false
+branch:
+  only:
+  - master
+before_install:
+- openssl aes-256-cbc -K $encrypted_915a4428880a_key -iv $encrypted_915a4428880a_iv
+  -in ./id_rsa.enc -out ~/.ssh/id_rsa -d
+- chmod 600 ~/.ssh/id_rsa
+install: true
+script:
+- echo $known_hosts >> ~/.ssh/known_hosts
+- ssh root@$ip -p $port -i ~/.ssh/id_rsa " cd ~/gitbook/understandinges6-simplified-chinese && sh deploy.sh "
