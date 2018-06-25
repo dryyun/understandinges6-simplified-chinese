@@ -1,4 +1,8 @@
-![](http://learnbb.net/oc-content/uploads/674/67362.jpg)
+# 前言
+
+本仓库 fork 自 OshotOkill 的 [understandinges6-simplified-chinese](https://github.com/OshotOkill/understandinges6-simplified-chinese)。
+感谢 OshotOkill 对 《Understanding ECMAScript 6》的翻译，我 fork 过来，部署 gitbook 到自己的网站，作为个人的学习笔记，会在每章前面记录一下学习笔记。
+
 
 # 关于
 
