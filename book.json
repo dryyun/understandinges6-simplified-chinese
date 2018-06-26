@@ -11,6 +11,9 @@
     "pluginsConfig": {
         "github": {
             "url": "https://github.com/dryyun"
+        },
+        "anchor-navigation-ex": {
+            "mode":"float"
         }
     }
 }
