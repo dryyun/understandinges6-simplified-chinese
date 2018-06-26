@@ -1,8 +1,7 @@
 # 前言
 
-本仓库 fork 自 OshotOkill 的 [understandinges6-simplified-chinese](https://github.com/OshotOkill/understandinges6-simplified-chinese)。
-感谢 OshotOkill 对 《Understanding ECMAScript 6》的翻译，我 fork 过来，部署 gitbook 到自己的网站，作为个人的学习笔记，会在每章前面记录一下学习笔记。
-
+本仓库 fork 自 OshotOkill 的 [understandinges6-simplified-chinese](https://github.com/OshotOkill/understandinges6-simplified-chinese)。  
+感谢 OshotOkill 对 《Understanding ECMAScript 6》的翻译，我 fork 过来，部署 gitbook 到自己的网站，作为个人的学习之用，会在每章前面记录一下学习笔记。  
 
 # 关于
 
@@ -12,8 +11,7 @@
 
 ECMAScript 2015 （ES6）是 ECMAScript 发展的重要里程碑，给前端开发者带来超越以往的深远影响。该标准已于去年正式发布，而作者在几年前便开始在网络出版平台 [leanpub](http://leanpub.com) 上着手于本书的写作，对该标准进行了详细的解释，演示和探究，并于今年正式完结并出版。此书不论是作为学习资料还是技术手册都是难得的佳作。
 
-本书的英文原版可以在线上[免费观看](https://leanpub.com/understandinges6/read), 也是我个人翻译的动力之一，由于本人只是出于兴趣而且水平实在有限，难免翻译的过程中会出现错误，希望读者能够谅解。我也尽量推荐去阅读英文原版，既原汁原味又能锻炼自身的英语水平。如遇到错误或有更好，更专业的翻译方式，欢迎向该书报出 [issue](https://github.com/OshotOkill/understandinges6-simplified-chinese/issues) 或提交 [PR](https://github.com/OshotOkill/understandinges6-simplified-chinese/pulls)
-
+本书的英文原版可以在线上[免费观看](https://leanpub.com/understandinges6/read), 也是我个人翻译的动力之一，由于本人只是出于兴趣而且水平实在有限，难免翻译的过程中会出现错误，希望读者能够谅解。我也尽量推荐去阅读英文原版，既原汁原味又能锻炼自身的英语水平。如遇到错误或有更好，更专业的翻译方式，欢迎向该书报出 [issue](https://github.com/OshotOkill/understandinges6-simplified-chinese/issues) 或提交 [PR](https://github.com/OshotOkill/understandinges6-simplified-chinese/pulls)  
 
 <br />
 
@@ -23,9 +21,7 @@ ECMAScript 2015 （ES6）是 ECMAScript 发展的重要里程碑，给前端开�
 
 > 汉化正在进行中，勘误和修正将在汉化完全之后施行。
 
-<br />
-
-### 目录
+# 目录
 
 
 [第一章： **块级绑定（How Block Bindings Work）**](https://oshotokill.gitbooks.io/understandinges6-simplified-chinese/content/chapter_1.html)
