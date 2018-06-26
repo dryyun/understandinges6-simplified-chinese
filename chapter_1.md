@@ -1,20 +1,72 @@
+## 学习笔记
+
+主要内容围绕 var，let，const，说明了使用 var 的弊端，给出了声明变量的最佳实践。
+
+- 使用 var 声明的变量，会提升到当前作用域的最顶部或者是全局作用域，叫做变量提升 Hoisting 。
+- `变量没声明` 和 `变量声明没赋值` 是不一样的概念，使用 var 声明的变量的如果值是 undefined ，其实是声明了但没赋值，如果使用没有声明的变量会报错。 
+- let 声明
+- const 声明，const 声明的变量不能被重新赋值，但是如果 const 声明的值是对象，那么这个对象是可以修改了。
+
+```js
+const person = {
+    name: "Nicholas"
+};
+// 正常
+person.name = "Greg";
+// 扩展 person 也是可以的
+person.age = 18;
+// 抛出错误
+person = {
+    name: "Greg"
+};
+```
+
+
+- const 阻止的是绑定的修改，而不是绑定值的修改。
+
+- 暂存性死区
+
+- 块级作用域使用场景
+
+var 的问题
+```js
+var funcs = [];
+
+for (var i = 0; i < 10; i++) {
+    funcs.push(function() { console.log(i); });
+}
+
+funcs.forEach(function(func) {
+    func();     // 输出 "10" 共10次
+});
+```
+- 即时调用函数表达式（immediately-invoked function expressions, IIFEs）
+
+- 全局绑定 var 的问题
+
+var 会覆盖 window 里的定义
+```js
+// 在浏览器中运行
+var RegExp = "Hello!";
+console.log(window.RegExp);     // "Hello!"
+
+var ncz = "Hi!";
+console.log(window.ncz);        // "Hi!"
+```
+
+- 最佳实践，const 是声明变量的默认方式，仅当你明确哪些变量之后需要修改的情况下再用 let 声明那些变量
+
+
+
+
+------
+
 # 块级绑定 （Block Bindings）
 
 变量声明的工作方式向来是 JavaScript 编程中难以理解的部分之一。在大部分C和类C（C-based）语言中，变量的声明与创建（或绑定）发生在同一位置，然而在 JavaScript 中情况就有所不同，变量的创建方式取决于你如何声明它，ECMAScript 6 提供了额外的选项方便你能自由控制变量的作用范围。本章会演示为什么传统的 var 声明令人费解，并引出 ECMAScript 6 中的块级绑定，罗列一些实践场景来使用它们。
 
-<br />
 
-### 本章小结
-* [var 声明与变量提升](#Var-Declarations-and-Hoisting)
-* [块级声明](#Block-Level-Declarations)
-* [循环中的块级绑定](#Block-Binding-in-Loops)
-* [全局块级绑定](#Global-Block-Bindings)
-* [块级绑定的最佳实践](#Emerging-Best-Practices-for-Block-Bindings)
-* [总结](#Summary)
-
-<br />
-
-### <a id="Var-Declarations-and-Hoisting"> var 声明与变量提升 （Var Declarations and Hoisting） </a>
+## Var 声明与变量提升（Var Declarations and Hoisting）
 
 使用 var 关键字声明的变量，不论在何处都会被视作在函数级作用域内顶部的位置发生（如果不包含在函数内则为全局作用域内）。为了说明变量提升到底是什么，查看如下函数定义：
 
@@ -64,7 +116,7 @@ function getValue(condition) {
 
 <br />
 
-### <a id="Block-Level-Declarations"> 块级声明（Block-Level Declarations） </a>
+## 块级声明（Block-Level Declarations）
 
 块级声明指的是该声明的变量无法被代码块外部访问。块作用域，又被称为词法作用域（lexical scopes），可以在如下的条件下创建：
 
@@ -75,7 +127,7 @@ function getValue(condition) {
 
 <br />
 
-#### let 声明
+### let 声明
 
 let 声明的语法和 var 完全一致。你可以简单的将所有 var 关键字替换成 let，但是变量的作用域会限制在当前的代码块中（稍后讨论其它细微的差别）。既然 let 声明不会将变量提升至当前作用域的顶部，你或许要把它们手动放到代码块的开头，因为只有这样它们才能被代码块的其它部分访问。举个例子：
 
@@ -103,7 +155,7 @@ function getValue(condition) {
 
 <br />
 
-#### 禁止重复声明
+### 禁止重复声明
 
 
 如果一个标识符在当前作用域里已经存在，那么再用 let 声明相同的标识符或抛出错误
@@ -133,7 +185,7 @@ if (condition) {
 
 <br />
 
-#### const 声明（Constant Declarations）
+### const 声明（Constant Declarations）
 
 在 ECMAScript 6 中也可使用常量（const）语法来声明变量。该种方式声明的变量会被视为常量，这意味着它们不能再次被赋值。由于这个原因，所有的 const 声明的变量都必须在声明处初始化。示例如下：
 
@@ -210,11 +262,11 @@ person = {
 };
 ```
 
-在这里，person 变量一开始已经和包含一个属性的对象绑定。修改 person.name 是被允许的因为 person 的值（地址）未发生改变，但是尝试给 person 赋一个新值（代表重新绑定变量和值）的时候会报错。这个微妙之处会导致很多误解。只需记住：const 阻止的是绑定的修改，而不是绑定值的修改。
+在这里，person 变量一开始已经和包含一个属性的对象绑定。修改 person.name 是被允许的因为 person 的值（地址）未发生改变，但是尝试给 person 赋一个新值（代表重新绑定变量和值）的时候会报错。这个微妙之处会导致很多误解。只需记住：{% em %}const 阻止的是绑定的修改，而不是绑定值的修改{% endem %}。
 
 <br />
 
-#### 暂存性死区（The Temporal Dead Zone）
+### 暂存性死区（The Temporal Dead Zone）
 
 
 let 或 const 声明的变量在声明之前不能被访问。如果执意这么做会出现错误，甚至是 typeof 这种安全调用（safe operations）也不被允许的：
@@ -246,7 +298,7 @@ TDZ 只是发生在块级绑定中独特的特设定之一，另一个特殊设�
 
 <br />
 
-### <a id="Block-Binding-in-Loops"> 循环中的块级绑定（Block Binding in Loops） </a>
+## 循环中的块级绑定（Block Binding in Loops）
 
 或许开发者对块级作用域有强烈需求的场景之一就是循环，因为它们不想让循环外部访问到内部的索引计数器。举个例子，以下的代码在 JavaScript 编程中并不罕见：
 
@@ -275,7 +327,7 @@ console.log(i);
 
 <br />
 
-#### 循环中的函数（Functions in Loops）
+### 循环中的函数（Functions in Loops）
 
 
 长久以来 var 声明的特性使得在循环中创建函数问题多多，因为循环中声明的变量在块外也可以被访问，考虑如下的代码：
@@ -292,10 +344,10 @@ funcs.forEach(function(func) {
 });
 ```
 
-你可能认为这段代码只是普通的输出 0 - 9 这十个数字，但事实上它会连续十次输出 “10”。这是因为每次迭代的过程中 i  是被共享的，意味着循环中创建的函数都保持着对相同变量的引用。当循环结束后 i 的值为 10，于是当 console.log(i)被调用后，该值会被输出。
+你可能认为这段代码只是普通的输出 0 - 9 这十个数字，但事实上它会连续十次输出 “10”。{% em %}这是因为每次迭代的过程中 i 是被共享的，意味着循环中创建的函数都保持着对相同变量的引用。当循环结束后 i 的值为 10，于是当 console.log(i)被调用后，该值会被输出。{% endem %}
 
 
-为了修正这个问题，开发者们在循环内部使用即时调用函数表达式（immediately-invoked function expressions, IIFEs）来迫使每次迭代时创建一份当前索引值的拷贝，示例如下：
+为了修正这个问题，开发者们在循环内部使用{% em %}即时调用函数表达式（immediately-invoked function expressions, IIFEs）{% endem %}来迫使每次迭代时创建一份当前索引值的拷贝，示例如下：
 
 ```js
 var funcs = [];
@@ -317,7 +369,7 @@ funcs.forEach(function(func) {
 
 <br />
 
-#### 循环中的 let 声明（Let Declarations in Loops）
+### 循环中的 let 声明（Let Declarations in Loops）
 
 
 let 声明通过有效地模仿 上例中 IIFE 的使用方式来简化循环代码。在每次迭代中，一个新的同名变量会被创建并初始化。这意味着你可以抛弃 IIFE 的同时也能获得相同的结果。
@@ -366,7 +418,7 @@ funcs.forEach(function(func) {
 
 <br />
 
-#### 循环中的 const 声明（Constant Declarations in Loops）
+### 循环中的 const 声明（Constant Declarations in Loops）
 
 
 ECMAScript 6 规范中没有明确禁止在循环中使用 const 声明，不过其具体的表现要取决于你使用哪种循环方式。对于普通 的 for 循环你可以在初始化（initializer）语句里使用 const 声明，但当你想要修改该声明变量时循环会报错：
@@ -411,7 +463,7 @@ funcs.forEach(function(func) {
 
 <br />
 
-### <a id="Global-Block-Bindings"> 全局块级绑定（Global Block Bindings） </a>
+## 全局块级绑定（Global Block Bindings）
 
 
 let 与 const 另一处不同体现在全局作用域上。当在全局作用域内使用 var 声明时会创建一个全局变量，同时也是全局对象（浏览器环境下是 window）的一个属性。这意味着全局对象的属性可能会意外地被重写覆盖，例如：
@@ -448,16 +500,16 @@ console.log("ncz" in window);           // false
 
 <br />
 
-### <a id="Emerging-Best-Practices-for-Block-Bindings"> 块级绑定的最佳实践（Emerging Best Practices for Block Bindings） </a>
+## 块级绑定的最佳实践（Emerging Best Practices for Block Bindings）
 
 
 当 ECMAScript 6 还在酝酿中的时候，一个普遍的共识是使用 let 而不是 var 来作为默认的变量声明方式。对大多数 JavaScript 开发者来讲，let 才是 var 该有的表现形式，自然而然这种取代十分合理。在这个理念下，你应该使用 const 声明来保护一些变量不被修改。
 
-然而，当越来越多的开发者迁移到 ECMAScript 6 之后，一个新的实践逐渐流行了起来：const 是声明变量的默认方式，仅当你明确哪些变量之后需要修改的情况下再用 let 声明那些变量。这个实践的缘由是大部分变量在初始化之后不应该被修改，因为这样做是造成 bug 的根源之一。这个理念有大批的受众而且在你接纳 ECMAScript 6 之后值得考虑。
+然而，当越来越多的开发者迁移到 ECMAScript 6 之后，一个新的实践逐渐流行了起来：{% em %}const 是声明变量的默认方式，仅当你明确哪些变量之后需要修改的情况下再用 let 声明那些变量{% endem %}。这个实践的缘由是大部分变量在初始化之后不应该被修改，因为这样做是造成 bug 的根源之一。这个理念有大批的受众而且在你接纳 ECMAScript 6 之后值得考虑。
 
 <br />
 
-### <a id="Summary"> 总结（Summary） </a>
+## 总结（Summary）
 
 let 和 const 块级绑定给 JavaScript 引入了词法作用域的概念。这些声明不会被提升且仅存在于声明它们的代码块中。它们的行为和其它语言更为相似且减少了意外错误的发生，因为变量会在原处被声明。作为副作用之一，你不能在声明之前就使用它们，即使是 typeof 这种安全操作也不被允许。暂存性死区（temproal dead zone, TDZ）中绑定的存在会导致在声明位置之前的访问以失败告终。
 
@@ -465,4 +517,4 @@ let 和 const 块级绑定给 JavaScript 引入了词法作用域的概念。这
 
 目前关于块级绑定的最佳实践是使用 const 作为默认的声明方式，当变量需要更改时切换为 let 声明。保证代码中最基本的不可变性能防止错误的发生。
 
-<br />
+
