@@ -1,32 +1,43 @@
-# 字符串与正则表达式（Strings and Regular Expressions）
+## 学习笔记
 
+- 识别子字符串新增方法  
+以前一般使用 indexOf 判断  
+> includes  
+> startsWith  
+> endsWith  
+- repeat() 方法  
+- 正则表达式的改进 - 可耻的跳过了  
+- 模板字符串，使用 `` 声明 ，不需要转义单双引号，也解决了多行字符串的问题
+
+可以参考 MDN 链接 [template_strings](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/template_strings)
+
+- 字符串变量替换 和 可运行 JS 运算 ，虽然我觉得如果要计算的话，可以单独声明一个变量
+
+```js
+let count = 10,
+    price = 0.25,
+    message = `${count} items cost $${(count * price).toFixed(2)}.`;
+
+console.log(message);       // "10 items cost $2.50."
+```
+- 模板标签
+
+
+------
+
+# 字符串与正则表达式（Strings and Regular Expressions）
 
 字符串可以说是程序设计中最为重要的数据类型之一。几乎每种高级编程语言都有它的一席之地，而且能有效的使用它也是开发者编写实用程序的基本准则。作为重要的扩展，正则表达式赋予开发者操作字符串的额外能力。ECMAScript 6 的缔造者们将这些事实牢记于心，改进了字符串和正则表达式，并添加了长久以来缺失的某些功能。本章会讲解它们的变化之处。
 
-<br />
-### 本章小结
-
-* [更佳的 Unicode 支持](#Better-Unicode-Support)
-* [字符串的其它改进](#Other-String-Changes)
-* [正则表达式的其它改进](#Other-Regular-Expression-Changes)
-* [模板字面量](#Template-Literals)
-* [总结](#Summary)
-
-<br />
 
 > **译者注**： gitbook 无法正常解析 \$\$ 字符，所以在模板字面量一节中 \$ \$ 实际上为 \$\$ 。
 
-<br />
 
-### <a id ="Better-Unicode-Support"> 更佳的 Unicode 支持（Better Unicode Support） </a>
-
+## 更佳的 Unicode 支持（Better Unicode Support）
 
 ECMAScript 6 诞生之前，JavaScript 字符串（string）由 16 位编码的字符组成（UTF-16）。每个字符又由包含一个 16 位序列的代码单元（code unit）表示。所有的字符串属性和方法，例如 length 和 charAt()，都基于这些 16 位编码单元。曾经，16 位的容量对于任意字符的存放都是足够的，然而 Unicode 引入了扩展字符集（expanded character set）使得
 
-<br />
-
-#### UTF-16 代码点（UTF-16 Code Points）
-
+### UTF-16 代码点（UTF-16 Code Points）
 
 限制字符的长度在 16 位以内难以满足 Unicode 意图给世界上所有字符提供全局唯一标识符的雄心壮志。这些全局唯一标识符，也被称为代码点，仅是从 0 开始的数字。字符代码（character code）可能是你所想象的那样，由一个数字（代码点）来代表一个对应的字符。编码一个字符就必须要将代码点转换为对应一致的代码单元。对于 UTF-16 来讲，代码点可以由多个代码单元组成。
 
@@ -55,10 +66,8 @@ charCodeAt() 方法也不能正确识别字符。它返回的是对应代码单�
 
 另一方面，ECMAScript 6 要求以上 UTF-16 字符的编码问题必须得到解决。标准化基于新字符编码规范的字符串操作意味着 JavaScript 支持专门处理代理项对的功能。本章剩下的部分讨论了使用该功能的几个关键案例。
 
-<br />
 
-#### codePointAt() 方法（The codePointAt() Method）
-
+### codePointAt() 方法（The codePointAt() Method）
 
 为了全面支持 UTF-16，ECMAScript 6 新添加的方法之一就是 codePointAt()，它可以提取给定位置字符串的对应 Unicode 代码点。该方法接收代码单元而非字符的位置并返回一个整型值，正如下例中所展示的那样：
 
@@ -89,10 +98,8 @@ console.log(is32Bit("a"));          // false
 
 16 位字符的上边界由十六进制 FFFF 表示，所以任何大于该数字的代码点必定由两个代码单元表示，总大小为 32 位。
 
-<br />
 
-#### String.fromCodePoint() 方法（The String.fromCodePoint() Method）
-
+### String.fromCodePoint() 方法（The String.fromCodePoint() Method）
 
 每当 ECMAScript 提供了完成某件事的方法，一般情况下它也会给出相反操作的解决方案。你可以使用 codePointAt() 来提取字符串中某个字符的代码点，也可以调用 String.fromCodePoint() 并使用给定的代码点来产生相应的单个字符。例如：
 
@@ -102,10 +109,8 @@ console.log(String.fromCodePoint(134071));  // "𠮷"
 
 可以将 String.fromCodePoint() 视为 String.fromCharCode() 的完善版本。针对 BMP 字符两者会产生相同的结果，只有 BMP 之外的字符才会有差异。
 
-<br />
 
-#### normalize() 方法（The normalize() Method）
-
+### normalize() 方法（The normalize() Method）
 
 Unicode 另一个有趣的方面是，不同的字符在某些排序或比较操作中被认为是相同的。有两种方式可以确立两者之间的关系。第一，规范相等性（canonical equivalence）意味着两个代码点序列在各个方面都可以进行互换。例如，两个字符的组合根据规范相等性可以等同于一个字符。第二，是字符间的兼容性。两个兼容的代码点序列可能看上去不同，实际上在特定条件下可以互换（interchangeably）。
 
@@ -176,15 +181,13 @@ values.sort(function(first, second) {
 
 <br />
 
-#### 正则表达式的 u 标志（The Regular Expression u Flag）
+### 正则表达式的 u 标志（The Regular Expression u Flag）
 
 
 你可以使用正则表达式来完成很多字符串的基本操作。但是你需要牢记，正则表达式针对的是 16 位代码单元表示的单个字符。为了解决这个问题，ECMAScript 6 为正则表达式定义了代表 Unicode 字符的 u 标志。
 
-<br />
 
 ##### u 标志的使用场景（The u Flag in Action）
-
 
 当一个正则表达式启用了 u 标志符时，它将切换模式以作用于字符，而不是代码单元。这意味着正则表达式面对字符串中的代理项对时不再迷茫，并如预期的那样工作。例如，考虑以下的代码：
 
@@ -198,10 +201,8 @@ console.log(/^.$/u.test(text));     // true
 
 正则表达式 /&.$/ 匹配单个字符的输入。当不使用 u 标志时，正则表达式匹配的是代码单元，所以它不能匹配日文字符（由两个代码单元表示）。启用 u 标志后，正则表达式比较字符而不是代码单元，所以日文字符会被匹配到。
 
-<br />
 
 ##### 代码点的数量（Counting Code Points）
-
 
 遗憾的是，ECMAScript 6 并没有添加能判断字符串所包含代码单元个数的方法，但是通过 u 标志，你可以使用正则表达式来进行计算它们，如下所示：
 
@@ -221,10 +222,8 @@ console.log(codePointLength("𠮷bc"));   // 3
 
 > **注意**： 虽然该实现可以正常工作，但是它的运行速度并不快，尤其是操作一个长字符串。你也可以使用字符串迭代器来实现相同的需求（第八章讨论）。一般来讲，尽可能的减少需要操作的字符串中的代码点数量。
 
-<br />
 
 ##### 判断是否支持 u 标志（Determining Support for the u Flag）
-
 
 既然 u 标志是一项语法变更，在不兼容 ECMAScript 6 的 JavaScript 引擎中使用它会抛出一个语法错误。使用一个函数来判断是否支持 u 标志是最安全的方法，像这样：
 
@@ -243,17 +242,13 @@ function hasRegExpU() {
 
 如果你的代码仍然需要在老旧的 JavaScript 引擎中运行，那么最好在构造函数中使用 u 标志。这会预防语法错误的发生并允许你选择性地检测和使用 u 标志，而且代码执行不会被中断。
 
-<br />
 
-### <a id ="Other-String-Changes"> 字符串的其它改进（Other String Changes）
-
+## 字符串的其它改进（Other String Changes）
 
 JavaScript 的字符串特性总是落后于其它语言。比如，直到 ECMAScript 5 字符串才总算拥有了 trim() 方法，ECMAScript 6 则继续添加新功能以扩展 JavaScript 解析字符串的能力。
 
-<br />
 
-#### 确认子字符串的方法（Methods for Identifying Substrings）
-
+### 确认子字符串的方法（Methods for Identifying Substrings）
 
 自 JavaScript 引入了 indexOf() 方法后，开发者们使用它来确认字符串是否存在于其它字符串中。ECMAScript 6 包含以下三种方法来满足相同的需求：
 
@@ -287,10 +282,8 @@ console.log(msg.includes("o", 8));          // false
 
 > **注意**： 向 startsWith()，endsWith()，和 includes() 方法传入正则表达式会抛出错误，这和 indexOf() 与 lastIndexOf() 的表现相反，它们会将正则表达式转换为字符串并搜索它。
 
-<br />
 
-#### repeat() 方法（The repeat() Method）
-
+### repeat() 方法（The repeat() Method）
 
 ECMAScript 6 还向字符串添加了 repeat() 方法，它接受一个数字参数作为字符串的重复次数。该方法返回一个重复包含初始字符串的新字符串，重复次数等于参数。例如：
 
@@ -315,17 +308,13 @@ var newIndent = indent.repeat(++indentLevel);
 
 ECMAScript 6 同样为正则表达式添加了一些实用的功能来增加它们的适用场景。下一节会简要的介绍它们。
 
-<br />
 
-### <a id ="Other-Regular-Expression-Changes"> 正则表达式的其它改进（Other Regular Expression Changes）
-
+## 正则表达式的其它改进（Other Regular Expression Changes）
 
 正则表达式是在 JavaScript 中操作字符串的重要方式之一，和很多其它语言相似，它在最近的几个版本中并未发生太大的变化。不过，为了和针对字符串的修改一起作伴，ECMAScript 6 也给正则表达式做了一些改进。
 
-<br />
 
-#### 正则表达式的 y 标志（The Regular Expression y Flag）
-
+### 正则表达式的 y 标志（The Regular Expression y Flag）
 
 ECMAScript 6 将 Firefox 对正则表达式拓展的私有 y 标志纳入了标准。y 标志涉及正则表达式与检索相关的 sticky 属性，它表示从正则表达式设置的 lastIndex 属性值的位置开始检索字符串中的匹配字符。如果以该位置为起点，之后没有相应的匹配，那么正则表达式将停止检索。为了展示它是如何工作的，考虑如下的代码：
 
@@ -425,7 +414,7 @@ function hasRegExpY() {
 
 <br />
 
-#### 正则表达式副本（Duplicating Regular Expressions）
+### 正则表达式副本（Duplicating Regular Expressions）
 
 
 在 ECMAScript 5 中，你可以将正则表达式传递给 RegExp 构造函数来创建它的副本，例如：
@@ -467,7 +456,7 @@ console.log(re2.test("AB"));            // false
 
 <br />
 
-#### 标志位属性（The flags Property）
+### 标志位属性（The flags Property）
 
 
 ECMAScript 6 在添加了新的标志位并改变了已有的一些标志位的行为的同时还为它们添加了一个关联属性。在 ECMAScript 5 中，你可以使用 source 属性来获得正则表达式中的文本，不过你若想获得字符串表示的标志位，则需要像下面这样解析 toString() 方法输出的内容：
@@ -501,14 +490,11 @@ console.log(re.flags);      // "g"
 
 目前为止本章介绍的字符串和正则表达式的改善的意义无疑是重大的，不过 ECMAScript 6 对字符串还有一项重大改进，它引入了一种新的字面量形式使得字符串的使用更加灵活。
 
-<br />
 
-### <a id ="Template-Literals"> 模板字面量（Template Literals）
-
+## 模板字面量（Template Literals）
 
 JavaScript 中的字符串相比其它语言有着太多的限制。例如，在 ECMAScript 6 之前本章介绍过的字符串的所有新方法都不能使用，而且字符串的拼接方式过于简陋。为了能让开发者解决更复杂的问题，ECMAScript 6 中的模板字面量提供了创建领域特定语言（domain-specific languages, DSLs）的语法使其相比 ECMAScript 5 或更早的版本能更安全的操作相应的内容（领域特定语言面向且专注于的是某单一特定目标的计算机程序设计语言，与通用目的语言如 JavaScript 相反）。ECMAScript wiki 提供了 [template literal strawman](http://wiki.ecmascript.org/doku.php?id=harmony:quasis) 的如下描述：
 
-<br />
 
 > 本方案通过语法糖扩展了 ECMAScript 的语法并允许库提供 DSLs 以便产生，查询并操作其它语言的相关内容且对 XSS，SQL 注入等攻击免疫或具有抗性。
 
@@ -522,10 +508,8 @@ JavaScript 中的字符串相比其它语言有着太多的限制。例如，在
 
 模板字面量以一种全新的表现形式解决了这些问题而不需要向 JavaScript 已有的字符串添加额外的功能。
 
-<br />
 
-#### 基本语法（Basic Syntax）
-
+### 基本语法（Basic Syntax）
 
 简言之，模板字面量由反引号（`）而非一般字符串使用的单或双引号囊括。考虑如下的例子：
 
@@ -551,13 +535,11 @@ console.log(message.length);        // 14
 
 模板字面量中无需转义单双引号。
 
-<br />
 
-#### 多行字符串（Multiline Strings）
+### 多行字符串（Multiline Strings）
 
 JavaScript 开发者自从该语言诞生起就一直想要一种能创建多行字符串的方法。但是使用单或双引号时，整个字符串只能放在一行。
 
-<br />
 
 ##### ECMAScript 6 之前的解决方案（Pre-ECMAScript 6 Workarounds）
 
@@ -597,10 +579,8 @@ let message = "Multiline \n" +
 
 针对 JavaScript 缺乏的多行字符串特性，开发者给出的所有解决方案都存在某些瑕疵。
 
-<br />
 
 ##### 多行字符串的简单使用方式（Multiline Strings the Easy Way)
-
 
 ECMAScript 6 的模板字面量使多行字符串的创建更容易，因为它不需要特殊的语法。只需在想要的位置包含新行即可，而且输出结果也会包含它。例如：
 
@@ -647,10 +627,8 @@ console.log(message);           // "Multiline
 console.log(message.length);    // 16
 ```
 
-<br />
 
-#### 字符串置换（Making Substitutions）
-
+### 字符串置换（Making Substitutions）
 
 在这里，模板字面量看上去像是普通 JavaScript 字符串的升级版。两者之间的真正区别在于前者包含的置换操作。置换允许你将 JavaScript 表达式嵌入到模板字面量中并将其结果作为输出字符串中的一部分。
 
@@ -698,10 +676,8 @@ console.log(message);        // "Hello, my name is Nicholas."
 
 该例将第二个模板字面量嵌入到第一个内。在首处 ${ 之后使用了另一个模板字面量。第二处 ${ 表示将要嵌入到内层模板字面量的表达式，即 name 变量。
 
-<br />
 
-#### 模板标签（Tagged Templates）
-
+### 模板标签（Tagged Templates）
 
 现在你已见识过模板字面量如何创建多行字符串，以及它不需要连接（concatenation）即可将值插入到字符串中。不过模板字面量真正的强大之处来源于模板标签。一个模板标签可以被转换为模板字面量并作为最终值返回。标签在模板的头部，即左 ` 字符之前指定，如下所示：
 
@@ -711,10 +687,8 @@ let message = tag`Hello world`;
 
 本例中，tag 即模板标签，并可被转换为 \`Hello world\` 模板字面量。
 
-<br />
 
 ##### 定义标签（Defining Tags）
-
 
 一个标签仅代表一个函数，它接收需要处理的模板字面量。标签分别接收模板字面量中的片段，且必须将它们组合以得出结果。函数的首个参数为包含普通 JavaScript 字符串的数组。余下的参数为每次置换的对应值。
 
@@ -823,10 +797,8 @@ console.log(message.length);    // 17
 
 这里并非使用 literals 而是 literals.raw 来输出结果字符串。这意味着包括 Unicode 代码点在内的任何转义字符都会以原始的形式返回。当你想在输出的字符串中包含转义字符时原始字符串非常好用（例如，如果你想要生成包含代码的文档，那么你期待的是输出实际代码而不是产生的效果）。
 
-<br />
 
-### <a id="Summary"> 总结（Summary） </a>
-
+## 总结（Summary）
 
 完整的 Unicode 支持允许 JavaScript 以合理的方式处理 UTF-16 字符。codePointAt() 和 String.fromCodePoint() 拥有的在代码点和字符之间的转换能力是字符串操作的一项重大进步。正则表达式新引入的 u 标志使得直接操作代码点而不是 16 位字符串变为可能，同时 normalize() 方法使得字符串之间的比较结果更为准确。
 
@@ -838,4 +810,3 @@ ECMAScript 6 也提供了操作字符串的新方法，允许你更容易地确�
 
 模板标签是创建 DSLs 最重要的部分。标签是接收模板字面量片段为参数的函数。你可以使用参数数据来返回恰当的字符串，其中包括字面量，原生字面量和置换值。标签根据它们来输出相应的结果。
 
-<br />

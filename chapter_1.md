@@ -127,7 +127,7 @@ function getValue(condition) {
 
 <br />
 
-### let 声明
+### let 声明（Let Declarations）
 
 let 声明的语法和 var 完全一致。你可以简单的将所有 var 关键字替换成 let，但是变量的作用域会限制在当前的代码块中（稍后讨论其它细微的差别）。既然 let 声明不会将变量提升至当前作用域的顶部，你或许要把它们手动放到代码块的开头，因为只有这样它们才能被代码块的其它部分访问。举个例子：
 
@@ -155,7 +155,7 @@ function getValue(condition) {
 
 <br />
 
-### 禁止重复声明
+### 禁止重复声明（No Redeclaration）
 
 
 如果一个标识符在当前作用域里已经存在，那么再用 let 声明相同的标识符或抛出错误
