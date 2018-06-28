@@ -1,34 +1,15 @@
 # 函数（Functions）
 
-
 函数在任何编程语言中都是非常重要的一部分，而在 ECMAScript 6 之前，函数自 JavaScript 诞生以来并未过有较大的变化。这导致很多问题的积压，同时一些细微的差异容易诱发错误，或使用冗余的代码来实现非常基本的功能。
 
 ECMAScript 6 中的函数相较而言是个大的跃进，着手调查了 JavaScript 开发者多年的抱怨和需求。最终的结果是在 ECMAScript 5 函数的基础之上做了几项改进，增强 JavaScript 的编程体验并减少诱发错误的因素。
 
-<br />
-
-### 本章小结
-* [带默认参数的函数](#Functions-with-Default-Parameter-Values)
-* [未命名参数](#Working-with-Unnamed-Parameters)
-* [增强的 Function 构造函数](#Increased-Capabilities-of-the-Function-Constructor)
-* [扩展运算符](#The-Spread-Operator)
-* [ECMAScript 6 中的 name 属性](#ECMAScript-6-name-Property)
-* [明确函数的双重用途](#Clarifying-the-Dual-Purpose-of-Functions)
-* [块级函数](#Block-Level-Functions)
-* [箭头函数](#Arrow-Functions)
-* [尾调用优化](#Tail-Call-Optimization)
-* [总结](#Summary)
-
-<br />
-
-### <a id="Functions-with-Default-Parameter-Values"> 带默认参数的函数（Functions with Default Parameter Values） </a>
-
+## 带默认参数的函数（Functions with Default Parameter Values）
 
 JavaScript 的函数比较特殊的是可以接受任意个数的参数，完全无视函数声明中的参数个数。这允许你通过自行给未传值的参数赋默认值来定义带有不同参数的函数。本章将介绍 ECMAScript 6 及之前的 ECMAScript 版本如何实现默认参数，同时引出的还有 arguments 对象，参数表达式（expressions as parameters）及 TDZ 的另一形式。
 
-<br />
 
-#### ECMAScript 5 默认参数模拟（Simulating Default Parameter Values in ECMAScript 5）
+### ECMAScript 5 默认参数模拟（Simulating Default Parameter Values in ECMAScript 5）
 
 在 ECMAScript 5 或更早的版本中，你可能会使用下面的这种模式来给参数添加默认值
 
@@ -61,9 +42,8 @@ function makeRequest(url, timeout, callback) {
 
 虽然这种写法更加健壮，但是为实现这个基本需求书写的代码还是太多了。该写法作为一种公共的模式已被各种流行的 JavaScript 库中所使用。
 
-<br />
 
-#### ECMAScript 6 中的默认参数（Default Parameter Values in ECMAScript 6）
+### ECMAScript 6 中的默认参数（Default Parameter Values in ECMAScript 6）
 
 
 ECMAScript 6 中函数参数能更方便地获取默认值，当未传入实参给形参时形参的默认值会被使用，如下所示：
@@ -124,9 +104,8 @@ makeRequest("/foo", null, function(body) {
 
 在提供参数值的时候, null 是有效的，所以 makeRequest 的第三次调用中 timeout 的默认值不会被使用。
 
-<br />
 
-#### 默认参数对 arguments 对象的影响 （How Default Parameter Values Affect the arguments Object）
+### 默认参数对 arguments 对象的影响 （How Default Parameter Values Affect the arguments Object）
 
 需要记住的是当使用默认参数的时候 arguments 对象的表现是不同的。在 ECMAScript 5 的非严格模式下，arguments 对象会反映出所有被命名的参数的变化。下面的代码演示了该工作机制：
 
@@ -211,9 +190,8 @@ false
 
 在本例中，arguments.length 的值为 1 是因为你只给 mixArgs() 提供了一个参数。这说明 arguments[1] 的值如我们所期待的那样是 undefined，同时 first 也等同于 arguments[0] 。改变 first 和 second 的值不会对 arguments 造成任何效果，不论是在非严格模式还是严格模式下，所以你可以期待 arguments 总是反映出函数的首次调用状态。
 
-<br />
 
-#### 默认参数表达式（Default Parameter Expressions）
+### 默认参数表达式（Default Parameter Expressions）
 
 
 或许默认参数最有意思的特性就是传给它的不一定是原始值。例如你可以执行一个函数并把返回值提供给它：
@@ -294,9 +272,8 @@ console.log(add(undefined, 1)); // 抛出错误
 
 调用 add(undefined, 1) 发生错误是因为 second 在 first 之后定义，所以 first 无法访问 second 的值，要想知道缘由，就需要重温一重要概念：暂存性死区。
 
-<br />
 
-#### 默认参数的暂存性死区（Default Parameter Value Temporal Dead Zone）
+### 默认参数的暂存性死区（Default Parameter Value Temporal Dead Zone）
 
 
 第一章介绍了关于 let 和 const 的暂存性死区 （temporal dead zone, TDZ），其同样存在于默认参数中使得变量无法访问。 和 let 声明类似，每个参数都创建了一个新的绑定，但是在它们被初始化之前访问会抛出错误。初始化的方式是通过在函数被调用的时刻传递参数或者使用默认参数。
@@ -357,15 +334,13 @@ let second = 1;
 
 > 函数参数相比函数内部有着自己的作用域和 TDZ，意味着参数的默认值不能使用函数内部声明的任何变量。
 
-<br />
 
-### <a id="Working-with-Unnamed-Parameters"> 未命名参数（Working with Unnamed Parameters） </a>
+## 未命名参数（Working with Unnamed Parameters）
 
 目前为止本章只讨论了函数定义中的命名参数，然而 JavaScript 函数并不限制可传入实参的数量，你可以传递比命名参数个数或多或少数量的参数。默认的参数值针对的是传入参数少于命名参数的情况，同样 ECMAScript 6 也为另一种情况铺了条更好的路。
 
-<br />
 
-#### ECMAScript 5 中的未命名参数（Unnamed Parameters in ECMAScript 5）
+### ECMAScript 5 中的未命名参数（Unnamed Parameters in ECMAScript 5）
 
 早先，JavaScript 提供了 arguments 对象使得查看函数参数时，分别定义每个参数的名称显得不是很必要。虽然当大部分使用 arguments 对象的情况下都能正常工作，但有时使用它会显得十分繁琐。比如下例中使用 arguments 对象的方式：
 
@@ -399,9 +374,8 @@ pick() 函数有几个需要注意的地方。首先，该函数看起来不具�
 
 ECMAScript 6 引入了剩余参数来解决这个问题。
 
-<br />
 
-#### 剩余参数（Rest Parameters）
+### 剩余参数（Rest Parameters）
 
 剩余参数由三点（...）和一个命名参数（放在三点之后）指定。这个命名参数是一个包含其它传入参数的数组，“剩余” 这个名称也是由此而来。例如，pick() 可以使用剩余参数来重写：
 
@@ -487,9 +461,8 @@ arguments 对象总是能正确的反映所有传入的参数而无视剩余参�
 
 以上的内容对于你初用剩余参数来说已经足够了。
 
-<br />
 
-### <a id="Increased-Capabilities-of-the-Function-Constructor"> 增强的 Function 构造函数（Increased Capabilities of the Function Constructor） </a>
+## 增强的 Function 构造函数（Increased Capabilities of the Function Constructor）
 
 Function 构造函数用来动态创建一个新的函数，但是在 JavaScript 编程中甚少使用。传给该构造函数的参数全部为字符串，并被视为新创建函数的参数和函数主体，如下所示：
 
@@ -525,7 +498,7 @@ console.log(pickFirst(1, 2));   // 1
 
 <br />
 
-### <a id="The-Spread-Operator"> 扩展运算符（The Spread Operator） </a>
+## 扩展运算符（The Spread Operator）
 
 和剩余参数概念相近的是扩展运算符。相比剩余参数允许你把多个独立的参数整合到一个数组中，扩展运算符则允许你把一个数组中的元素分别作为参数传递给函数。考虑下 Math.max() 这个方法，它接受任意数量的参数并返回它们之中的最大值。下面这个例子使用了该方法：
 
@@ -574,13 +547,12 @@ console.log(Math.max(...values, 0));        // 0
 
 <br />
 
-### <a id="ECMAScript-6-name-Property"> ECMAScript 6 中的 name 属性（ECMAScript 6’s name Property） </a>
+## ECMAScript 6 中的 name 属性（ECMAScript 6’s name Property）
 
 JavaScript 中多种定义函数的方式使得函数的辨识成为了一种挑战。此外，匿名函数表达式的流行使得调试更加困难，堆栈在跟踪时难以阅读和解析。由于这个原因，ECMAScript 6 为所有的函数添加了 name 属性。
 
-<br />
 
-#### 选择正确的名称（Choosing Appropriate Names）
+### 选择正确的名称（Choosing Appropriate Names）
 
 ECMAScript 6 中所有函数都有正确的 name 属性值。为了验证请看如下的代码，它使用了函数（声明）和函数表达式，并输出了各自的 name 属性值：
 
@@ -599,9 +571,8 @@ console.log(doAnotherThing.name);       // "doAnotherThing"
 
 在这段代码中，doSomething() 的 name 属性值为 "doSomething"，因为它是由函数声明所定义的。匿名函数表达定义的 doAnotherThing() 的 name 属性值为 "doAnotherThing" ，因为这是它赋给变量的名称。
 
-<br />
 
-#### 特殊情况下的 name 属性（Special Cases of the name Property）
+### 特殊情况下的 name 属性（Special Cases of the name Property）
 
 虽然函数声明和函数表达式定义的函数名寻找起来比较容易，但是 ECMAScript 6 更进一步确保了函数名称的正确性。为了说明请看如下的演示：
 
@@ -644,7 +615,7 @@ console.log((new Function()).name);     // "anonymous"
 
 <br />
 
-### <a id="Clarifying-the-Dual-Purpose-of-Functions"> 明确函数的双重用途（Clarifying the Dual Purpose of Functions） </a>
+## 明确函数的双重用途（Clarifying the Dual Purpose of Functions）
 
 在 ECMAScript 5 和早期的版本中，函数的双重用途表现在是否使用 new 来调用它。当使用 new 时，函数中的 this 为一个新的对象并返回它，如下面的演示：
 
@@ -668,9 +639,8 @@ JavaScript 中的函数有两个不同的只有内部（internal-only）能使�
 
 > 不是每个函数内部都有 [[Construct]] 方法，所以并非所有的函数都能被 new 调用。在 “箭头函数” 小结中提到的箭头函数就没有该方法。
 
-<br />
 
-#### ECMAScript 5 中函数调用方式的判断（Determining How a Function was Called in ECMAScript 5）
+### ECMAScript 5 中函数调用方式的判断（Determining How a Function was Called in ECMAScript 5）
 
 在 ECMAScript 5 中判断函数是否被 new 调用过的方式是使用 instanceof，如下：
 
@@ -704,9 +674,8 @@ var notAPerson = Person.call(person, "Michael");    // 正常运行！
 
 调用 Person.call() 并将 person 变量作为第一个参数会将 Person 内部的 this 设置为 person。对于函数本身来讲，如何辨别它们显得无能为力。
 
-<br />
 
-#### 元属性 new.target(The new.target MetaProperty)
+### 元属性 new.target(The new.target MetaProperty)
 
 
 为了解决这个问题，ECMAScript 6 引入了 new.target 这个元属性。元属性指的是和目标（如 new）相关但并非被包含在一个对象内的属性。当函数内部的 [[Construct]] 方法被调用后，new 操作符调用的目标（target）将赋给 new.target。该目标通常为创建对象实例并将该实例赋值给 this 的构造函数。如果 [[call]] 被执行，那么 new.target 的值为 undefined 。
@@ -759,7 +728,7 @@ ECMAScript 6 通过添加 new.target 消除了函数存在调用歧义的可能�
 
 <br />
 
-### <a id="Block-Level-Functions"> 块级函数（Block-Level Functions） </a>
+## 块级函数（Block-Level Functions）
 
 在 ECMAScript 3 或更早的版本中，在块中声明函数（块级函数）理论上会发生语法错误，但所有的浏览器却都支持这么做。遗憾的是，每个浏览器支持的方式都有些差异，所以最佳实践就是不要在块中声明函数（更好的选择是使用函数表达式）。
 
@@ -798,9 +767,8 @@ console.log(typeof doSomething);            // "undefined"
 
 块级函数会被提升到块内的顶部，即使 typeof doSomething 语句在函数声明之前也会返回 "function"。一旦代码块执行完毕，doSomething() 也将不复存在。
 
-<br />
 
-#### 使用块级函数的时机（Deciding When to Use Block-Level Functions）
+### 使用块级函数的时机（Deciding When to Use Block-Level Functions）
 
 块级函数与 let 函数表达式的相似之处是它们都会在执行流跳出定义它们所在的块作用域之后被销毁。关键的区别是块级函数（声明）会被提升到顶部，而 let 函数表达式则不会，以下代码对其做了说明：
 
@@ -823,9 +791,8 @@ console.log(typeof doSomething);
 
 在这里，代码执行到 typeof doSomething 回戛然而止，因为 let 语句还未被执行，doSomething() 仍处在 TDZ 内部。了解改差异之后，你可以根据是否想让函数提升到顶部来选择块级函数（声明）或 let 函数表达式。
 
-<br />
 
-#### 非严格模式下的块级函数（Block-Level Functions in Nonstrict Mode）
+### 非严格模式下的块级函数（Block-Level Functions in Nonstrict Mode）
 
 
 ECMAScript 6 同样允许非严格模式下块级函数的存在，但是具体行为有些不同。函数的声明会被提升至函数作用域或全局作用域的顶部，而不是块内。例如：
@@ -852,7 +819,7 @@ console.log(typeof doSomething);            // "function"
 
 <br />
 
-### <a id="Arrow-Functions"> 箭头函数（Arrow Functions） </a>
+## 箭头函数（Arrow Functions）
 
 
 ECMAScript 6 最有意思的部分之一就是箭头函数。正如其名，箭头函数由 “箭头”（=>）这种新的语法来定义。但是箭头函数的表现在以下几个重要的方面不同于传统的 JavaScript 函数：
@@ -877,9 +844,8 @@ ECMAScript 6 最有意思的部分之一就是箭头函数。正如其名，箭�
 
 > **注意**： 箭头函数的 name 属性是存在的，并且和其它类别的函数遵循相同的规则
 
-<br />
 
-#### 箭头函数语法（Arrow Function Syntax）
+### 箭头函数语法（Arrow Function Syntax）
 
 
 根据你的需求，箭头函数的语法可以有多种形体。所有变体都是以参数为开头，箭头紧随其后，函数主体为结尾。参数和主体根据用途可以有不同的形式，例如下面的箭头函数接收单个参数并返回它：
@@ -966,9 +932,8 @@ var getTempItem = function(id) {
 
 将对象字面量放在括号内代表其并非为函数主体。
 
-<br />
 
-#### 创建即用函数表达式（Creating Immediately-Invoked Function Expressions）
+### 创建即用函数表达式（Creating Immediately-Invoked Function Expressions）
 
 
 在 JavaScript 中一种流行的函数使用方式是创建即用函数表达式（immediately-invoked function expressions, IIFEs）。IIFEs 允许你创建匿名函数并立即调用它，没有创建任何引用。当你想开拓一个不受项目中其它代码干扰的独立作用域时，这种方法特别好用，例如：
@@ -1007,9 +972,8 @@ console.log(person.getName());      // "Nicholas"
 
 需要注意的是括号包裹的是箭头函数的定义，并不包括（"Nicholas"）。这和传统的函数不同，函数定义和传入的参数可以同时被括号包含。
 
-<br />
 
-#### 无 this 绑定（No this Binding）
+### 无 this 绑定（No this Binding）
 
 JavaScript 编程中最常见的错误之一就是函数中 this 的绑定。由于函数内部的 this 可以在调用时被上下文替换，所以操作了意想不到的对象的几率很大。考虑如下的例子：
 
@@ -1086,9 +1050,8 @@ var MyType = () => {},
 
 同样，箭头函数中 this 的值由包含它的函数决定，所以你没有办法通过 call()，apply() 或 bind() 方法来改变 this 的值。
 
-<br />
 
-#### 箭头函数与数组（Arrow Functions and Arrays）
+### 箭头函数与数组（Arrow Functions and Arrays）
 
 
 箭头函数写法的简洁特性也非常适合操作数组。例如你想自定义数组元素的排序方式，一般会使用下面的写法：
@@ -1107,9 +1070,8 @@ var result = values.sort((a, b) => a - b);
 
 使用回调函数的数组方法，例如 sort()，map() 和 reduce() 都能享受箭头函数语法带来的好处 —— 把复杂的代码简单化。
 
-<br />
 
-#### 无 arguments 绑定（No arguments Binding）
+### 无 arguments 绑定（No arguments Binding）
 
 
 虽然箭头函数没有自己的 arguments 对象，不过访问包含它们的函数中的 arguments 对象还是可行的。该对象不论箭头函数何时执行都能访问。例如：
@@ -1126,9 +1088,8 @@ console.log(arrowFunction());       // 5
 
 在 createArrowFunctionReturningFirstArg() 内部，arguments[0] 元素被创建的箭头函数所引用。该元素为 传入 createArrowFunctionReturningFirstArg() 函数的首个参数。当箭头函数在随后执行时，返回的值为 5，这也正是传给示例中传给 createArrowFunctionReturningFirstArg() 的参数。虽然 createArrowFunctionReturningFirstArg() 被调用后箭头函数将不存在于该函数作用域内，但是作用域链中的 arguments 标识符依旧可以访问。
 
-<br />
 
-#### 查找箭头函数（Identifying Arrow Functions）
+### 查找箭头函数（Identifying Arrow Functions）
 
 
 尽管语法不同，但箭头函数依旧属于函数，定义也是如此。考虑以下的代码：
@@ -1161,7 +1122,7 @@ sum() 函数被 call 和 apply() 调用并传递参数，类似于你使用其�
 
 <br />
 
-### <a id="Tail-Call-Optimization"> 尾调用优化（Tail Call Optimization） </a>
+## 尾调用优化（Tail Call Optimization）
 
 也许 ECMAScript 6 中关于函数的改进最有意思的是引擎针对尾部调用机制的优化。尾调用指的是一个函数在另一个函数的尾部被调用，像这样：
 
@@ -1173,9 +1134,8 @@ function doSomething() {
 
 ECMAScript 5 实现的尾调用和其它位置调用处理机制都是相同的：一个新的堆栈帧（stack frame）被创建并添加到堆栈上，以代表该函数被调用过。这意味着之前所有的堆栈帧在内存中持续存在，当调用栈过大时会产生一些问题。
 
-<br />
 
-#### 有何不同？（What’s Different?）
+### 有何不同？（What’s Different?）
 
 
 在严格模式下 ECMAScript 6 试图利用恰当的尾部函数调用来减少调用栈的大小（非严格模式下的尾调用未被考虑）。该优化使得尾部的函数调用不再增加，而是清除并利用已存在的堆栈帧（stack frame）。该优化需要如下条件：
@@ -1251,9 +1211,8 @@ function doSomething() {
 
 该例中 func() 闭包需要访问本地变量 num。虽然 func() 调用后会马上返回该函数值，但是该引用的存在导致优化不会发生。
 
-<br />
 
-#### 如何使用尾调用优化（How to Harness Tail Call Optimization）
+### 如何使用尾调用优化（How to Harness Tail Call Optimization）
 
 在实践中，尾调用优化发生在幕后，所以除非你有意的去优化某个函数否则不必想得太多。尾调用优化的主要使用场景是使用递归，而且该优化的效果及其显著。考虑如下计算阶乘（factorial）的函数：
 
@@ -1294,7 +1253,7 @@ function factorial(n, p = 1) {
 
 <br />
 
-### <a id="Summary"> 总结（Summary） </a>
+## 总结（Summary）
 
 ECMAScript 6 中的函数并未发生巨大的变化，相反，一系列小的改进使得函数更容易使用。
 
@@ -1311,11 +1270,4 @@ name 属性的添加使得在调试和评估中查找函数名变得极为方便
 ECMAScript 6 函数最大的变化就是箭头函数的引入。设计箭头函数的目的是为了替代匿名函数表达式。箭头函数有更简洁的语法，this 的词法绑定（lexical this binding）并移除了 arguments 对象。此外箭头函数无法更改 this 的绑定，所以它们不能被用作构造函数。
 
 尾调用优化允许某些函数的调用被优化，以便减少调用栈的大小和内存占用，防止堆栈溢出。当符合相应条件时该优化会由引擎自动实现，然而你可以有目的地重写某些函数以便利用它。
-
-<br />
-
-
-
-
-
 
