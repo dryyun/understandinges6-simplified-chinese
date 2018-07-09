@@ -20,7 +20,7 @@ let count = 10,
 
 console.log(message);       // "10 items cost $2.50."
 ```
-- 模板标签
+- 模板标签，把标签定义成函数，放在模板最前面使用。
 
 
 ------
