@@ -1,0 +1,5 @@
+deploy:
+  stage: deploy
+  script:
+  - ssh machine " cd ~/gitbook/understandinges6-simplified-chinese && sh deploy.sh "
+

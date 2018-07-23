@@ -1,6 +1,6 @@
 ## 学习笔记
 
-- 默认参数
+- 默认参数，ES5 的模拟默认参数的做法，ES6 的默认参数的使用方法，
 
 
 # 函数（Functions）
@@ -90,7 +90,7 @@ function makeRequest(url, timeout = 2000, callback) {
 }
 ```
 
-在该条件下，timeout 的默认值仅当未提供给实参或传入 undefined 的情况下才会被使用，如下所示：
+在该条件下，timeout 的{% em %}默认值仅当未提供给实参或传入 undefined 的情况下才会被使用{% endem %}，如下所示：
 
 ```js
 // 使用 timeout 的默认值
