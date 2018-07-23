@@ -1,22 +1,12 @@
+## 学习笔记
+
 # 解构（Destructuring for Easier Data Access）
 
 
 对象和数组字面量在 JavaScript 中是最常出现的两种表现形式。感谢 JSON 这种数据格式的流行，它们在该门语言中的地位变得举足轻重。事先定义好对象和数组，并在需要的时候系统性地提取出需要的部分，这在编程中十分常见。为了简化从数据结构中获取相关子集的操作，ECMAScript 6 引入了解构（destructuring）。
 
-<br />
 
-### 本章小结
-* [解构的实用性在哪里](#Why-is-Destructuring-Useful)
-* [对象解构](#Object-Destructuring)
-* [数组解构](#Array-Destructuring)
-* [混合解构](#Mixed-Destructuring)
-* [参数解构](#Destructured-Parameters)
-* [总结](#Summary)
-
-<br />
-
-### <a id="Why-is-Destructuring-Useful"> 解构的实用性在哪里（Why is Destructuring Useful?） </a>
-
+## 解构的实用性在哪里（Why is Destructuring Useful?）
 
 在 ECMAScript 5 或更早的版本中，从对象或数组中获取特定的数据并赋值给本地变量需要书写很多并且相似的代码。例如：
 
@@ -35,10 +25,8 @@ let repeat = options.repeat,
 
 这也是 ECMAScript 6 给对象和数组添加解构的原因。当你想要把数据结构分解为更小的部分时，从这些部分中提取数据会更容易些。很多语言都能使用精简的语法来实现解构操作。ECMAScript 6 解构的实际语法或许你已经非常熟悉：对象和数组字面量。
 
-<br />
 
-### <a id="Object-Destructuring"> 对象解构（Object Destructuring） </a>
-
+## 对象解构（Object Destructuring）
 
 对象结构语法在赋值语句的左侧使用对象字面量，例如：
 
@@ -56,7 +44,6 @@ console.log(name);      // "foo"
 
 在该段代码中，node.type 的值由 type 这个本地变量存储，node.name 同理。该语法和第四章中介绍的简写的属性初始化是相同的。type 和 name 标识符具有本地声明变量和 options 对象属性的双重身份。
 
-<br />
 
 > ##### 不要忘记初始化（Don’t Forget the Initializer）
 >
@@ -79,8 +66,7 @@ const { type, name };
 
 <br />
 
-##### 解构赋值表达式（Destructuring Assignment）
-
+### 解构赋值表达式（Destructuring Assignment）
 
 目前为止的解构示例使用了变量声明。不过，在表达式中使用赋值也是可疑的。例如，你可以决定在变量声明之后改变它们的值，如下所示：
 
@@ -127,10 +113,8 @@ outputInfo() 函数在调用时被传入解构赋值表达式。表达式计算�
 
 > **注意**: 当解构赋值表达式的右侧（= 后面的表达式）计算结果为 null 或 undefined 的时候一个错误将被抛出。因为任何读取 null 或 undefined 的操作都会发生运行时错误（runtime error）
 
-<br />
 
-##### 默认值（Default Values）
-
+### 默认值（Default Values）
 
 当你使用解构赋值表达式语句时，如果你定义了一个变量而该变量名在对象中找不到对应的属性名，那么该本地变量的值为 undefined。例如：
 
@@ -168,8 +152,7 @@ console.log(value);     // true
 
 <br />
 
-##### 赋值给不同的变量名（Assigning to Different Local Variable Names)
-
+### 赋值给不同的变量名（Assigning to Different Local Variable Names)
 
 到目前为止，每个示例中的解构赋值都使用对象中的属性名做为本地变量的名称；例如，node.type 中的值由 type 变量来存储。在你有意这么做的时候并没有什么问题，但万一你不想呢？ECMAScript 6 对此添加了扩展语法允许你将值赋给不同名字的变量（别名），而且该语法看上去类似于使用非简写方式初始化对象字面量的属性。这里有个示例：
 
@@ -204,10 +187,7 @@ console.log(localName);     // "bar"
 
 到现在你已经知道怎样使用解构来操作对象中名称为原始值（primitive value）的属性。对象解构同样可以在包含嵌套结构的对象中获取数据。
 
-<br />
-
-##### 嵌套的对象解构（Nested Object Destructuring）
-
+### 嵌套的对象解构（Nested Object Destructuring）
 
 使用类似于对象字面量的语法可以在对象嵌套的结构中提取你需要的数据。这里有个示例：
 
@@ -278,8 +258,7 @@ let { loc: {} } = node;
 
 <br />
 
-### <a id="Array-Destructuring"> 数组解构（Array Destructuring) </a>
-
+## 数组解构（Array Destructuring) 
 
 数据解构的语法和对象解构看起来类似，只是将对象字面量替换成了数组字面量，而且解构操作的是数组内部的位置（索引）而不是对象中的命名属性，例如：
 
@@ -308,10 +287,8 @@ console.log(thirdColor);        // "blue"
 
 和对象解构类似的是，你必须使用 var，let，const 对数组解构进行初始化。
 
-<br />
 
-##### 解构赋值表达式（Destructuring Assignment）
-
+### 解构赋值表达式（Destructuring Assignment）
 
 你可以想要赋值的情况下使用数组的解构赋值表达式，但是和对象解构不同，没必要将它们包含在圆括号中，例如：
 
@@ -361,10 +338,8 @@ console.log(b);     // 1
 
 和对象的解构赋值表达式相同，若表达式右侧的计算值为 null 和 undefined，那么该解构赋值表达式会抛出错误。
 
-<br />
 
-##### 默认值（Default Values）
-
+### 默认值（Default Values）
 
 数组中的解构赋值表达式同样可以在任意位置指定默认值。当某个位置的项未被传值或传入的值为 undefined，那么它的默认值会被使用。例如：
 
@@ -379,10 +354,8 @@ console.log(secondColor);       // "green"
 
 在这段代码中，colors 数组只有一个项，所以 secondColor 不会进行值得匹配。既然它被设置了默认值，那么 secondColor 的值即为 "green" 而不是 undefined 。
 
-<br />
 
-##### 嵌套的数组解构（Nested Destructuring）
-
+### 嵌套的数组解构（Nested Destructuring）
 
 你可以使用类似于解构嵌套对象的方式来解构嵌套的数组。在数组的内部添加一个数组即可在嵌套数组完成操作。像这样：
 
@@ -399,10 +372,8 @@ console.log(secondColor);       // "green"
 
 这在里，secondColor 变量获得是 colors 数组中的 "green"。该项被包含在另一个数组中，所以解构语句中额外的数组添加是必须的。和对象相同，获取任意嵌套深度的值是允许的。
 
-<br />
 
-##### 剩余项（Rest Items）
-
+### 剩余项（Rest Items）
 
 第三章介绍过剩余参数表达式在函数中的应用，而数组解构中有个类似的概念叫做剩余项。它使用 ... 语法来将剩余的项赋值给一个指定的变量，如下所示：
 
@@ -443,10 +414,8 @@ console.log(clonedColors);      //"[red,green,blue]"
 
 剩余项必须是解构语句中的最后项并且不能在后面添加逗号，因为该行为会抛出语法错误。
 
-<br />
 
-### <a id="Mixed-Destructuring"> 混合解构（Mixed Destructuring） </a>
-
+## 混合解构（Mixed Destructuring）
 
 可以创建更复杂的表达式来混合使用对象和数组解构。这样做你可以精准地获取对象与数组并存的数据结构中的信息。例如：
 
@@ -479,10 +448,8 @@ console.log(startIndex);        // 0
 
 该段代码分别提取 node.loc.start 和 node.range[0] 的值并赋给 start 和 startIndex 。注意的是解构语句中的 loc: 和 range: 只是 node 对象中参考的对应属性。对 node 对象使用混合解构没有提取不出来的数据。该种实现的特别实用之处在于提取 JSON 中的数据时不必访问整个数据结构。
 
-<br />
 
-### <a id="Destructured-Parameters"> 参数解构（Destructured Parameters） </a>
-
+## 参数解构（Destructured Parameters）
 
 解构的另一个实用案例发生在传递函数参数的时刻。当 JavaScript 的函数需要接受大量的可选参数时，一个普遍的实践是创建一个带有额外属性的对象用来明确，像这样：
 
@@ -529,10 +496,8 @@ setCookie("type", "js", {
 
 > 参数解构拥有目前为止你在本章见过的其它解构方式的所有能力。你可以使用默认参数，混合对象与数组解构，或者声明和对应属性命名不同的变量。
 
-<br />
 
-#### 必选的参数解构（Destructured Parameters are Required）
-
+### 必选的参数解构（Destructured Parameters are Required）
 
 参数解构有一个怪异之处：在默认情况下，未给参数解构传值会抛出一个错误。例如，上例中的 setCookie() 函数使用下面的方式调用会发生错误：
 
@@ -565,9 +530,8 @@ function setCookie(name, value, { secure, path, domain, expires } = {}) {
 
 该例向第三个参数提供了一个对象作为默认值。这意味着如果 setCookie() 的未被传入第三个参数，那么 secure，path，domain 和 expires 的值均为 undefined，而且没有错误被抛出。
 
-<br />
 
-#### 参数解构的默认值（Default Values for Destructured Parameters）
+### 参数解构的默认值（Default Values for Destructured Parameters）
 
 
 你可以使用解构赋值表达式来向解构的参数指定默认值，只需在参数后面添加等于符号和做为默认的值。例如：
@@ -588,9 +552,8 @@ function setCookie(name, value,
 
 该段代码中，每个解构后的参数都会有默认值，所以你不必对它们进行检查已确认它们是否被传入参数。同样，整个参数解构有一个空的对象做为默认值，于是该参数解构就是可选的。这些设定使得该函数声明看起来比一般的要复杂，但这是为了确保每个参数都有可用的值而做出的必要牺牲。
 
-<br />
 
-### <a id="Summary"> 总结（Summary） </a>
+## 总结（Summary）
 
 解构使得在 JavaScript 中操作对象和数组变得容易。使用熟悉的对象字面量或数组字面量，你可以将数据结构拆分并只获取你感兴趣的信息。对象和数组解构分别允许你从对象和数组中提取信息。
 
@@ -599,7 +562,5 @@ function setCookie(name, value,
 使用 var，let 或 const 的解构声明必须要初始化。解构赋值表达式可以用来代替任何赋值操作并且允许你解构对象的属性和使用已经存在的变量名。
 
 参数解构使用解构语法使得在函数参数中使用可选对象变得透明化。你实际感兴趣的数据可以使用命名参数详列。参数解构可以是对象形式，数组形式或混合形式，并同时拥有这些形式的全部功能。
-
-<br />
 
 

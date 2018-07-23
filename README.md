@@ -1,4 +1,4 @@
-# 前言
+# Fork 前言
 
 本仓库 fork 自 OshotOkill 的 [understandinges6-simplified-chinese](https://github.com/OshotOkill/understandinges6-simplified-chinese)。  
 感谢 OshotOkill 对 《Understanding ECMAScript 6》的翻译，我 fork 过来，部署 gitbook 到自己的网站，作为个人的学习之用，会在每章前面记录一下学习笔记。  
@@ -69,3 +69,5 @@ ECMAScript 2015 （ES6）是 ECMAScript 发展的重要里程碑，给前端开�
 
 
 [附录 B： **领悟 ECMAScript 7（2016）（Understanding ECMAScript 7 (2016)）**](https://oshotokill.gitbooks.io/understandinges6-simplified-chinese/content/appendix_b.html)
+
+
