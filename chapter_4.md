@@ -1,4 +1,58 @@
 ## 学习笔记
+- 对象类别  
+```
+常规对象（ordinary object）拥有 JavaScript 对象所有的默认行为。  
+特异对象（exotic object）的某些内部行为和默认的有所差异。  
+标准对象（standard object）是 ECMAScript 6 中定义的对象，例如 Array, Date 等，它们既可能是常规也可能是特异对象。     
+内置对象（built-in object）指 JavaScript 执行环境开始运行时已存在的对象。标准对象均为内置对象。 
+```
+
+- 对象字面量语法扩展
+
+```
+> 属性初始值简写语法
+> 对象方法简写语法
+> 可计算属性名
+```
+
+```js
+var lastName = "last name";
+var person = {
+    "first name": "Nicholas",
+    [lastName]: "Zakas" // ES6 支持的，在声明的时候属性名是计算获得
+};
+console.log(person["first name"]);      // "Nicholas"
+console.log(person[lastName]);          // "Zakas"
+```
+
+- 新增方法
+
+```
+> Object.is() ，引入此方法来补偿 `===` 操作符怪异行为，不过具体选择哪一个取决于实际的情况
+> Object.assign() ，
+```
+
+查看 [MDN - Object 文档](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object) 
+
+- 自身属性枚举顺序，ES5 没有规定枚举属性的顺序，全靠 JS 引擎自己实现，ES6 有了明确规定
+
+```
+类型为数字（numeric）键会升序。
+类型为字符的键按照被添加到对象时的顺序保持不变。
+类型为 Symbol 的键按照被添加到对象时的顺序保持不变。
+> 虽然这么规定，但是 for-in，Object.keys() 的属性顺序还是要看 JS 引擎的实现
+```
+
+- 改变对象原型  Object.setPrototypeof()
+
+- 使用 super 引用来方便获取 prototype
+
+```
+super 是指向当前函数原型的指针，其值等同于 Object.getPrototypeof(this)
+super 只能在简写方法中使用（concise methods），除此之外将发生语法错误 
+```
+
+  
 
 # 扩展的对象功能（Expanded Object Functionality）
 
@@ -54,7 +108,7 @@ function createPerson(name, age) {
 }
 ```
 
-当对象字面量中的属性只有属性名的时候，JavaScript 引擎会在该作用域内寻找是否有和属性同名的变量。在本例中，本地变量 name 的值被赋给了对象字面量中的 name 属性。
+{% em %}当对象字面量中的属性只有属性名的时候，JavaScript 引擎会在该作用域内寻找是否有和属性同名的变量。{% endem %}在本例中，本地变量 name 的值被赋给了对象字面量中的 name 属性。
 
 该项扩展使得对象字面量的初始化变得简明的同时也消除了命名错误。对象属性被同名变量赋值在 JavaScript 中是一种普遍的编程模式，所以这项扩展的添加非常受欢迎。
 
@@ -156,9 +210,9 @@ ECMAScript 从第五版开始避免在 Object.prototype 上添加新的全局函
 
 ### Object.is() 方法
 
-在 JavaSciprt 中当你想比较两个值时，你极有可能使用比较操作符（==）或严格比较操作符（===）。许多开发者为了避免在比较的过程中发生强制类型转换，更倾向于后者。但即使是严格等于操作符，它也不是万能的。例如，它认为 +0 和 -0 是相等的，虽然它们在 JavaScript 引擎中表示的方式不同。同样 NaN === NaN 会返回 false，所以必须使用 isNaN() 函数才能判断 NaN 。
+在 JavaSciprt 中当你想比较两个值时，你极有可能使用比较操作符（==）或严格比较操作符（===）。许多开发者为了避免在比较的过程中发生强制类型转换，更倾向于后者。但即使是严格等于操作符，它也不是万能的。例如，{% em %}它认为 +0 和 -0 是相等的，虽然它们在 JavaScript 引擎中表示的方式不同。同样 NaN === NaN 会返回 false，所以必须使用 isNaN() 函数才能判断 NaN 。{% endem %}
 
-ECMAScript 6 引入了 Object.is() 方法来补偿严格等于操作符怪异行为的过失。该函数接受两个参数并在它们相等的返回 true 。只有两者在类型和值都相同的情况下才会判为相等。如下所示：
+{% em %}ECMAScript 6 引入了 Object.is() 方法来补偿严格等于操作符怪异行为的过失。{% endem %}该函数接受两个参数并在它们相等的返回 true 。只有两者在类型和值都相同的情况下才会判为相等。如下所示：
 
 ```js
 console.log(+0 == -0);              // true
@@ -340,14 +394,14 @@ console.log(Object.getOwnPropertyNames(obj).join(""));     // "012acbd"
 
 Object.getOwnPropertyNames() 方法返回的属性集合顺序依次为 0，1，2，a，c，b，d 。注意数字类型的键会被提升并自动排序，字符类型的键紧随其后并保持添加到对象时的顺序。对象字面量本身的键优先级比后动态添加到对象的高（在本例中，d）。
 
-for-in 循环的枚举顺序仍不明确，因为各 JavaScript 引擎的实现不懂。同样 Object.keys() 和 JSON.stringify() 由于枚举顺序和 for-in 相同导致它们的具体结果也无确切定义。
+> {% em %}for-in 循环的枚举顺序仍不明确，因为并非所有JavaScript引擎都以相同的方式实现它。同样 Object.keys() 和 JSON.stringify() 由于枚举顺序和 for-in 相同导致它们的具体结果也无确切定义。{% endem %}
 
 虽然枚举顺序的变动对 JavaScript 的运作来讲细小甚微，但是依赖于枚举顺序而运行的项目并不罕见。ECMAScript 6 通过定义枚举的顺序使其与具体的执行环境无关，保证依赖于枚举的 JavaScript 代码能正常工作。
 
 
 ## 更多的原型属性（More Powerful Prototypes）
 
-原型（prototypes）是 JavaScript 中继承的基础，ECMAScript 6 仍继续努力让原型变得更为强大。早期的 JavaScript 对原型的功能限制极为严重。然而，当语言逐渐成熟而且开发者也愈加熟悉原型的工作机制之后，开发者希望获得原型更多控制权的同时又能方便使用它们。于是 ECMAScipt 6 对原型做了一些改进。
+{% em %}原型（prototypes）是 JavaScript 中继承的基础，ECMAScript 6 仍继续努力让原型变得更为强大。{% endem %}早期的 JavaScript 对原型的功能限制极为严重。然而，当语言逐渐成熟而且开发者也愈加熟悉原型的工作机制之后，开发者希望获得原型更多控制权的同时又能方便使用它们。于是 ECMAScipt 6 对原型做了一些改进。
 
 
 ### 改变对象的原型（Changing an Object’s Prototype）
