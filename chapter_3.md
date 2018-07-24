@@ -1,7 +1,41 @@
 ## 学习笔记
 
-- 默认参数，ES5 的模拟默认参数的做法，ES6 的默认参数的使用方法，
-
+- 看完本章，感觉严谨的写，任何时候都要用 `"use strict";` 严格模式
+- JS 的函数可以接受任意个数的参数，无视参数声明，使用 arguments
+- ES5 的模拟默认参数的做法，注意 undefined 和 0、null 的区别
+- ES6 默认参数的位置可以任意定义，不像类 C 语言，要放在最右边，不过按照习惯，我觉得放在最右边比较好。
+- 传入 undefined ，就是使用默认参数
+- 默认参数对 arguments 使用的影响
+- 默认参数表达式
+```js
+function add(first, second = getValue()){}
+function add(first, second = first){}
+function add(first, second = getValue(first))()
+```
+- [剩余参数](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Functions/Rest_parameters)
+```js
+function(a, b, ...theArgs) {
+  // ...
+}
+``` 
+- ~~增强的 Function 构造函数~~，的确是用不到
+- [展开语法](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
+```js
+myFunction(...iterableObj);
+```
+- 函数 name 属性
+- 函数的双重用途，可以 new ，可以直接调用
+- 如何判断函数的调用方式，ES5 的判断方式，ES6 会有 `new.target` 用于判断
+- 块级函数
+- [箭头函数](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Functions/Arrow_functions)
+- 箭头函数没有 this 绑定，this 只能通过查找作用域决定，降低了很多操作 this 的错误
+- 尾调用优化 ，主要使用场景是 递归
+满足条件  
+```
+> 尾调用不能引用当前堆栈帧中的变量（即尾调用的函数不能是闭包）  
+> 使用尾调用的函数在尾调用结束后不能做额外的操作   
+> 尾调用函数值作为当前函数的返回值  
+```
 
 # 函数（Functions）
 
@@ -11,7 +45,7 @@ ECMAScript 6 中的函数相较而言是个大的跃进，着手调查了 JavaSc
 
 ## 带默认参数的函数（Functions with Default Parameter Values）
 
-JavaScript 的函数比较特殊的是可以接受任意个数的参数，完全无视函数声明中的参数个数。这允许你通过自行给未传值的参数赋默认值来定义带有不同参数的函数。本章将介绍 ECMAScript 6 及之前的 ECMAScript 版本如何实现默认参数，同时引出的还有 arguments 对象，参数表达式（expressions as parameters）及 TDZ 的另一形式。
+{% em %}JavaScript 的函数比较特殊的是可以接受任意个数的参数，完全无视函数声明中的参数个数{% endem %}。这允许你通过自行给未传值的参数赋默认值来定义带有不同参数的函数。本章将介绍 ECMAScript 6 及之前的 ECMAScript 版本如何实现默认参数，同时引出的还有 arguments 对象，参数表达式（expressions as parameters）及 TDZ 的另一形式。
 
 
 ### ECMAScript 5 默认参数模拟（Simulating Default Parameter Values in ECMAScript 5）
@@ -80,7 +114,7 @@ makeRequest("/foo", 500, function(body) {
 
 ECMAScript 6 会认为 url 参数是必须传入的，这就是三次调用都传入了 "/foo" 的原因。其余两个参数被视作是可选的。
 
-可以任意指定一个函数参数的默认值，如果之后的参数未设定默认值也是允许的。例如下面是合法的：
+{% em %}可以任意指定一个函数参数的默认值，如果之后的参数未设定默认值也是允许的。{% endem %}例如下面是合法的：
 
 ```js
 function makeRequest(url, timeout = 2000, callback) {
@@ -112,7 +146,7 @@ makeRequest("/foo", null, function(body) {
 
 ### 默认参数对 arguments 对象的影响 （How Default Parameter Values Affect the arguments Object）
 
-需要记住的是当使用默认参数的时候 arguments 对象的表现是不同的。在 ECMAScript 5 的非严格模式下，arguments 对象会反映出所有被命名的参数的变化。下面的代码演示了该工作机制：
+需要记住的是当使用默认参数的时候 arguments 对象的表现是不同的。{% em %}在 ECMAScript 5 的非严格模式下，arguments 对象会反映出所有被命名的参数的变化。{% endem %} 下面的代码演示了该工作机制：
 
 ```js
 function mixArgs(first, second) {
@@ -138,7 +172,7 @@ true
 
 arguments 对象在非严格模式下总是实行更新反映出命名参数的变化。因此当 first 和 second 变量获得新值之后，arguments[0] 和 arguments[1] 也同步更新，使得 === 比较的值为 true 。
 
-然而在 ECMAScript 5 的严格模式下，这个机制被取消了，arguments 对象不会反映任何命名参数。如下依旧是上例中的函数，但现在处在严格模式下：
+然而{% em %}在 ECMAScript 5 的严格模式下，这个机制被取消了，arguments 对象不会反映任何命名参数。{% endem %}如下依旧是上例中的函数，但现在处在严格模式下：
 
 ```js
 function mixArgs(first, second) {
@@ -166,7 +200,7 @@ false
 
 本次 first 和 second 的更改不会映射给 arguments，所以输出如你所愿。
 
-当使用 ECMAScript 6 的默认参数时，arguments 对象的表现和 ECMAScript 5 的严格模式一致，不管函数是否显式设定为严格模式。默认参数的存在会使 arguments 对象对该命名参数解绑。这是个细微但重要的细节，因为arguments 对象的使用方式发生了变化。考虑如下的代码：
+{% em %}当使用 ECMAScript 6 的默认参数时，arguments 对象的表现和 ECMAScript 5 的严格模式一致，不管函数是否显式设定为严格模式。默认参数的存在会使 arguments 对象对该命名参数解绑。{% endem %}这是个细微但重要的细节，因为arguments 对象的使用方式发生了变化。考虑如下的代码：
 
 ```js
 // 非严格模式
@@ -406,7 +440,7 @@ function pick(object, ...keys) {
 
 ##### 剩余参数的限制（Rest Parameter Restrictions）
 
-剩余参数有两点限制。其一是函数只能有一个剩余参数，且必须放在最后的位置。下面例子中的代码是不正确的：
+{% em %}剩余参数有两点限制。其一是函数只能有一个剩余参数，且必须放在最后的位置。{% endem %}下面例子中的代码是不正确的：
 
 ```js
 // 语法错误：剩余参数后不应有命名参数
@@ -423,7 +457,7 @@ function pick(object, ...keys, last) {
 
 在这里，last 参数跟在剩余参数后面，这会导致一个语法错误。
 
-第二个限制是剩余函数不能被用在对象字面量中的 setter 上，也就是说下面的代码会导致语法错误：
+{% em %}第二个限制是剩余函数不能被用在对象字面量中的 setter 上{% endem %}，也就是说下面的代码会导致语法错误：
 
 ```js
 let object = {
@@ -441,7 +475,7 @@ let object = {
 
 ##### 剩余参数对 arguments 对象的影响（How Rest Parameters Affect the arguments Object）
 
-设计剩余参数的目的是用来替代 ECMAScript 中的 arguments。原本在 ECMAScript 4 中就决定移除 arguments 并添加了剩余参数来允许传入无限个数的参数。虽然 ECMAScript 4 从未走上台面，但是这个主意被保留并在 ECMAScript 6 中重新引入，尽管 arguments 对象仍有一席之地。
+{% em %}设计剩余参数的目的是用来替代 ECMAScript 中的 arguments。{% endem %}原本在 ECMAScript 4 中就决定移除 arguments 并添加了剩余参数来允许传入无限个数的参数。虽然 ECMAScript 4 从未走上台面，但是这个主意被保留并在 ECMAScript 6 中重新引入，尽管 arguments 对象仍有一席之地。
 
 arguments 对象通过反映传入的参数来和剩余参数共同协作，如下面所示：
 
@@ -638,11 +672,10 @@ console.log(notAPerson);    // "undefined"
 
 当创建 notAPerson 时，即未使用 new 来调用 Person() 会输出 undefined（同时在非严格模式下给全局对象添加了 name 属性）。Person 首字母的大写是唯一指示其应该被 new 调用的标识，这在 JavaScript 编程中十分普遍。函数双重角色的扮演在 ECMAScript 6 中发生了一些改变。
 
-JavaScript 中的函数有两个不同的只有内部（internal-only）能使用的方法：[[call]] 与 [[Construct]]。当函数未被 new 调用时，[[call]] 方法会被执行，运行的是函数主体中的代码。当函数被 new 调用时，[[Construct]] 会被执行并创建了一个新的对象，称为 new target，之后会执行函数主体并把 this 绑定为该对象。带有 [[Construct]] 方法的函数被称为构造函数（constructor）。
+{% em %}JavaScript 中的函数有两个不同的只有内部（internal-only）能使用的方法：[[call]] 与 [[Construct]]。当函数未被 new 调用时，[[call]] 方法会被执行，运行的是函数主体中的代码。当函数被 new 调用时，[[Construct]] 会被执行并创建了一个新的对象，称为 new target，之后会执行函数主体并把 this 绑定为该对象。带有 [[Construct]] 方法的函数被称为构造函数（constructor）。{% endem %}
 
-<br />
 
-> 不是每个函数内部都有 [[Construct]] 方法，所以并非所有的函数都能被 new 调用。在 “箭头函数” 小结中提到的箭头函数就没有该方法。
+> {% em %}不是每个函数内部都有 [[Construct]] 方法，所以并非所有的函数都能被 new 调用。在 “箭头函数” 小结中提到的箭头函数就没有该方法。{% endem %}
 
 
 ### ECMAScript 5 中函数调用方式的判断（Determining How a Function was Called in ECMAScript 5）
@@ -729,7 +762,7 @@ var anotherPerson = new AnotherPerson("Nicholas");  // 错误！
 
 <br />
 
-ECMAScript 6 通过添加 new.target 消除了函数存在调用歧义的可能性。紧随该主题的是，ECMAScript 6 还解决另一个早先存在的含糊问题：在块内声明的函数。
+{% em %}ECMAScript 6 通过添加 new.target 消除了函数存在调用歧义的可能性。{% endem %}紧随该主题的是，ECMAScript 6 还解决另一个早先存在的含糊问题：在块内声明的函数。
 
 <br />
 
@@ -822,14 +855,12 @@ console.log(typeof doSomething);            // "function"
 
 允许在 JavaScript 中声明块级变量使得声明函数的能力得到了加强。然而 ECMAScript 6 还引入了另一种全新的声明函数的方法。
 
-<br />
 
 ## 箭头函数（Arrow Functions）
 
-
 ECMAScript 6 最有意思的部分之一就是箭头函数。正如其名，箭头函数由 “箭头”（=>）这种新的语法来定义。但是箭头函数的表现在以下几个重要的方面不同于传统的 JavaScript 函数：
 
-* 没有 this，super，arguments 和 new.target 绑定 - this，super，arguments 和 new.target 的值由最近的不包含箭头函数的作用域决定。（super 会在第四章讲解）
+* {% em %}没有 this，super，arguments 和 new.target 绑定 - this，super，arguments 和 new.target 的值由最近的不包含箭头函数的作用域决定。{% endem %}（super 会在第四章讲解）
 
 * 不能被 new 调用 - 箭头函数内部没有 [[Construct]] 方法，因此不能当作构造函数使用。使用 new 调用箭头函数会抛出错误。
 
@@ -841,7 +872,7 @@ ECMAScript 6 最有意思的部分之一就是箭头函数。正如其名，箭�
 
 * 不允许重复的命名参数 - 不论是在严格模式还是非严格模式下，箭头函数都不允许重复的命名参数存在，相比传统的函数，它们只有在严格模式下才禁止该种行为。
 
-这些差异的存在是有理由的。首先也是最重要的是，在 JavaScript 编程中 this 绑定是发生错误的根源之一。this 的值很容易丢失，使得程序以意想之外的方式运行，而箭头函数解决了该问题。其次，箭头函数限制 this 为固定值的做法让 JavaScript 引擎可以对一些操作进行优化，相比普通的函数它们可能被视为构造函数或被其它因素修改。
+这些差异的存在是有理由的。{% em %}首先也是最重要的是，在 JavaScript 编程中 this 绑定是发生错误的根源之一。this 的值很容易丢失，使得程序以意想之外的方式运行，而箭头函数解决了该问题。其次，箭头函数限制 this 为固定值的做法让 JavaScript 引擎可以对一些操作进行优化，相比普通的函数它们可能被视为构造函数或被其它因素修改。{% endem %}
 
 其它方面差异的存在也是专注于减少潜在错误发生的可能性与歧义的消除，同时 JavaScript 引擎也能更好的优化箭头函数。
 
