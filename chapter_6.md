@@ -1,3 +1,5 @@
+## 学习笔记
+
 # Symbols and Symbol Properties
 
 
@@ -5,21 +7,8 @@ Symbol 是 ECMAScript 6 新引入的基本类型。其它基本类型包括：�
 
 私有命名的提案最终入驻 ECMAScript 6，并称其为 symbol，同时本章也会教导如何有效地使用它们。不过，symbol 仅保留了实现细节（即，引入了非字符串属性名）而放弃了隐秘性。相反，symbol 属性和其它对象属性不属于同一个类别。
 
-<br />
 
-### 本章小结
-* [创建 Symbol](#Creating-Symbols)
-* [使用 Symbol](#Using-Symbols)
-* [共享 Symbol](#Sharing-Symbols)
-* [Symbol 类型的转换](#Symbol-Coercion)
-* [提取 Symbol 属性](#Retrieving-Symbol-Properties)
-* [揭秘内置 Well-Known Symbols 的运作](#Exposing-Internal-Operations-with-Well-Known-Symbols)
-* [总结](#Summary)
-
-<br />
-
-### <a id="Creating-Symbols"> 创建 Symbol（Creating Symbols） </a>
-
+## 创建 Symbol（Creating Symbols
 
 symbol 在 JavaScript 基本类型中比较特别，你可以用 true 和 42 分别代表布尔类型和数字类型，但是 symbol 类型却无法用字面量表示。你可以使用全局 Symbol 函数来创建一个 symbol，如下所示：
 
@@ -67,10 +56,8 @@ console.log(typeof symbol);         // "symbol"
 
 > 虽然还有其它间接方式判断 symbol 变量，不过 typeof 操作符是最精准同时也是我推荐的方式。
 
-<br />
 
-#### <a id="Using-Symbols"> 使用 Symbol（Using Symbols） </a>
-
+##  使用 Symbol（Using Symbols）
 
 你可以使用 symbol 来替换动态属性名（computed property name）。在本章中你已经见过 symbol 和方括号的组合使用方式，你还可以在调用 Object.defineProperty() 和 Object.defineProperties() 的时候使用它们，例如；
 
@@ -102,10 +89,8 @@ console.log(person[lastName]);      // "Zakas"
 
 虽然 symbol 可以用在任意动态属性名的位置，你仍然需要一种机制来共享 symbol 以便在不同的代码片段中有效地使用它们。
 
-<br />
 
-### <a id="Sharing-Symbols"> 共享 Symbol（Sharing Symbols） </a>
-
+## 共享 Symbol（Sharing Symbols）
 
 你或许想在不同部分的代码中使用相同的 symbol 。例如，在你的应用中有两种不同类型的对象要使用相同的 symbol 属性来表示唯一标识符。然而跨文件或代码库追踪这些 symbol 十分困难且容易出错。因此 ECMAScript 6 引入了全局 symbol 记录（registry）供你随时访问它们。
 
@@ -160,9 +145,8 @@ console.log(Symbol.keyFor(uid3));   // undefined
 
 > **注意**: 全局 symbol 记录是个共享的环境，类似于全局作用域。这意味着你无法得知在该环境中究竟存在着哪些内容。例如，jQuery 代码可能会使用 "jquery." 作为所有键的前缀，例如 "jquery.element" 等。
 
-<br />
 
-### <a id="Symbol-Coercion"> Symbol 类型的强制转换（Symbol Coercion） </a>
+## Symbol 类型的强制转换（Symbol Coercion）
 
 
 类型强制转换在 JavaScript 中意义重大，在该语言中它有着极高的灵活度。不过，symbol 类型的转换却十分不便，因为其它类型缺乏与 symbol 的等同逻辑。特别是 symbol 无法强制转换为字符串与数字，因此将它作为属性可以避免被无意间地引用。
@@ -194,10 +178,8 @@ let uid = Symbol.for("uid"),
 
 该例试图让 symbol 除以 1，于是一个错误发生了。其它算术运算符也是如此（和其它非空值类似，所有的 symbol 被认同为 true，所以逻辑运算符不会有错误抛出）。
 
-<br />
 
-### <a id="Retrieving-Symbol-Properties"> 提取 Symbol 属性（Retrieving Symbol Properties） </a>
-
+## 提取 Symbol 属性（Retrieving Symbol Properties）
 
 Object.keys() 和 Object.getOwnPropertyNames() 方法可以提取一个对象中的属性名。前者返回所有的可枚举（自有）属性名，后者则无视可枚举性而返回所有的（自有）属性名。不过ECMAScript 5 及更早的版本中没有能返回 symbol 属性的方法。于是，ECMAScript 6 引入了 Object.getOwnPropertySymbols() 方法来提取对象中的 symbol 属性。
 
@@ -220,10 +202,8 @@ console.log(object[symbols[0]]);    // "12345"
 
 对象在初始时不包含自有的 symbol 属性，不过它们可以继承原型中的 symbol 属性。ECMAScript 6 预先定义了一些 symbol，这些实现被称为 well-known symbols 。
 
-<br />
 
-### <a id="Exposing-Internal-Operations-with-Well-Known-Symbols"> 揭秘内置 Well-Known Symbols 的运作（Exposing Internal Operations with Well-Known Symbols） </a>
-
+## 通过well-known Symbol暴露内部操作（Exposing Internal Operations with Well-Known Symbols）
 
 ECMAScript 5 的主题之一是暴露和定义 JavaScript 中开发者无法模拟出的一些 “魔法”。ECMAScript 6 延续了该传统并暴露出比以往更多更甚的 JavaScript 内部逻辑，
 
@@ -249,10 +229,7 @@ well-known symbol 包含：
 
 > 重写定义好的 well-known symbol 方法会将一个常规（ordinary）对象转变为特异（exotic）对象，因为它改变了内部定义的默认行为。不过这对你的代码没有实际的影响，只是该对象自身的描述方式根据规范发生了变化。
 
-<br />
-
-#### Symbol.hasInstance 属性（The Symbol.hasInstance Property）
-
+### Symbol.hasInstance Property
 
 每个函数都含有 Symbol.hasInstance 方法来判断一个给定的对象是否为它的实例。该方法在 Function.prototype 上定义，因此所有的方法都继承了 instanceof 属性的默认行为。Symbol.hasInstance 属性本身被定义为只读（nonwritable），不可配置（nonconfigurable）和不可枚举（nonenumerable），以保证不会由于某些错误被重写。
 
@@ -317,10 +294,8 @@ console.log(zero instanceof SpecialNumber);   // false
 
 > **注意**: 你同样可以重写所有内置函数地默认 Symbol.hasInstance 属性，例如 Date 和 Error 。然而这种做法不值得推荐，它会让你的代码难以琢磨且运行时出乎意料。只在必要的时候重写自定义函数的 Symbo.hasInstance 是个不错的主意。
 
-<br />
 
-#### Symbol.isConcatSpreadable Symbol（The Symbol.isConcatSpreadable Symbol）
-
+### Symbol.isConcatSpreadable Symbol
 
 JavaScript 数组包含一个 concat() 方法以拼接两个数组。以下是使用该方法的演示：
 
@@ -368,8 +343,7 @@ console.log(messages);           // ["hi","Hello","world"]
 
 <br />
 
-#### Symbol.match，Symbol.replace，Symbol.search，和 Symbol.split（The Symbol.match, Symbol.replace, Symbol.search, and Symbol.split Symbols）
-
+### Symbol.match，Symbol.replace，Symbol.search 和 Symbol.split
 
 字符串与正则表达式在 JavaScript 中总是息息相关。特别是字符串类型，它含有一些以正则表达式为参数的方法：
 
@@ -442,10 +416,8 @@ hasLengthOf10 对象试图模仿正则表达式的行为并匹配长度恰好为
 
 虽然这个示例比较简单，它却可以实行比正则表达式力所能及到的还要复杂的匹配，这就给自定义模式匹配提供了不少可能性。
 
-<br />
 
-#### Symbol.toPrimitive symbol（The Symbol.toPrimitive Symbol）
-
+### Symbol.toPrimitive symbol
 
 JavaScript 经常会在某些特定操作发生时尝试将对象隐式的转换为基本类型值。例如，当你使用双等号（==）运算符来比较字符串和对象时，对象会在比较发生前转换为基本类型值。在以前对象被转换为何种基本类型的值是由内部操作决定的，但是 ECMAScript 6 将该值的决定权通过 Symbol.toPrimitive 方法暴露了出来。
 
@@ -505,8 +477,7 @@ console.log(String(freezing));          // "32°"，原文有误（째）
 
 <br />
 
-#### Symbol.toStringTag symbol（The Symbol.toStringTag Symbol）
-
+### Symbol.toStringTag symbol
 
 JavaScript 最有趣的问题之一在于它的多个执行环境可以同时并存。它发生在如下情况：浏览器加载的页面中包含一个 iframe，而页面和 iframe 分别拥有各自的执行环境。在大部分场景下，这都不是问题，因为数据可以在不同的环境中反复传递而不需要特别的去关心它们。如果对象在不同的对象之间互相传递后你想要确认某个对象的具体类型，那么麻烦就会出现。
 
@@ -624,10 +595,7 @@ console.log(Object.prototype.toString.call(values));    // "[object Magic]"
 
 即使上例只重写了数组的 Symbol.toStringTag，对其调用 Object.prototype.toString() 的结果仍然是 [object Magic]。虽然我不推荐像上例中更改内置对象，但是语言本身并没有任何办法禁止你这样做。
 
-<br />
-
-#### Symbol.unscopables Symbol（The Symbol.unscopables Symbol）
-
+### Symbol.unscopables Symbol
 
 with 语句是 JavaScript 中最具争议的部分之一。它起先的设计目的是用来避免重复书写代码，不过在那之后，with 语句因为晦涩难懂和对性能的消极影响被饱受批评，同时它也存在很多隐患。
 
@@ -674,10 +642,8 @@ Symbol.unscopables 对象拥有一个空的原型（null prototype），它由 O
 
 总的来讲，除非你使用了 with 语句并对代码库中存在的对象进行变动，你不需要给对象定义 Symbol.unscopables。
 
-<br />
 
-### <a id="Summary> 总结（Summary） </a>
-
+## 总结（Summary）
 
 Symbol 是 JavaScript 中一种新的基本类型，它被用来创建不可枚举的属性而且只能通过引用 symbol 来访问。
 
@@ -688,5 +654,3 @@ Symbol 是 JavaScript 中一种新的基本类型，它被用来创建不可枚�
 类似于 Object.keys() 或 Object.getOwnPropertyNames() 这样的方法无法返回 symbol，于是 ECMAScript 6 引入了 Object.getOwnPropertySymbols() 这个新方法来提取 symbol 属性。你仍旧可以通过 Object.defineProperty() 或 Object.defineProperties() 来修改 symbol 属性。
 
 well-known symbol 定义了标准对象中在以前只能由内部运作的功能。它们是全局可用的 symbol 常量且带有 Symbol. 前缀，例如 Symbol.hasInstance 属性，并允许开发者以各种各样的方式来修改标准对象的行为
-
-<br />

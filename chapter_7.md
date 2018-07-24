@@ -1,5 +1,6 @@
-# Set 与 Map（Sets and Maps）
+## 学习笔记
 
+# Set 与 Map（Sets and Maps）
 
 JavaScript 在绝大部分历史时期内只有一种集合类型，那就是数组（可能有人会质疑所有的非类数组对象都是键值对的集合，但其实它们的用途和数组有根本上的区别）。数组在 JavaScript 中的使用方式和其它语言很相似，但是其它集合类型的缺乏导致数组也经常被当作队列（queues）和栈（stacks）来使用。因为数组的索引只能是数字类型，当开发者觉得非数字类型的索引是必要的时候会使用非数组对象。这项用法促进了以非类数组对象为基础的 set 和 map 集合类型的实现。
 
@@ -9,20 +10,9 @@ ECMAScript 6 正式为 JavaScript 添加了 set 和 map，本章介绍了这两�
 
 首先，我会讲解开发者在 ECMAScript 6 之前是使用了什么样的解决方案来实现 set 和 map，而且为什么这些方案是有问题的。在这些重要的背景浮出水面之后，我会介绍 ECMAScript 6 中 set 和 map 的工作机制。
 
-<br />
-
-### 本章小结
-* [ECMAScript 5 中的 set 与 map](#Sets-and-Maps-in-ECMAScript-5)
-* [使用对象模拟的问题](#Problems-with-Workarounds)
-* [ECMAScript 6 中的 set](#Sets-in-ECMAScript-6)
-* [ECMAScript 6 中的 map](#Maps-in-ECMAScript-6)
-* [总结](#Summary)
 
 
-<br />
-
-### <a id="Sets-and-Maps-in-ECMAScript-5"> ECMAScript 5 中的 set 与 map（Sets and Maps in ECMAScript 5） </a>
-
+## ECMAScript 5 中的 Set 与 Map（Sets and Maps in ECMAScript 5）
 
 在 ECMAScript 5 中，开发者使用对象属性来模拟 set 和 map，像这样：
 
@@ -55,10 +45,8 @@ console.log(value);         // "bar"
 
 该段代码将字符串 "bar" 赋值给了 foo 键。和 set 不同，map 大部分情况下被用来提取数据，而不是验证键是否存在
 
-<br />
 
-### <a id="Problems-with-Workarounds"> 使用对象模拟的问题（Problems with Workarounds） </a>
-
+## 解决方案的问题（Problems with Workarounds）
 
 虽然在简单的情况下使用对象模拟的 set 和 map 没有太大的问题，不过当条件变得复杂时对象属性的限制很快就会暴露出来。例如，既然对象属性的类型必须为字符串，你必须保证键存储的值是唯一的。考虑如下的代码：
 
@@ -107,17 +95,12 @@ if (map.count) {
 
 > JavaScript 有 in 操作符可以在不读取值的情况下检查某个属性是否在对象中存在，如果是的话则返回 true。不过，该操作符还会检查对象的原型，这就使得该操作只有在对象不存在原型的条件下才是可靠的。即使这样，很多开发者都使用了上例中不当的方式而没有使用 in 。
 
-<br />
-
-### <a id="Sets-in-ECMAScript-6"> ECMAScript 6 中的 set（Sets in ECMAScript 6） </a>
-
+## ECMAScript 6 中的 Set（Sets in ECMAScript 6）
 
 ECMAScript 6 中的 set 类型是一个包含无重复元素的有序列表。Set 允许对内部某元素是否存在进行快速检查，使得元素的追踪操作效率更高。
 
-<br />
 
-#### 建立 Set 并添加项（Creating Sets and Adding Items）
-
+### 建立 Set 并添加元素（Creating Sets and Adding Items）
 
 set 由 new Set() 语句创建并通过调用 add() 方法来向 set 中添加项。你还可以查看 set 的 size 属性来获取项的数目：
 
@@ -184,10 +167,8 @@ console.log(set.has(6));    // false
 
 在这里，因为 set 中不包含 6 ，所以 set.has(6) 会返回 false 。
 
-<br />
 
-#### 移除项（Removing Values）
-
+### 移除值（Removing Values）
 
 将 set 中的值移除也是可以做到的。你可以使用 delete() 方法来销毁单个值，或者调用 clear() 方法来清空整个 set。下面的代码演示了这些操作：
 
@@ -213,10 +194,8 @@ console.log(set.size);      // 0
 
 这些方法提供了一个方便的机制用来追踪有序的唯一值。不过，给 set 添加项之后该怎样遍历它们呢？forEcah() 方法解决了这个问题。
 
-<br />
 
-#### Set 中的 forEach() 方法（The forEach() Method for Sets）
-
+### Set 中的 forEach() 方法（The forEach() Method for Sets）
 
 如果你曾处理过数组，那么 forEach() 方法你可能非常熟悉。ECMAScript 5 给数组添加了 forEach() 使得遍历操作每一项变得更加方便，不再需要循环。开发者在实践中享受到了好处并逐渐推广了它，于是 set 也顺势添加了该方法并且功能保持不变。
 
@@ -293,10 +272,8 @@ processor.process(set);
 
 需要留心的是，虽然 set 可以很好的进行值的跟踪而且 forEach() 可以顺序处理其中的每一项，但是你无法使用下标来访问其中的值。如果你想这么做，最佳的方案还是将它转化为数组。
 
-<br />
 
-#### 将 set 转化为数组（Converting a Set to an Array）
-
+### 将 set 转化为数组（Converting a Set to an Array）
 
 将数组转化为 set 相当容易，你只需将数组传递给 Set 构造函数。使用扩展运算符将 set 转化为数组也并不复杂。第三章中介绍的扩展运算符（...）可以拆分数组中的项并传递给函数参数。你同样可以在可迭代对象上使用扩展运算符，例如 set，并将它转化为数组。例如：
 
@@ -324,10 +301,8 @@ console.log(noDuplicates);      // [1,2,3,4,5]
 
 在 eliminateDuplicates() 函数中，set 只是被当作临时的代理以便在创建新的数组之前过滤掉重复项。
 
-<br />
 
-#### weak set（Weak Sets）
-
+### Weak Sets 集合
 
 set 类型根据它存储对象的方式，也被称为 strong set。一个对象存储在 set 内部或存储于一个变量在效果上是等同的。只要对该 Set 实例的引用存在，那么存储的对象在垃圾回收以释放内存的时候无法被销毁，例如：
 
@@ -422,10 +397,8 @@ These examples show that weak sets share some characteristics with regular sets,
 
 set 给了你处理一系列值的新方式，不过若想给这些值添加附加信息则显得捉襟见肘。ECMAScript 6 因此添加了 map 。
 
-<br />
 
-### <a id="Maps-in-ECMAScript-6"> ECMAScript 6 中的 map（Maps in ECMAScript 6） </a>
-
+## ECMAScript 6 中的 Map（Maps in ECMAScript 6）
 
 ECMAScript 6 中的 map 类型包含一组有序的键值对，其中键和值可以是任何类型。键的比较结果由 Object.is() 来决定，所以你可以同时使用 5 和 "5" 做为键来存储，因为它们是不同的类型。这和使用对象属性做为值的方法大相径庭，因为对象的属性会被强制转换为字符串类型。
 
@@ -458,10 +431,8 @@ console.log(map.get(key2));         // 42
 
 该段代码使用了 key1 和 key2 对象做为键并在 map 中存储了两个值。因为这些键不会被强制转换成其它类型，所以每个对象都是唯一的。这允许你给对象添加额外信息但不需要操作该对象本身。
 
-<br />
 
-#### map 方法（Map Methods）
-
+### map 方法（Map Methods）
 
 map 的一些方法效果和 set 相同。这是有意而为的，允许你使用熟悉的方式来和 map 与 set 交互。以下三个方法 map 和 set 都能使用：
 
@@ -501,10 +472,8 @@ console.log(map.size);          // 0
 
 clear() 方法能极快的将大量的数据从 map 中移除，反之 map 也有一种方法能使大量的数据迅速入驻。
 
-<br />
 
-#### 初始化 map（Map Initialization）
-
+### 初始化 map（Map Initialization）
 
 和 set 类似，你可以将数据存入数组并传给 Map 构造函数来初始化它。数组中的每一项必须也是数组，后者包含的两项中前者作为键，后者为对应值。因此整个 map 被带有两个项的数组所填充。
 
@@ -520,10 +489,8 @@ console.log(map.size);          // 2
 
 "name" 和 "age" 作为键在调用构造函数时传入并初始化了该 map 。虽然数组中包含数组看起来有些奇怪，不过这对键的精准描述时必须的，因为键可以是任何类型。将键放入数组是唯一可以在添加给 map 之前不被强制执行类型转换的办法。
 
-<br />
 
-#### map 中的 forEach 方法（The forEach Method on Maps）
-
+### map 中的 forEach 方法（The forEach Method on Maps）
 
 map 的 forEach() 方法类似于 set 和 数组，它同样接收一个含有三个参数的回调函数：
 
@@ -558,10 +525,8 @@ true
 
 > 你也可以给 forEach() 传入第二个参数来制定回调函数中的 this 值，其行为和 set 中的 forEach() 一致。
 
-<br />
 
-#### weak map（Weak Maps）
-
+### Weak Maps
 
 weak map 和 map 的关系就像 weak set 和 set 一样：前者都是一种存储弱对象引用的方式。在 weak map 中，所有的键必须是对象（否则会抛出错误），而且这些对象都是弱引用，不会干扰垃圾回收。当 weak map 中的键在 weak map 之外不存在引用的时候，该键及对应的值会被移除。
 
@@ -725,10 +690,8 @@ let Person = (function() {
 
 当然，如果你想使用非对象类型作键，那么 map 就是你唯一的选择。
 
-<br />
 
-### <a id="Summary"> 总结（Summary） </a>
-
+##  总结（Summary）
 
 ECMAScript 6 正式在 JavaScript 中引入了 set 和 map。在这之前，开发者经常使用对象来模拟它们，不过由于对象属性自身的限制总会导致一些问题。
 
@@ -740,4 +703,3 @@ map 是包含键值对的 ~~无序~~ 有序集合。和 set 类似，键是否�
 
 weak map 是只包含对象键的特殊 map 。和 weak set 类似，键的是弱对象引用，因此当其为仅存的某个对象的引用时，垃圾回收不会被阻止。当键被垃圾回收器清理之后，所关联的值也一并销毁。当想要将额外的信息附加到生命周期可由外部代码控制的对象上时，带有内存管理的 weak map 类型是唯一适合的。
 
-<br />
