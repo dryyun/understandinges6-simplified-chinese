@@ -1,5 +1,66 @@
 ## 学习笔记
 
+- [解构赋值 - MDN 文档](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)  
+    ```
+    > 解构语法，对象解构使用 {}，数组解构使用 []
+    > 默认值
+    > 赋值给不同的变量名
+    > 嵌套对象解构
+    ```
+
+    ```js
+    let node = {
+        type: "Identifier",
+        name: "foo"
+    };
+
+    function outputInfo(value) {
+        console.log(value)
+        console.log(value === node);        // true
+    }
+
+    // let {type, name} = node;
+    // ({type, name} = node); // 要加括号
+    outputInfo({type, name: localName, value: localValue = 'default'} = node);
+
+    console.log(type);
+    console.log(localName);
+    console.log(localValue)
+    ```
+- 数组解构  
+    ```
+    > [ a, b ] = [ b, a ]; // 交换 a,b
+    > 剩余项，使用 ... 语法来将剩余的项赋值给一个指定的变量
+    ```
+
+    ```js
+    let colors = ["red", "green", "blue"];
+
+    let [firstColor, , thirdColor] = colors;
+
+    console.log(thirdColor)
+    ```
+- 参数解构
+    ```
+    function setCookie(name, value, { secure, path, domain, expires }) {
+
+        // code to set the cookie
+    }  
+    function setCookie(name, value,
+        {
+            secure = false,
+            path = "/",
+            domain = "example.com",
+            expires = new Date(Date.now() + 360000000)
+        } = {}
+    ) {
+
+        // ...
+    }
+
+    ```
+
+
 # 解构（Destructuring for Easier Data Access）
 
 
@@ -68,7 +129,7 @@ const { type, name };
 
 ### 解构赋值表达式（Destructuring Assignment）
 
-目前为止的解构示例使用了变量声明。不过，在表达式中使用赋值也是可疑的。例如，你可以决定在变量声明之后改变它们的值，如下所示：
+目前为止的解构示例使用了变量声明。不过，在表达式中使用赋值也是可以的。例如，你可以决定在变量声明之后改变它们的值，如下所示：
 
 ```js
 let node = {
@@ -85,9 +146,9 @@ console.log(type);      // "Identifier"
 console.log(name);      // "foo"
 ```
 
-在本例中，node 对象中的 type 和 name 在声明处初始化，而另一个对同名变量在之后也被不同的值初始化。往下的一行使用了解构赋值表达式将两个变量的值更改为 node 对象对应属性的值。注意你必须在圆括号内才能使用解构表达式。这是因为暴露的花括号会被解析为块声明语句，而该语句不能存在于赋值操作符的左侧。圆括号的存在预示着之后的花括号不是块声明语句而应该被看作表达式，这样它才能正常工作。
+在本例中，node 对象中的 type 和 name 在声明处初始化，而另一个对同名变量在之后也被不同的值初始化。往下的一行使用了解构赋值表达式将两个变量的值更改为 node 对象对应属性的值。{% em %}注意你必须在圆括号内才能使用解构表达式。这是因为暴露的花括号会被解析为块声明语句，而该语句不能存在于赋值操作符的左侧。圆括号的存在预示着之后的花括号不是块声明语句而应该被看作表达式，这样它才能正常工作。{% endem %}
 
-解构赋值表达式会计算右侧的值（= 右侧）。也就是说你可以在任何期望传值的位置使用表达式。例如，将值传给函数：
+{% em %}解构赋值表达式会计算右侧的值（= 右侧）{% endem %}。也就是说你可以在任何期望传值的位置使用表达式。例如，将值传给函数：
 
 ```js
 let node = {
@@ -107,11 +168,9 @@ console.log(type);      // "Identifier"
 console.log(name);      // "foo"
 ```
 
-outputInfo() 函数在调用时被传入解构赋值表达式。表达式计算的结果为 node 是因为它就是右侧的值。type 和 name 的赋值正常进行同时 node 被传给了 outputInfo()。
+outputInfo() 函数在调用时被传入解构赋值表达式。表达式计算的结果为 node 是因为它就是右侧的值。type 和 name 的赋值正常进行同时 node 被传给了 outputInfo()。  
 
-<br />
-
-> **注意**: 当解构赋值表达式的右侧（= 后面的表达式）计算结果为 null 或 undefined 的时候一个错误将被抛出。因为任何读取 null 或 undefined 的操作都会发生运行时错误（runtime error）
+> **注意**: {% em %}当解构赋值表达式的右侧（= 后面的表达式）计算结果为 null 或 undefined 的时候一个错误将被抛出。{% endem %}因为任何读取 null 或 undefined 的操作都会发生运行时错误（runtime error）
 
 
 ### 默认值（Default Values）
@@ -148,9 +207,7 @@ console.log(name);      // "foo"
 console.log(value);     // true
 ```
 
-在该例中，value 变量的默认值为 true。默认值只有在 node 内部没有 value 属性或 value 的属性值为 undefined 的时候才会被使用。既然现在没有 node.value 这个属性，那么 value 变量值就是默认值。这和第三章介绍的 “函数中的默认参数” 一节十分类似。
-
-<br />
+在该例中，value 变量的默认值为 true。默认值只有在 node 内部没有 value 属性或 value 的属性值为 undefined 的时候才会被使用。既然现在没有 node.value 这个属性，那么 value 变量值就是默认值。这和第三章介绍的 “函数中的默认参数” 一节十分类似。  
 
 ### 赋值给不同的变量名（Assigning to Different Local Variable Names)
 
@@ -242,9 +299,7 @@ console.log(localStart.column); // 1
 
 在这种写法的代码中，node.loc.start 的值由新命名的 localStart 变量存储。解构可以在任意的嵌套深度工作，而且每一层级的功能都不会被削减。
 
-对象解构十分强大而且形式多样，但数组解构提供了另一些独特的功能用来提取数组中的数据。
-
-<br />
+对象解构十分强大而且形式多样，但数组解构提供了另一些独特的功能用来提取数组中的数据。  
 
 > ##### 语法注意（Syntax Gotcha）
 > 当在嵌套的数据结构中使用解构时要注意，你可能会无意间创建了无任何意义的语句。在对象解构时空的花括号是允许的，然而它们不会做任何事情。例如：
@@ -256,7 +311,7 @@ let { loc: {} } = node;
 
 > 在该声明语句中不存在任何绑定。因为冒号右侧的花括号中无内容，loc 是用来做参考对象而没有创建任何绑定。在该种情况下，该语句的意图应该是使用 = 来声明默认值而不是用 : 来定义参照对象。这种语法在将来可能会被判为违法，但是现在我们只能对它保持警惕。
 
-<br />
+
 
 ## 数组解构（Array Destructuring) 
 
@@ -271,7 +326,7 @@ console.log(firstColor);        // "red"
 console.log(secondColor);       // "green"
 ```
 
-在这里，数组解构从 colors 数组中找到了 "red" 和 "green" 并将它们赋值给 fristColor 和 secondColor 变量。这些值的选择和它们在数组中的位置有关；实际的变量名称是任意的。任何没有在数组解构语句中显示声明的项都会被忽略掉。注意的是数组本身不会有任何影响：
+在这里，数组解构从 colors 数组中找到了 "red" 和 "green" 并将它们赋值给 fristColor 和 secondColor 变量。{% em %}这些值的选择和它们在数组中的位置有关；实际的变量名称是任意的。{% endem %}任何没有在数组解构语句中显示声明的项都会被忽略掉。注意的是数组本身不会有任何影响：
 
 你可以在解构语句忽略一些项而只给你想要的项提供命名。例如，你若只想获取数组中的第三个元素，那么你不必给前两项提供命名。以下示例演示了该情况：
 
@@ -370,12 +425,12 @@ console.log(firstColor);        // "red"
 console.log(secondColor);       // "green"
 ```
 
-这在里，secondColor 变量获得是 colors 数组中的 "green"。该项被包含在另一个数组中，所以解构语句中额外的数组添加是必须的。和对象相同，获取任意嵌套深度的值是允许的。
+在这里，secondColor 变量获得是 colors 数组中的 "green"。该项被包含在另一个数组中，所以解构语句中额外的数组添加是必须的。和对象相同，获取任意嵌套深度的值是允许的。
 
 
 ### 剩余项（Rest Items）
 
-第三章介绍过剩余参数表达式在函数中的应用，而数组解构中有个类似的概念叫做剩余项。它使用 ... 语法来将剩余的项赋值给一个指定的变量，如下所示：
+第三章介绍过剩余参数表达式在函数中的应用，而{% em %}数组解构中有个类似的概念叫做剩余项。它使用 ... 语法来将剩余的项赋值给一个指定的变量{% endem %}，如下所示：
 
 ```js
 let colors = [ "red", "green", "blue" ];
