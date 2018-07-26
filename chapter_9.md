@@ -1,29 +1,13 @@
-# 类（Introducing JavaScript Classes）
+## 学习笔记
 
+# JavaScript中的类（Introducing JavaScript Classes）
 
 和大多数面向对象的语言（object-oriented programming language）不同，JavaScript 在诞生之初并不支持使用类和传统的类继承并作为主要的定义方式来创建相似或关联的对象。这很令开发者困惑，而且在早于 ECMAScript 1 到 ECMAScript 5 这段时期，很多库都创建了一些实用工具（utility）来让 JavaScript 从表层上支持类。尽管一些 JavaScript 开发者强烈主张该语言不需要类，但由于大量的库都对类做了实现，ECMAScript 6 也顺势将其引入。
 
 在探索 ECMAScript 6 类的过程中，理解类的幕后机制是很有帮助的，所以本章会首先探讨开发者是怎样在 ECMAScript 5 中模拟类的实现的。而且在之后的小节内，你也会发现 ECMAScript 6 中的类和其他语言相比并不是完全等同的，目的是为了和 JavaScript 与生俱来的动态特性相配合。
 
-<br />
 
-### 本章小结
-* [ECMAScript 5 中的类结构](#Class-Like-Structures-in-ECMAScript-5)
-* [类声明](#Class-Declarations)
-* [类表达式](#Class-Expressions)
-* [作为一等公民的类](#Classes-as-First-Class-Citizens)
-* [访问器属性](#Accessor-Properties)
-* [动态计算的成员命名](#Computed-Member-Names)
-* [生成器方法](#Generator-Methods)
-* [静态成员](#Static-Members)
-* [以派生类为继承方式](#Inheritance-with-Derived-Classes)
-* [在类构造函数中使用 new.target](#Using-newtarget-in-Class-Constructors)
-* [总结](#Summary)
-
-<br />
-
-### <a id="Class-Like-Structures-in-ECMAScript-5"> ECMAScript 5 中的类结构（Class-Like Structures in ECMAScript 5） </a>
-
+## ECMAScript 5 中的类结构（Class-Like Structures in ECMAScript 5）
 
 在 ECMAScript 5 或更早的版本中，JavaScript 没有类。和类这个概念及行为最接近的是创建一个构造函数并在构造函数的原型上添加方法，这种实现也被称为自定义的类型创建，例如：
 
@@ -47,17 +31,14 @@ console.log(person instanceof Object);      // true
 
 很多 JavaScript 库都是用这种基本的模式来对类进行模拟，同时这也是 ECMAScript 6 类的基础。
 
-<br />
 
-### <a id="Class-Declarations"> 类声明（Class-Declarations） </a>
 
+## <a id="Class-Declarations"> 类声明（Class-Declarations）
 
 在 ECMAScript 6 中类存在的最简单的形式就是类声明，它看起来和其他语言中的类无异。
 
-<br />
 
-#### 一个基本的类声明（A Basic Class Declaration）
-
+###一个基本的类声明（A Basic Class Declaration）
 
 类声明包含 class 关键字和紧随其后的命名。剩下的语法看起来和对象字面量中的简写方法类似，不过在它们之间不需要逗号分隔。例如，下面就是一个简单的类声明：
 
@@ -95,9 +76,8 @@ PersonClass 类声明的行为和上个例子中的 PersonType 类似。作为�
 
 有意思的是，类声明只是上例中自定义类型的语法糖。PersonClass 声明实际上创建了一个行为和 constructor 方法相同的构造函数，这也是 typeof PersonClass 返回 "function" 的原因。sayName() 在本例中作为 PersonClass.prototype 的方法，和上个示例中 sayName() 和 PersonType.prototype 关系一致。这些相似度允许你混合使用自定义类型和类而不需要纠结使用方式。
 
-<br />
 
-#### 为何使用类声明（Why to Use the Class Syntax）
+### 为何使用类声明（Why to Use the Class Syntax）
 
 
 先不管类和自定义类型之间的相似程度，有以下重要的几点差异是必须熟记的：
@@ -169,16 +149,14 @@ Foo = "baz";
 
 > 在这段代码中，类构造函数内部的 Foo 和类外部的 Foo 并不是同一个绑定。内部的 Foo 行为类似于 const 声明的变量，因此它不能被重写，否则会抛出错误。不过外部的 Foo 被视作由 let 声明的变量，所以你可以不限次数的重写它。
 
-<br />
 
-### <a name="Class-Expressions"> 类表达式（Class Expressions） </a>
+## <a name="Class-Expressions"> 类表达式（Class Expressions）
 
 
 类和函数的相似之处在于它们都有两种存在形式：声明和表达式。函数和类声明由关键字开始（分别为 function 和 class），之后为标识符。函数表达式不要求在 function 关键字后添加标识符，类表达式同理。设计类表达式的目的主要是为了将它赋值给变量或者传参给函数。
 
-<br />
 
-#### 一个基本的类表达式（A Basic Class Expression）
+### 一个基本的类表达式（A Basic Class Expression）
 
 
 以下代码是等效于上例中类声明的类表达式：
@@ -219,10 +197,8 @@ In anonymous class expressions, as in the previous example, PersonClass.name is 
 
 > 不论你使用类声明还是类表达式都取决于你的习惯。与函数声明和函数表达式不同，类声明和表达式都不会被提升。所以定义类的方式对运行时（runtime）的代码不会有什么影响。唯一显著的区别是匿名函数表达式的 name 属性为空字符串而类声明的 name 属性始终为类名（例如，使用类声明时 PersonClass.name 为 "PersonClass"）。
 
-<br />
 
-#### 具名类表达式（Named Class Expressions）
-
+### 命名类表达式（Named Class Expressions）
 
 上一节的示例中使用了匿名类表达式，不过和函数表达式一样，你也可以使用具名类表达式。要想这么做，只需像这样在 class 关键字后添加标识符:
 
@@ -286,9 +262,7 @@ let PersonClass = (function() {
 虽然具名类表达式的行为和具名函数表达式有些差异，不过它们之间的相似程度还是很高的。它们都可以被当作值使用，于是这就给它们提供了我接下来要讲到的很多的潜力。
 
 
-<br />
-
-### <a id="Classes-as-First-Class-Citizens"> 作为一等公民的类（Classes as First-Class Citizens） </a>
+## 作为一等公民的类（Classes as First-Class Citizens） 
 
 
 在编程中，如果某些东西能作为值使用，那么它就被称为一等公民。这意味着它可以传入函数，或作为函数的返回值，亦或能赋值给变量。JavaScript 中的函数就是一等公民（有时它们被称作一等函数），这也是 JavaScript 独特的部分之一。
@@ -334,9 +308,8 @@ person.sayName();       // "Nicholas"
 
 本章目前出现的示例仅专注于类和包含的方法。其实你可以使用类似于对象字面量的语法来给类创建访问器属性。
 
-<br />
 
-### <a id="Accessor-Properties"> 访问器属性（Accessor Properties） </a>
+## <a id="Accessor-Properties"> 访问器属性（Accessor Properties）
 
 
 虽然自有属性应该在类构造函数中创建，不过类也允许你在原型上创建访问器属性。为了创建一个 getter，需要使用 get 关键字，再加上一个空格和标识符；同理创建 setter 只需将上述步骤的关键字换成 set。例如：
@@ -399,9 +372,8 @@ let CustomHTMLElement = (function() {
 
 和之前的示例相同，本例只是展示了从非类语法切换到类语法能节省多少代码。前者定义 html 访问器属性的代码量几乎等同于使用类语法所需要的全部代码量。
 
-<br />
 
-### <a id="Computed-Member-Names"> 动态计算的成员命名（Computed Member Names） </a>
+## 动态计算的成员命名（Computed Member Names） 
 
 
 对象字面量和类之间的相似点还不仅仅只是这些。类方法和访问器属性同样可以使用动态计算的命名。你可以使用一对包含表达式的方括号来替代标识符，表示它们的命名是动态计算的。例如：
@@ -451,9 +423,8 @@ class CustomHTMLElement {
 
 你已经看到了类与对象字面量之间从方法，访问器属性和动态计算命名等多个方面的相似之处。除此之外还有一处值得一提：生成器。
 
-<br />
 
-### <a id="Generator-Methods"> 生成器方法（Generator Methods） </a>
+## <a id="Generator-Methods"> 生成器方法（Generator Methods）
 
 
 在第八章介绍生成器之后，你懂得了在对象字面量内部的方法名之前使用星号（*）来创建生成器。同样类也允许在内部使用该语法将任何方法改造成生成器。如下所示：
@@ -508,9 +479,8 @@ for (let x of collection) {
 
 为了对象实例能够使用它们，在类的原型上添加方法和访问器属性非常有用。不过令另一方面，当你想让方法和访问器属性只能由类自己使用时，你需要的是静态成员。
 
-<br />
 
-### <a id="Static-Members"> 静态成员（Static Members） </a>
+## 静态成员（Static Members）
 
 
 给构造函数直接添加方法来模拟静态成员这在 ECMAScript 5 和更早的版本中是个常见的模式。例如：
@@ -563,10 +533,8 @@ let person = PersonClass.create("Nicholas");
 
 > 静态成员不能被实例访问。你必须通过类本身来使用它们。
 
-<br />
 
-### <a id="Inheritance-with-Derived-Classes"> 以派生类为继承方式（Inheritance with Derived Classes） </a>
-
+##  以派生类为继承方式（Inheritance with Derived Classes）
 
 ECMAScript 6 之前，实现自定义类型的继承是个昂贵的过程。正确的继承方式包含多个步骤。例如，考虑下面的例子：
 
@@ -661,7 +629,7 @@ class Square extends Rectangle {
 
 <br />
 
-#### 隐藏类方法（Shadowing Class Methods）
+### 隐藏类方法（Shadowing Class Methods）
 
 
 派生类中的方法总是会屏蔽基类中的同名方法。例如，你可以在 Square 中重新定义 getArea()：
@@ -696,9 +664,8 @@ class Square extends Rectangle {
 
 在这里 super 的行为和第四章中讨论过的 super 引用是相同的（查看 “使用 super 引用来方便获取 prototype ” 一节）。this 值会被自动且正确的绑定，所以你可以简单的调用方法。
 
-<br />
 
-#### 静态成员继承（Inherited Static Members）
+### 静态成员继承（Inherited Static Members）
 
 
 如果基类中包含静态成员，那么派生类也可以直接使用它们。这里的继承机制和其它语言相同，不过对 JavaScript 而言它是个新的概念。如下所示：
@@ -736,10 +703,8 @@ console.log(rect instanceof Square);        // false
 
 该段代码中，一个新的 create() 静态方法添加给了 Rectangle 类。通过继承，该方法由 Square.create() 调用并且行为等同于 Rectangle.create() 。
 
-<br />
 
-#### 继承表达式的派生类（Derived Classes from Expressions）
-
+### 继承表达式的派生类（Derived Classes from Expressions）
 
 或许 ECMAScript 6 派生类最强大的地方在于它们可以继承一个表达式。只要该表达式的计算结果包含 [[Construct]] 的函数和一个原型，那么就可以使用 extends 来继承它。例如：
 
@@ -840,10 +805,8 @@ Square 的实例中包含了从 AreaMixin 和 SerializableMixin 分别得到的 
 
 > 使用这些表达式创建类实例会发生错误的原因是它们不包含 [[Construct]] 。
 
-<br />
 
-#### 内置对象的继承（Inheriting from Built-ins）
-
+### 内置对象的继承（Inheriting from Built-ins）
 
 自 JavaScript 数组存在的那天起，开发者就想通过使用继承的方式来定义特殊的数组类型。在 ECMAScript 5 和更早的版本中，这是不可能做到的。使用传统的继承方式无法获得想要的功能。例如：
 
@@ -905,10 +868,8 @@ console.log(colors[0]);             // undefined
 
 Array 由 MyArray 直接继承因此后者的行为和数组一致，包括与数组索引的交互引起 length 属性的变化以及操作length 属性造成数字索引值的更改。这意味着你不仅可以正确的继承数组并定义自己的派生类，对其它内置对象的继承也是同理。该特性的添加使得 ECMAScript 6 和派生类消除了关于继承内置类型所有的特殊情况，不过这些情况依旧值得推敲。*
 
-<br />
 
-#### Symbol.species 属性（The Symbol.species Property）
-
+### Symbol.species 属性（The Symbol.species Property）
 
 关于继承内置对象的一个有趣现象是，任何返回内置对象实例的方法会自动返回派生类的实例。所以，如果你有一个继承数组的 MyArray 派生类，类似 slice() 的方法会返回 MyArray 的实例。例如：
 
@@ -1017,10 +978,8 @@ console.log(subitems instanceof MyArray);   // false
 
 一般来讲，如果你的类方法使用了 this.constructor，那么你应该给这个类设定 Symbol.species 属性。这样做能允许派生类方便地重写返回类型。此外，如果你想创建一个派生类来继承了一个已定义 Symbol.species 属性的基类，那么确保基类在返回该类实例的方法中使用该属性，而不是构造函数。
 
-<br />
 
-### <a id="Using-newtarget-in-Class-Constructors"> 在类构造函数中使用 new.target（Using new.target in Class Constructors） </a>
-
+##  在类构造函数中使用 new.target（Using new.target in Class Constructors）
 
 在第三章你已经了解了 new.target 是如何根据被调用的函数来决定自身的值。你也可以使用在类的构造函数中使用它来判断类是被如何调用的。简单情况下，new.target 的值等于类的构造函数，如下所示：
 
@@ -1090,10 +1049,8 @@ console.log(y instanceof Shape);    // true
 
 > 因为类必须由 new 来调用，所以 new.target 属性不会为 undefined，而是某个类的构造函数。
 
-<br />
 
-### <a id="Summary"> 总结（Summary） </a>
-
+## 总结（Summary）
 
 ECMAScript 6 的类使得 JavaScript 中的继承更容易实现，你再也不必扔掉其它语言中继承方面的相关知识。ECMAScript 6 中的类是 ECMAScript 5 传统继承模型的语法糖，但是也添加和消除了很多特性与错误。
 
@@ -1104,5 +1061,3 @@ ECMAScript 6 的类通过在类原型上定义非静态方法来延续原型继�
 你可以在类构造函数内部使用 new.target 来根据具体的调用方式做出不同的行为。最常见的用法是创建一个直接调用会报错但是可以由其它类继承的抽象基类。
 
 总之，类的添加对 JavaScript 至关重要。它提供了更简洁的语法和更好的实用性来定义一个安全且拥有一致表现形式的对象类型。
-
-<br />
