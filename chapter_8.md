@@ -1,27 +1,13 @@
-# 迭代器与生成器（Iterators and Generators）
+## 学习笔记
 
+# 迭代器与生成器（Iterators and Generators）
 
 许多编程语言都做了这样的转变：迭代集合中的数据不再使用需要初始化变量并作为索引的 for 循环，转而使用迭代器（iterator）对象来程序化地返回集合中下一位置的项。迭代器使得集合的操作变得更容易，ECMAScript 6 也将其添加到了 JavaScript 当中。当迭代器和数组方法以及新添加的集合类型（如 set 和 map）结合之后，它就成为了高效处理数据的关键，而且该语言中很多部分都有迭代器的身影，例如新添加的 for-of 循环，扩展（...）运算符等。迭代器甚至还能简化异步编程。
 
 本章涵盖了迭代器的许多实践，但首先，了解 JavaScript 添加迭代器的背景和缘由是很重要的。
 
-<br />
 
-### 本章小结
-* [循环问题](#The-Loop-Problem)
-* [什么是迭代器](#What-are-Iterators)
-* [什么是生成器](#What-Are-Generators)
-* [可迭代类型与 for-of](#Iterables-and-for-of)
-* [内置的迭代器](#Built-in-Iterators)
-* [扩展运算符与非数组可迭代类型](#The-Spread-Operator-and-Non-Array-Iterables)
-* [迭代器高级用法](#Advanced-Iterator-Functionality)
-* [运行异步任务](#Asynchronous-Task-Running)
-* [总结](#Summary)
-
-<br />
-
-### <a id="The-Loop-Problem"> 循环问题（The Loop Problem） </a>
-
+## 循环的问题（The Loop Problem） 
 
 如果你曾使用过 JavaScript 来编程，那么你可能会见过下面的代码：
 
@@ -37,9 +23,8 @@ for (var i = 0, len = colors.length; i < len; i++) {
 
 虽然该循环看上去确实简洁明了，但是当循环出现嵌套后复杂度会增加，同时还需要追踪多个变量。额外的复杂度易引出错误的发生，而且 for 循环天然的范例样式会书写在多个位置导致更多的错误出现。迭代器就是为了解决这个问题。
 
-<br />
 
-### <a id="What-are-Iterators"> 什么是迭代器（What are Iterators?） </a>
+## 什么是迭代器（What are Iterators?）
 
 
 迭代器只是带有特殊接口的对象。所有迭代器对象都带有 next() 方法并返回一个包含两个属性的结果对象。这些属性分别是 value 和 done，前者代表下一个位置的值，后者在没有更多值可供迭代的时候为 true 。迭代器带有一个内部指针，来指向集合中某个值的位置。当 next() 方法调用后，指针下一位置的值会被返回。
@@ -85,10 +70,8 @@ createIterator() 函数返回一个带有 next() 方法的对象。每次调用�
 
 幸运的是，ECMAScript 6 还提供了生成器，使得迭代器对象的创建容易了许多。
 
-<br />
 
-### <a id="What-Are-Generators"> 什么是生成器（What Are Generators?） </a>
-
+##  什么是生成器（What Are Generators?）
 
 生成器是返回迭代器的函数。生成器函数由 function 关键字和之后的星号（*）标识，同时还能使用新的 yield
 关键字。星号的位置不能论是放在 function 关键字的后面还是在它们插入空格都是随意的，如下例所示：
@@ -156,7 +139,7 @@ function *createIterator(items) {
 
 <br />
 
-#### 生成器函数表达式（Generator Function Expressions）
+### 生成器函数表达式（Generator Function Expressions）
 
 
 你可以使用函数表达式来创建生成器，只需在 function 关键字和圆括号之间添加星号（*）。例如：
@@ -186,10 +169,9 @@ console.log(iterator.next());           // "{ value: undefined, done: true }"
 
 > 无法使用箭头函数来创建生成器。
 
-<br />
 
-#### 对象中的生成器方法（Generator Object Methods）
 
+### 对象中的生成器方法（Generator Object Methods）
 
 生成器本身只是函数，因此可以添加它们到对象中。例如，你可以使用 ECMAScript 5 风格的对象字面量来创建函数表达式：
 
@@ -223,10 +205,8 @@ let iterator = o.createIterator([1, 2, 3]);
 
 这些示例中的生成器和上一节 “生成器函数表达式” 中演示的功能相同；仅在语法方面有一些差异。在简写的生成器方法中，由于 createIterator() 方法没有 function 关键字，因此只能将星号放在方法名前面，当然你也可以在它们之间添加空白符。
 
-<br />
 
-### <a id="Iterables-and-for-of"> 可迭代类型与 for-of（Iterables and for-of） </a>
-
+## 可迭代类型与 for-of（Iterables and for-of）
 
 与迭代器紧密相关的是，可迭代类型是指那些包含 Symbol.iterator 属性的对象。该知名的 symbol 类型定义了返回迭代器的函数。在 ECMAScript 6 中，所有的集合对象（数组，set 和 map）与字符串都是可迭代类型，因此它们都有默认的迭代器。可迭代类型是为了 ECMAScript 新添加的 for-of 循环而设计的。
 
@@ -265,9 +245,8 @@ for-of 循环首先会调用 values 数组的 Symbol.iterator 方法来获取迭
 
 > **注意**：对非可迭代对象，null 和 undefind 使用 for-of 会抛出错误。
 
-<br />
 
-#### 访问默认迭代器（Accessing the Default Iterator）
+### 访问默认迭代器（Accessing the Default Iterator）
 
 
 你可以使用 Symbol.iterator 来访问对象默认的迭代器，像这样。
@@ -305,7 +284,7 @@ isIterable() 函数简单地查看对象是否有默认的并且类型为函数�
 
 <br />
 
-#### 创建可迭代类型（Creating Iterables）
+### 创建可迭代类型（Creating Iterables）
 
 
 开发者自定义的对象默认是不可迭代类型，但是你可以为它们创建 Symbol.iterator 属性并指定一个生成器来使这些对象可迭代。例如：
@@ -348,16 +327,15 @@ for (let x of collection) {
 
 现在你已经见识了数组默认迭代器的用法，然而 ECMAScript 6 还内置了许多迭代器使得操作集合中的数据更加轻松。
 
-<br />
 
-### <a id="Built-in-Iterators"> 内置的迭代器（Built-in Iterators） </a>
 
+## 内置的迭代器（Built-in Iterators）
 
 迭代器是 ECMAScript 6 重要的一部分，你不需要为大部分内置类型创建自己的迭代器，因为 JavaScript 语言已经包含了它们。只有当这些内置的迭代器无法做出符合需求的行为时，你才需要考虑自行创建它们，尤其是在定义自己的对象和类的时候。否则，你完全可以用内置的迭代器去完成一些工作。或许使用迭代器最频繁是集合。
 
 <br />
 
-#### 集合迭代器（Collection Iterators）
+### 集合迭代器（Collection Iterators）
 
 
 ECMAScript 6 内置了三种类型的集合对象：数组，map 和 set 。它们都有如下内置的迭代器供你浏览数据。
@@ -565,9 +543,8 @@ for (let [key, value] of data) {
 
 > 该例中的 for-of 循环在每次迭代都使用了数组解构来获取键和值。在该形式下，你可以轻松地同时使用键和值，而不需操作一个含有两个元素的数组或重新返回 map 并手动获取键和值。对 map 使用解构让 for-of 能平等地对待所有集合类型。
 
-<br />
 
-#### 字符串迭代器（String Iterators）
+### 字符串迭代器（String Iterators）
 
 
 在 ECMAScript 5 发布之后，字符串就慢慢的变的越来越像数组。例如 ECMAScript 5 正式对字符串启用了方括号语法来访问字符（例如，text[0] 可以获得该字符串中的首个字符，等等）。不过实际上，方括号语法访问的是编码单元（code unit）而非字符本身，所以当获取双字节字符时会有意想不到的结果，如下例所示：
@@ -615,9 +592,8 @@ B
 
 这个字符串迭代的结果更符合你的预期：循环会正确的打印 Unicode 和其它字符。
 
-<br />
 
-#### NodeList 的迭代器（NodeList Iterators）
+### NodeList 的迭代器（NodeList Iterators）
 
 
 文档对象模型（Document Object Model, DOM）中包含了一个 NodeList 类型用来表示一些 DOM 元素的集合。对于那些面向浏览器编程的 JavaScript 开发者来讲，了解 NodeList 对象和 NodeList 数组之间的区别有些棘手。它们都含有代表项数目的 lengh 属性；都可以使用方括号来访问单独的项。然而在内部实现上，NodeList 数组的表现有些不同，导致一些困惑出现。
@@ -634,10 +610,9 @@ for (let div of divs) {
 
 该段代码调用 getElementsByTagName() 来获取一个包含 document 对象中所有 <div> 元素的 NodeList。之后 for-of 循环会像迭代一个标准数组一样获取每一个元素并输出元素的 ID。
 
-<br />
 
-### <a id="The-Spread-Operator-and-Non-Array-Iterables"> 扩展运算符与非数组可迭代类型（The Spread Operator and Non-Array Iterables） </a>
 
+##  扩展运算符与非数组可迭代类型（The Spread Operator and Non-Array Iterables） 
 
 首先回顾一下在第七章中讨论过的使用扩展运算符将 set 转换为数组的示例：
 
@@ -676,16 +651,14 @@ console.log(allNumbers);    // [0, 1, 2, 3, 100, 101, 102]
 
 目前你已经明白了迭代器以及 for-of 和扩展运算符的基本工作原理，现在是时候去了解一下关于迭代器更复杂的用法。
 
-<br />
 
-### <a id="Advanced-Iterator-Functionality"> 迭代器高级用法（Advanced Iterator Functionality） </a>
 
+## 迭代器高级用法（Advanced Iterator Functionality）
 
 迭代器的基本用法和使用生成器创建它们的便利已经能完成很多的工作了。然而，迭代器仅用来迭代集合中的项就有些大材小用，实际上当它们被用作任务管理时更能体现出迭代器的强大之处。在 ECMAScript 6 的发展过程中，一些独特的想法和模式互相碰撞并激发创作者实现更多的功能。一些附加的用法可能微不足道，但将它们聚集在一起后能实现很多有意思的交互。
 
-<br />
 
-#### 向迭代器传入参数（Passing Arguments to Iterators）
+### 向迭代器传入参数（Passing Arguments to Iterators）
 
 在本章中，所有的示例都使用迭代器的 next() 方法或生成器的 yield 语句来获取相关值，其实你也可以通过迭代器的 next() 方法进行传值。当你向 next() 方法传入参数时，生成器使用该参数作为 yield 语句的值。该特性对于一些高级用法尤其是异步编程至关重要。下面是个基本的例子：
 
@@ -725,9 +698,8 @@ console.log(iterator.next());           // "{ value: undefined, done: true }"
 
 目前，你已经见识了当传参给 next() 方法之后 yield 的表现和 return 十分神似。不过，这还不是生成器唯一的运行技巧。你还可以让迭代器抛出一个错误。
 
-<br />
 
-#### 在迭代器中抛出错误（Throwing Errors in Iterators）
+### 在迭代器中抛出错误（Throwing Errors in Iterators）
 
 
 不仅是数据，错误条件（error conditions）也能传入给迭代器。通过使用 throw() 方法，迭代器可以选择在某一次迭代抛出错误。这不仅对于异步编程来讲是相当重要的能力，而且生成器也变得更加灵活，因为你可以自行决定到底是返回值还是抛出错误（退出函数执行的两种方式）。你可以通过传递 Error 对象给 throw() 方法来让迭代器继续运行的时候抛出错误。例如：
@@ -789,9 +761,8 @@ console.log(iterator.next());                   // "{ value: undefined, done: tr
 
 next() 和 throw() 方法根据 yield 来控制迭代器内部的执行，其实 return 语句也是可以使用的。不过 return 的行为和在普通函数中不太一样，下一节你会看到它们的差异。
 
-<br />
 
-#### 包含 return 语句的生成器（Generator Return Statements）
+### 生成器返回语句（Generator Return Statements）
 
 既然生成器本质上是函数，你可以使用 return 语句来让它提前执行完毕并针对 next() 的调用来指定一个返回值。在本章的大部分实例中，最后一次在迭代器上调用 next() 会返回 undefined，不过你可以像在普通函数中那样使用 return 语句来指定另外的返回值。生成器会将 return 语句的出现判断为所有的任务已处理完毕，所以 done 属性会被赋值为 true，如果指定了返回值那么它会被赋给 value 属性。下面的示例演示了 return 是怎样让生成器提前执行完毕的：
 
@@ -832,9 +803,9 @@ console.log(iterator.next());           // "{ value: undefined, done: true }"
 
 > 扩展运算符和 for-of 会忽略 return 语句的返回值。如果返回对象的 done 为 true，它们就会停止读取 value 属性。然而，当使用生成器代理时 return 会相当有用。
 
-<br />
 
-#### 生成器代理（Delegating Generators）
+
+### 生成器代理（Delegating Generators）
 
 在某些情况下，将两个迭代器集中到一起会更实用。生成器可以使用 yield 和星号（*）这种特殊形式来代理其它生成器。根据生成器的规范，星号在哪里出现并无要求，只要它的位置在 yield 和生成器函数名的中间即可。如下所示：
 
@@ -939,9 +910,8 @@ console.log(iterator.next());           // "{ value: undefined, done: true }"
 
 > 你可以直接在字符串上使用 yield *（例如 yield * "hello"），字符串会使用默认的迭代器。
 
-<br />
 
-### <a id="Asynchronous-Task-Running"> 运行异步任务（Asynchronous Task Running） </a>
+##  运行异步任务（Asynchronous Task Running）
 
 
 使用生成器进行异步编程有很多的兴奋点。在 JavaScript 中异步编程是把双刃剑：简单的任务很容易实现异步，当任务变得复杂的时候源代码的组织会是个大问题。因为生成器允许你在执行的过程中暂停，使用它们处理异步流程就增加了很多可能性。
@@ -963,10 +933,9 @@ fs.readFile("config.json", function(err, contents) {
 
 fs.readFile() 方法包含 filename 参数和一个回调函数。当该操作完成后，回调函数开始执行。回调函数会检查是否有错误发生，如果没有问题则会处理返回的相应内容。在异步任务简单且有限的情况下，这种实现还算可以，一旦需要嵌套多个回调函数或者处理一大批异步任务时，代码会变得极其复杂。生成器和 yield 正好解决了这个问题。
 
-<br />
 
-#### 一个简单的任务运行器（A Simple Task Runner）
 
+### 一个简单的任务运行器（A Simple Task Runner）
 
 因为 yield 可以中断执行，并在继续运行之前等待 next() 方法的调用，你可以不使用回调函数来实现异步调用。首先，你需要一个函数来调用生成器以便让迭代器开始运行，例如这样：
 
@@ -1013,7 +982,7 @@ run(function*() {
 
 <br />
 
-#### 附加数据的任务运行器（Task Running With Data）
+### 附加数据的任务运行器（Task Running With Data）
 
 
 给任务运行器传入数据最简单的办法是将上一次 yield 返回的值传给下一次调用的 next() 方法。为此你只需传入result.value，如下所示：
@@ -1057,9 +1026,9 @@ run(function*() {
 
 该例在控制台上输出了两个值：1 和 4 。1 由 yield 1 而来，因为它在返回之后又被传入并赋值给 value 。4 由变量 value 与 3 做加法运算而来，并将运算结果赋值给 value 。现在数据已经可以在 yield 调用之间流动，你只需一个小小的改变即可进行异步调用。
 
-<br />
 
-#### 异步任务运行器（Asynchronous Task Runner）
+
+### 异步任务运行器（Asynchronous Task Runner）
 
 
 以上的例子中实现了在 yield 调用之间反复传递静态数据，但是等待异步处理的过程则有些不同。任务运行器需要明确回调函数如何使用这些数据。既然 yield 表达式会将值返回给任务运行器，就意味着任何函数的调用都必须返回一个值并以某种方式说明该调用是个异步操作，使得任务运行器处于待机状态。
@@ -1158,10 +1127,8 @@ run(function*() {
 
 当然，这些实例中使用的模式也有不利的一面，因为你无法确定返回函数的函数是否是异步的。不过现在的重点是让你理解任务运行背后的原理。promise 提供了能更完善的办法来安排处理异步任务，而且第十一章会进一步探讨它。
 
-<br />
 
-### <a id="Summary"> 总结（Summary） </a>
-
+## 总结（Summary）
 
 迭代器是 ECMAScript 6 非常重要的一部分，同时也是 JavaScript 某些关键元素的核心。从表面上看，迭代器提供了一种简约的办法来使用简单的 API 返回一系列元素。然而 ECMAScript 6 还有更复杂的方式来运用迭代器。
 
@@ -1178,5 +1145,3 @@ for-of 循环使用可迭代类型来循环返回一系列的元素。相比传�
 生成器代理通过在新的生成器中重用已有的生成器来鼓励封装迭代器的工作。你可以使用在另一个生成器内部调用 yield * 而非 yield 来使用已存在的生成器。这些操作能创建可以返回多个迭代器的值的单个迭代器。
 
 或许生成器和迭代器最有趣且令人兴奋的能力是书写整洁有序的异步代码。你可以在使用 yield 等待异步操作完成的同时书写看似同步的代码，而不再需要到处放置回调函数。
-
-<br />
