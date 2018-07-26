@@ -29,10 +29,13 @@ console.log(value); // "bar"
 - Set In ES6   
 
 ```
+Set 是有序的、不重复的
 new Set()、add、size、has、delete、clear
 Set 值不会做类型转换
 Set 构造函数接受任何可迭代的对象作为属性  
-Set.forEach，回调函数三个参数 1、
+Set.forEach，回调函数三个参数 1、下一个 value 2、下一个 value 3、set 本身
+Strong Set vs Weak Set
+Weak Set ，不允许存储原始值而是存储弱对象引用
 ```
 
 ```js  
@@ -45,9 +48,22 @@ set.add(key1);
 set.add(key2); // key1,key2 都添加了，是不同 key
 
 console.log(set.size) // size = 4 
+
+let arr = [...set]
+console.log(arr)
 ```
 
 - Map In ES6
+
+```
+Map 是有序的键值对
+new Map、set、get、has、delete、clear、size
+使用数组初始化 map，let map = new Map([["name", "Nicholas"], ["age", 25]]);
+Map.forEach
+Weak Map
+弱引用指的是键的弱引用，而不只是值的弱引用。将对象存储为 weak map 中的值仍然会在其余引用不存在的情况下妨碍垃圾回收。
+```
+
 
 
 
@@ -373,7 +389,7 @@ console.log(set.size);      // 1
 key = [...set][0];
 ```
 
-在本例中，将 key 设置为 null 只是清除了对 key 对象的一个引用，但是其它引用还存于 set 内部。你仍然可以使用扩展运算符将 set 转化为 数组后获取它。在大部分编程中这个结果是可以接受的，但某些时候，当其它引用解除之后 set 内部能自动解除相关引用是再好不过的。例如，当在一个网页中使用 JavaScript 追踪一些可能在之后会被销毁 DOM 元素，你不希望有任何残留的 DOM 元素引用存在。（这种情况称其为内存泄漏）
+在本例中，{% em %}将 key 设置为 null 只是清除了对 key 对象的一个引用，但是其它引用还存于 set 内部。你仍然可以使用扩展运算符将 set 转化为 数组后获取它。{% endem %}在大部分编程中这个结果是可以接受的，但某些时候，当其它引用解除之后 set 内部能自动解除相关引用是再好不过的。例如，当在一个网页中使用 JavaScript 追踪一些可能在之后会被销毁 DOM 元素，你不希望有任何残留的 DOM 元素引用存在。（这种情况称其为内存泄漏）
 
 为了减少这些情况的出现，ECMAScript 6 同时引入了 weak set 。该类型不允许存储原始值而专门存储弱对象引用。由于弱引用不会被当做剩余存在的引用，所以它不会阻止垃圾回收。
 
@@ -575,7 +591,7 @@ true
 
 ### Weak Maps
 
-weak map 和 map 的关系就像 weak set 和 set 一样：前者都是一种存储弱对象引用的方式。在 weak map 中，所有的键必须是对象（否则会抛出错误），而且这些对象都是弱引用，不会干扰垃圾回收。当 weak map 中的键在 weak map 之外不存在引用的时候，该键及对应的值会被移除。
+weak map 和 map 的关系就像 weak set 和 set 一样：前者都是一种存储弱对象引用的方式。{% em %}在 weak map 中，所有的键必须是对象（否则会抛出错误），而且这些对象都是弱引用，不会干扰垃圾回收。当 weak map 中的键在 weak map 之外不存在引用的时候，该键及对应的值会被移除。{% endem %}
 
 weak map 的最佳实践是创建一个对象并和网页中的特定 DOM 元素关联。例如，某些作用于网页的 JavaScript 库会为每一个绑定的 DOM 元素维护一个由该库中衍生的自定义对象，并将其映射到作为缓存的对象内部。
 
@@ -583,7 +599,7 @@ weak map 的最佳实践是创建一个对象并和网页中的特定 DOM 元素
 
 <br />
 
-> 必须注意的是，弱引用指的是键的弱引用，而不只是值的弱引用。将对象存储为 weak map 中的值仍然会在其余引用不存在的情况下妨碍垃圾回收。
+> {% em %}必须注意的是，弱引用指的是键的弱引用，而不只是值的弱引用。将对象存储为 weak map 中的值仍然会在其余引用不存在的情况下妨碍垃圾回收。{% endem %}
 
 
 ##### Using Weak Maps
