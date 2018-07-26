@@ -1,6 +1,6 @@
 ## 学习笔记
 
-# Set 与 Map（Sets and Maps）
+# Sets and Maps
 
 JavaScript 在绝大部分历史时期内只有一种集合类型，那就是数组（可能有人会质疑所有的非类数组对象都是键值对的集合，但其实它们的用途和数组有根本上的区别）。数组在 JavaScript 中的使用方式和其它语言很相似，但是其它集合类型的缺乏导致数组也经常被当作队列（queues）和栈（stacks）来使用。因为数组的索引只能是数字类型，当开发者觉得非数字类型的索引是必要的时候会使用非数组对象。这项用法促进了以非类数组对象为基础的 set 和 map 集合类型的实现。
 
@@ -12,7 +12,7 @@ ECMAScript 6 正式为 JavaScript 添加了 set 和 map，本章介绍了这两�
 
 
 
-## ECMAScript 5 中的 Set 与 Map（Sets and Maps in ECMAScript 5）
+## Sets and Maps in ECMAScript 5
 
 在 ECMAScript 5 中，开发者使用对象属性来模拟 set 和 map，像这样：
 
@@ -46,7 +46,7 @@ console.log(value);         // "bar"
 该段代码将字符串 "bar" 赋值给了 foo 键。和 set 不同，map 大部分情况下被用来提取数据，而不是验证键是否存在
 
 
-## 解决方案的问题（Problems with Workarounds）
+## Problems with Workarounds
 
 虽然在简单的情况下使用对象模拟的 set 和 map 没有太大的问题，不过当条件变得复杂时对象属性的限制很快就会暴露出来。例如，既然对象属性的类型必须为字符串，你必须保证键存储的值是唯一的。考虑如下的代码：
 
@@ -95,12 +95,12 @@ if (map.count) {
 
 > JavaScript 有 in 操作符可以在不读取值的情况下检查某个属性是否在对象中存在，如果是的话则返回 true。不过，该操作符还会检查对象的原型，这就使得该操作只有在对象不存在原型的条件下才是可靠的。即使这样，很多开发者都使用了上例中不当的方式而没有使用 in 。
 
-## ECMAScript 6 中的 Set（Sets in ECMAScript 6）
+## Sets in ECMAScript 6
 
 ECMAScript 6 中的 set 类型是一个包含无重复元素的有序列表。Set 允许对内部某元素是否存在进行快速检查，使得元素的追踪操作效率更高。
 
 
-### 建立 Set 并添加元素（Creating Sets and Adding Items）
+### Creating Sets and Adding Items
 
 set 由 new Set() 语句创建并通过调用 add() 方法来向 set 中添加项。你还可以查看 set 的 size 属性来获取项的数目：
 
@@ -168,7 +168,7 @@ console.log(set.has(6));    // false
 在这里，因为 set 中不包含 6 ，所以 set.has(6) 会返回 false 。
 
 
-### 移除值（Removing Values）
+### Removing Values
 
 将 set 中的值移除也是可以做到的。你可以使用 delete() 方法来销毁单个值，或者调用 clear() 方法来清空整个 set。下面的代码演示了这些操作：
 
@@ -195,7 +195,7 @@ console.log(set.size);      // 0
 这些方法提供了一个方便的机制用来追踪有序的唯一值。不过，给 set 添加项之后该怎样遍历它们呢？forEcah() 方法解决了这个问题。
 
 
-### Set 中的 forEach() 方法（The forEach() Method for Sets）
+### The forEach() Method for Sets
 
 如果你曾处理过数组，那么 forEach() 方法你可能非常熟悉。ECMAScript 5 给数组添加了 forEach() 使得遍历操作每一项变得更加方便，不再需要循环。开发者在实践中享受到了好处并逐渐推广了它，于是 set 也顺势添加了该方法并且功能保持不变。
 
@@ -273,7 +273,7 @@ processor.process(set);
 需要留心的是，虽然 set 可以很好的进行值的跟踪而且 forEach() 可以顺序处理其中的每一项，但是你无法使用下标来访问其中的值。如果你想这么做，最佳的方案还是将它转化为数组。
 
 
-### 将 set 转化为数组（Converting a Set to an Array）
+### Converting a Set to an Array
 
 将数组转化为 set 相当容易，你只需将数组传递给 Set 构造函数。使用扩展运算符将 set 转化为数组也并不复杂。第三章中介绍的扩展运算符（...）可以拆分数组中的项并传递给函数参数。你同样可以在可迭代对象上使用扩展运算符，例如 set，并将它转化为数组。例如：
 
@@ -302,7 +302,7 @@ console.log(noDuplicates);      // [1,2,3,4,5]
 在 eliminateDuplicates() 函数中，set 只是被当作临时的代理以便在创建新的数组之前过滤掉重复项。
 
 
-### Weak Sets 集合
+### Weak Sets
 
 set 类型根据它存储对象的方式，也被称为 strong set。一个对象存储在 set 内部或存储于一个变量在效果上是等同的。只要对该 Set 实例的引用存在，那么存储的对象在垃圾回收以释放内存的时候无法被销毁，例如：
 
@@ -326,10 +326,8 @@ key = [...set][0];
 
 为了减少这些情况的出现，ECMAScript 6 同时引入了 weak set 。该类型不允许存储原始值而专门存储弱对象引用。由于弱引用不会被当做剩余存在的引用，所以它不会阻止垃圾回收。
 
-<br />
 
-#### 创建 weak set（Creating a Weak Set）
-
+#### Creating a Weak Set
 
 weak set 由 WeakSet 构造函数创建并包含 add()，has() 和 delete() 方法。下面的例子使用了这些方法：
 
@@ -360,10 +358,8 @@ console.log(set.has(key2));     // true
 
 本例中一个数组被传给了 WeakSet 构造函数。因为数组中包含了两个对象，于是它们被添加到了 weak set 中。需要注意的是若数组中包含了非对象元素，一个错误会被抛出，因为 WeakSet 不接受原始值。
 
-<br />
 
-#### set 类型之间的差异（Key Differences Between Set Types）
-
+#### Key Differences Between Set Types
 
 weak set 和 一般 set 的最大区别是前者存储的是弱对象引用。下面的例子解释了两者的差异：
 
@@ -398,7 +394,7 @@ These examples show that weak sets share some characteristics with regular sets,
 set 给了你处理一系列值的新方式，不过若想给这些值添加附加信息则显得捉襟见肘。ECMAScript 6 因此添加了 map 。
 
 
-## ECMAScript 6 中的 Map（Maps in ECMAScript 6）
+## Maps in ECMAScript 6
 
 ECMAScript 6 中的 map 类型包含一组有序的键值对，其中键和值可以是任何类型。键的比较结果由 Object.is() 来决定，所以你可以同时使用 5 和 "5" 做为键来存储，因为它们是不同的类型。这和使用对象属性做为值的方法大相径庭，因为对象的属性会被强制转换为字符串类型。
 
@@ -432,7 +428,7 @@ console.log(map.get(key2));         // 42
 该段代码使用了 key1 和 key2 对象做为键并在 map 中存储了两个值。因为这些键不会被强制转换成其它类型，所以每个对象都是唯一的。这允许你给对象添加额外信息但不需要操作该对象本身。
 
 
-### map 方法（Map Methods）
+### Map Methods
 
 map 的一些方法效果和 set 相同。这是有意而为的，允许你使用熟悉的方式来和 map 与 set 交互。以下三个方法 map 和 set 都能使用：
 
@@ -473,7 +469,7 @@ console.log(map.size);          // 0
 clear() 方法能极快的将大量的数据从 map 中移除，反之 map 也有一种方法能使大量的数据迅速入驻。
 
 
-### 初始化 map（Map Initialization）
+### Map Initialization
 
 和 set 类似，你可以将数据存入数组并传给 Map 构造函数来初始化它。数组中的每一项必须也是数组，后者包含的两项中前者作为键，后者为对应值。因此整个 map 被带有两个项的数组所填充。
 
@@ -490,7 +486,7 @@ console.log(map.size);          // 2
 "name" 和 "age" 作为键在调用构造函数时传入并初始化了该 map 。虽然数组中包含数组看起来有些奇怪，不过这对键的精准描述时必须的，因为键可以是任何类型。将键放入数组是唯一可以在添加给 map 之前不被强制执行类型转换的办法。
 
 
-### map 中的 forEach 方法（The forEach Method on Maps）
+### The forEach Method on Maps
 
 map 的 forEach() 方法类似于 set 和 数组，它同样接收一个含有三个参数的回调函数：
 
@@ -538,9 +534,8 @@ weak map 的最佳实践是创建一个对象并和网页中的特定 DOM 元素
 
 > 必须注意的是，弱引用指的是键的弱引用，而不只是值的弱引用。将对象存储为 weak map 中的值仍然会在其余引用不存在的情况下妨碍垃圾回收。
 
-<br />
 
-##### 使用 weak map（Using Weak Maps）
+##### Using Weak Maps
 
 
 ECMAScript 6 中的 WeakMap 类型是无序键值对的集合，其中键必须是非 null 的对象，值可以是任意类型。WeakMap 和 Map 相似的地方在于都能使用 set() 和 get() 来分别添加及移除数据：
@@ -565,9 +560,9 @@ element = null;
 
 和 weak set 类似的是，没有任何办法可以确认 weak map 是否为空，因为它不存在 size 属性。由于没有剩余的引用存在，你无法通过给 get() 方法传入引用来提取相应的值，而且该值也已经被清除了。当垃圾回收器运行时占有的内存会被自动释放。
 
-<br />
 
-##### 初始化 weak map（Weak Map Initialization）
+
+##### Weak Map Initialization
 
 
 若想初始化 weak map，只需将数组传递给 WeakMap 构造函数。和一般的 map 初始化相同，数组内部的元素必须是包含两项的数组，前一项是个非 null 的对象作键，后一项则是值（任意类型）。例如：
@@ -587,7 +582,7 @@ key1 和 key2 对象作为键传给了 weak map，get() 和 has() 方法可以�
 
 <br />
 
-##### weak map 的方法（Weak Map Methods）
+##### Weak Map Methods
 
 
 weak map 只有两种方法和键值对交互。has() 方法可以由给定的键来判断其是否存在于 weak map 内部，delete() 方法用来删除指定的键值对。clear() 方法并不存在，因为它需要对键进行枚举。和 weak set 同理，weak map 是不可能做到的。下面的例子同时用到了 has() 和 delete() 方法：
@@ -608,9 +603,8 @@ console.log(map.get(element));   // undefined
 
 在这里，一个 DOM 元素再次作为键添加给了 weak map。为了查看 weak map 中是否有该引用作为键，has() 正是派上用场的时候，不过要注意键必须是非 null 的引用类型。delete() 方法会强制将传入的键从 weak map 中移除，导致再次传入该键给 has() 或 get() 会分别返回 false 和 undefined 。
 
-<br />
 
-##### 私有对象数据（Private Object Data）
+##### Private Object Data
 
 
 虽然大多数开发者认为 weak map 的主要用途是让 DOM 元素和相关数据进行协作，实际上其它的用途还有很多（毋须置疑的是，还有很多用法尚待发掘）。例如其中一种就是存储对象内部的私有数据。在 ECMAScript 6 中所有的对象属性都是公有的，所以你就需要创造一些方法来让数据只在对象内部有效而对外封闭。考虑下面的示例：
@@ -679,10 +673,7 @@ let Person = (function() {
 该版本示例中 Person 使用 weak map 替换了对象来存储私有数据。Person 对象的实例本身可用作键，所以一个分离的 ID 就没有必要了。当 Person 构造函数被调用时，this 的值和一个带有私有信息对象分别作为键和值添加到了 weak map 中。在本例中，传入的对象仅包含 name 。getName() 函数通过调用 prviateData.get() 方法来提取相关的私有信息并可以访问 name 属性。该方案下私有信息仍然是私有的，而且在实例被销毁的同时该信息也会随即消失。
 
 
-<br />
-
-##### weak map 的实践与限制（Weak Map Uses and Limitations）
-
+##### Weak Map Uses and Limitations
 
 每当纠结于 map 或 weak map 的选择时，首要考虑的因素是你是否只想使用对象作为键。如果答案为是，那么最好的选择就是 weak map 。因为它能优化内存的占用并通过在对象销毁之后删除额外的信息来防止内存泄漏。
 
@@ -691,7 +682,7 @@ let Person = (function() {
 当然，如果你想使用非对象类型作键，那么 map 就是你唯一的选择。
 
 
-##  总结（Summary）
+##  Summary
 
 ECMAScript 6 正式在 JavaScript 中引入了 set 和 map。在这之前，开发者经常使用对象来模拟它们，不过由于对象属性自身的限制总会导致一些问题。
 
