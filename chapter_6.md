@@ -1,5 +1,13 @@
 ## 学习笔记
 
+- Symbol
+```
+创建、使用、共享 Symbol
+Symbol 的强制转换规则
+提取 Symbol 属性
+```
+- 通过 well-known Symbol 暴露内部操作 ，允许开发者以各种各样的方式来修改标准对象的行为
+
 # Symbols and Symbol Properties
 
 
