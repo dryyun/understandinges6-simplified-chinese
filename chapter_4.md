@@ -1,5 +1,6 @@
 ## 学习笔记
 - 对象类别  
+
 ```
 常规对象（ordinary object）拥有 JavaScript 对象所有的默认行为。  
 特异对象（exotic object）的某些内部行为和默认的有所差异。  
@@ -7,7 +8,7 @@
 内置对象（built-in object）指 JavaScript 执行环境开始运行时已存在的对象。标准对象均为内置对象。 
 ```
 
-- 对象字面量语法扩展
+- 对象字面量语法扩展  
 
 ```
 > 属性初始值简写语法
@@ -25,7 +26,7 @@ console.log(person["first name"]);      // "Nicholas"
 console.log(person[lastName]);          // "Zakas"
 ```
 
-- 新增方法
+- 新增方法  
 
 ```
 > Object.is() ，引入此方法来补偿 `===` 操作符怪异行为，不过具体选择哪一个取决于实际的情况
@@ -45,7 +46,7 @@ console.log(person[lastName]);          // "Zakas"
 
 - 改变对象原型  Object.setPrototypeof()
 
-- 使用 super 引用来方便获取 prototype
+- 使用 super 引用来方便获取 prototype  
 
 ```
 super 是指向当前函数原型的指针，其值等同于 Object.getPrototypeof(this)

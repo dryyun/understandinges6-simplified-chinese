@@ -1,64 +1,67 @@
 ## 学习笔记
 
-- [解构赋值 - MDN 文档](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)  
-    ```
-    > 解构语法，对象解构使用 {}，数组解构使用 []
-    > 默认值
-    > 赋值给不同的变量名
-    > 嵌套对象解构
-    ```
+- [解构赋值 - MDN 文档](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)   
 
-    ```js
-    let node = {
-        type: "Identifier",
-        name: "foo"
-    };
+```
+> 解构语法，对象解构使用 {}，数组解构使用 []
+> 默认值
+> 赋值给不同的变量名
+> 嵌套对象解构
+```
 
-    function outputInfo(value) {
-        console.log(value)
-        console.log(value === node);        // true
-    }
+```js
+let node = {
+type: "Identifier",
+name: "foo"
+};
 
-    // let {type, name} = node;
-    // ({type, name} = node); // 要加括号
-    outputInfo({type, name: localName, value: localValue = 'default'} = node);
+function outputInfo(value) {
+console.log(value)
+console.log(value === node);        // true
+}
 
-    console.log(type);
-    console.log(localName);
-    console.log(localValue)
-    ```
+// let {type, name} = node;
+// ({type, name} = node); // 要加括号
+outputInfo({type, name: localName, value: localValue = 'default'} = node);
+
+console.log(type);
+console.log(localName);
+console.log(localValue)
+```
 - 数组解构  
-    ```
-    > [ a, b ] = [ b, a ]; // 交换 a,b
-    > 剩余项，使用 ... 语法来将剩余的项赋值给一个指定的变量
-    ```
 
-    ```js
-    let colors = ["red", "green", "blue"];
+```
+> [ a, b ] = [ b, a ]; // 交换 a,b
+> 剩余项，使用 ... 语法来将剩余的项赋值给一个指定的变量
+```
 
-    let [firstColor, , thirdColor] = colors;
+```js
+let colors = ["red", "green", "blue"];
 
-    console.log(thirdColor)
-    ```
-- 参数解构
-    ```
-    function setCookie(name, value, { secure, path, domain, expires }) {
+let [firstColor, , thirdColor] = colors;
 
-        // code to set the cookie
-    }  
-    function setCookie(name, value,
-        {
-            secure = false,
-            path = "/",
-            domain = "example.com",
-            expires = new Date(Date.now() + 360000000)
-        } = {}
-    ) {
+console.log(thirdColor)
+```
+- 参数解构  
 
-        // ...
-    }
+```
+function setCookie(name, value, { secure, path, domain, expires }) {
 
-    ```
+// code to set the cookie
+}  
+function setCookie(name, value,
+{
+secure = false,
+path = "/",
+domain = "example.com",
+expires = new Date(Date.now() + 360000000)
+} = {}
+) {
+
+// ...
+}
+
+```
 
 
 # 解构（Destructuring for Easier Data Access）

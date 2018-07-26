@@ -1,6 +1,7 @@
 ## 学习笔记
 
-- Symbol
+- Symbol  
+
 ```
 创建、使用、共享 Symbol
 Symbol 的强制转换规则
