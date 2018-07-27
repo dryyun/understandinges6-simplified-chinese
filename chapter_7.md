@@ -1,6 +1,6 @@
 ## 学习笔记
 
-- Set 和 Map 在 ES5 中的模拟实现  
+- [Set](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Set) 和 [Map](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Map) 在 ES5 中的模拟实现  
 
 ```js
 let set = Object.create(null);

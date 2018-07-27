@@ -1,6 +1,6 @@
 ## 学习笔记
 
-- Symbol  
+- [Symbol](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Symbol)  
 
 ```
 创建、使用、共享 Symbol

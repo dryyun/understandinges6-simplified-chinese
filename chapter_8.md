@@ -1,4 +1,54 @@
 ## 学习笔记
+- [迭代器和生成器](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Iterators_and_Generators)
+
+- 迭代器，ES5 模拟实现  
+
+```
+对象中必然有next方法，用于访问下一个数据成员。指针初始时指向当前数据结构的起始位置。
+
+第一次调用对象的next方法，指针指向数据结构的第一个成员。 
+第二次调用对象的next方法，指针指向数据结构的第二个成员。 
+不断的调用对象的next方法，直到它指向数据结构的结束位置。
+
+每次调用next方法，都会返回相同的数据结构：{ value, done }。 
+其中value表示当前指向成员的值，没有则为undefined。 
+其中done是一个布尔值，表示遍历是否结束，结束为true，否则false。
+```
+- 生成器，是返回迭代器的函数。生成器函数由 function 关键字和之后的星号（*）标识，同时还能使用新的 yield 关键字。
+
+- 可迭代类型，指那些包含 `Symbol.iterator` 属性的对象，包括 Array、Set、Map、String ，但是不包括 WeakSet 和 WeakMap
+
+- for-of 循环会在可迭代类型每次迭代执行后调用 next() 并将结果对象存储在变量中。循环会持续进行直到结果对象的 done 属性为 true 
+
+- 创建可迭代的类型，对象一般不能迭代，但是加上 Symbol.iterator 就行  
+```js
+let collection = {
+    items: [],
+    * [Symbol.iterator]() {
+        for (let item of this.items) {
+            yield item;
+        }
+    }
+};
+```
+- 默认迭代器
+- 扩展运算符可以和任意的可迭代类型搭配并使用默认的迭代器来决定包含哪些值。  
+``` 
+// 意味着字符串也是可以的
+let s = 'Hello 123 中国';
+let arr = [...s];
+console.log(arr);
+```
+- 迭代器高级用法  
+
+```
+> 向迭代器 next() 传入参数，首次调用 next() 传入的参数会被忽略，第二次调用 next 传入的参数，会赋值给第一个 yield 的左边值
+> 在迭代器中抛出错误 ，`iterator.throw`
+> 生成器返回语句 return , 扩展运算符和 for-of 会忽略 return 语句的返回值
+> 生成器代理
+```
+- 运行异步任务
+
 
 # 迭代器与生成器（Iterators and Generators）
 
@@ -27,7 +77,7 @@ for (var i = 0, len = colors.length; i < len; i++) {
 ## 什么是迭代器（What are Iterators?）
 
 
-迭代器只是带有特殊接口的对象。所有迭代器对象都带有 next() 方法并返回一个包含两个属性的结果对象。这些属性分别是 value 和 done，前者代表下一个位置的值，后者在没有更多值可供迭代的时候为 true 。迭代器带有一个内部指针，来指向集合中某个值的位置。当 next() 方法调用后，指针下一位置的值会被返回。
+迭代器只是带有特殊接口的对象。{% em %}所有迭代器对象都带有 next() 方法并返回一个包含两个属性的结果对象。这些属性分别是 value 和 done，前者代表下一个位置的值，后者在没有更多值可供迭代的时候为 true 。迭代器带有一个内部指针，来指向集合中某个值的位置。当 next() 方法调用后，指针下一位置的值会被返回。{% endem %}
 
 若你在末尾的值被返回之后继续调用 next()，那么返回的 done 属性值为 true，value 的值则由迭代器设定。该值并不属于数据集，而是专门为数据关联的附加信息，如若该信息并未指定则返回 undefined 。迭代器返回的值和函数返回值有些类似，因为两者都是返回给调用者信息的最终手段。
 
@@ -73,8 +123,8 @@ createIterator() 函数返回一个带有 next() 方法的对象。每次调用�
 
 ##  什么是生成器（What Are Generators?）
 
-生成器是返回迭代器的函数。生成器函数由 function 关键字和之后的星号（*）标识，同时还能使用新的 yield
-关键字。星号的位置不能论是放在 function 关键字的后面还是在它们插入空格都是随意的，如下例所示：
+{% em %}生成器是返回迭代器的函数。生成器函数由 function 关键字和之后的星号（*）标识，同时还能使用新的 yield
+关键字。{% endem %}星号的位置不能论是放在 function 关键字的后面还是在它们插入空格都是随意的，如下例所示：
 
 ```js
 // 生成器
@@ -92,7 +142,7 @@ console.log(iterator.next().value);     // 2
 console.log(iterator.next().value);     // 3
 ```
 
-createIterator() 前面的星号指示该函数是个生成器。ECMAScript 6 新引入的 yield 关键字指定迭代器调用 next() 时按顺序返回的值。本例中的生成的迭代器在 next() 方法调用后成功地返回了三个值：先是 1，接着是 2，最后是 3 。一个生成器可以被当做函数调用并创建迭代器。
+createIterator() 前面的星号指示该函数是个生成器。{% em %}ECMAScript 6 新引入的 yield 关键字指定迭代器调用 next() 时按顺序返回的值。{% endem %}本例中的生成的迭代器在 next() 方法调用后成功地返回了三个值：先是 1，接着是 2，最后是 3 。一个生成器可以被当做函数调用并创建迭代器。
 
 或许生成器函数中最有意思的部分是，当执行流遇到 yield 语句时，该生成器就停止运转了。例如，当 yield 1 执行之后，该生成器函数就不会执行其它任何部分的代码直到迭代器再次调用 next() 。在那时，yield 2 会被执行。生成器函数在运行时能被中断执行的能力非常强大而且引出了很多有意思用法（在之后的 “迭代器高级用法” 小节介绍）。
 
@@ -118,11 +168,11 @@ console.log(iterator.next());           // "{ value: undefined, done: true }"
 
 该例中 createIterator() 生成器函数被传入了一个数组。在函数内部，一个循环正在执行并把数组中的值返还给迭代器。每次遇到 yield 时，循环就会停止，而每次 next() 被调用时，循环又会继续运行直到再一次遇到 yield 语句。
 
-生成器函数是 ECMAScript 6 引入的重要的特性之一。既然它是函数，那么它可以用在所有函数可用的位置上。本小节其余的部分则专注于其它且实用的方法来书写生成器。
+{% em %}生成器函数是 ECMAScript 6 引入的重要的特性之一。既然它是函数，那么它可以用在所有函数可用的位置上。{% endem %}本小节其余的部分则专注于其它且实用的方法来书写生成器。
 
 <br />
 
-> **注意**： yield 关键字只能用在生成器内部。在其它地方甚至是生成器内部的函数中使用都会抛出语法错误，例如：
+> **注意**： {% em %}yield 关键字只能用在生成器内部。在其它地方甚至是生成器内部的函数中使用都会抛出语法错误{% endem %}，例如：
 
 ```js
 function *createIterator(items) {
@@ -136,8 +186,6 @@ function *createIterator(items) {
 ```
 
 > 尽管在严格意义上讲 yield 确实是在 createIterator() 内部，但 yield 是无法跨越函数边界的。某种程度上来说它和 return 比较类似，因为容器函数不能将内部函数的返回值直接作为自身的返回值。
-
-<br />
 
 ### 生成器函数表达式（Generator Function Expressions）
 
@@ -167,9 +215,7 @@ console.log(iterator.next());           // "{ value: undefined, done: true }"
 
 <br />
 
-> 无法使用箭头函数来创建生成器。
-
-
+> {% em %}无法使用箭头函数来创建生成器。{% endem %}
 
 ### 对象中的生成器方法（Generator Object Methods）
 
@@ -208,18 +254,16 @@ let iterator = o.createIterator([1, 2, 3]);
 
 ## 可迭代类型与 for-of（Iterables and for-of）
 
-与迭代器紧密相关的是，可迭代类型是指那些包含 Symbol.iterator 属性的对象。该知名的 symbol 类型定义了返回迭代器的函数。在 ECMAScript 6 中，所有的集合对象（数组，set 和 map）与字符串都是可迭代类型，因此它们都有默认的迭代器。可迭代类型是为了 ECMAScript 新添加的 for-of 循环而设计的。
+与迭代器紧密相关的是，可迭代类型是指那些包含 Symbol.iterator 属性的对象。该知名的 symbol 类型定义了返回迭代器的函数。{% em %}在 ECMAScript 6 中，所有的集合对象（数组，set 和 map）与字符串都是可迭代类型{% endem %}，因此它们都有默认的迭代器。可迭代类型是为了 ECMAScript 新添加的 for-of 循环而设计的。
 
 <br />
 
 > 所有由生成器创建的迭代器都是可迭代类型，因为生成器在默认情况下会自赋值给 Symbol.iterator 属性。
 
-<br />
-
 
 在本章的开头我曾提到过在 for 循环中追踪索引的弊端。迭代器只是解决该问题的第一部分。for-of 循环则是第二部分：完全不需要在集合中追踪索引，让你更专注于集合内容的操作。
 
-for-lof 循环会在可迭代类型每次迭代执行后调用 next() 并将结果对象存储在变量中。循环会持续进行直到结果对象的 done 属性为 true。如下所示：
+{% em %}for-of 循环会在可迭代类型每次迭代执行后调用 next() 并将结果对象存储在变量中。循环会持续进行直到结果对象的 done 属性为 true。{% endem %}如下所示：
 
 ```js
 let values = [1, 2, 3];
@@ -237,13 +281,13 @@ This code outputs the following:
 3
 ```
 
-for-of 循环首先会调用 values 数组的 Symbol.iterator 方法来获取迭代器（Symbol.iterator 方法由幕后的 JavaScript 引擎调用）。之后再调用 iterator.next() 并将结果对象中的 value 属性值，即 1，2，3，依次赋给 num 变量。当检测到结果对象中的 done 为 true，循环会退出，所以 num 不会被赋值为 undefined 。
+{% em %}for-of 循环首先会调用 values 数组的 Symbol.iterator 方法来获取迭代器（Symbol.iterator 方法由幕后的 JavaScript 引擎调用）。之后再调用 iterator.next() 并将结果对象中的 value 属性值，{% endem %}即 1，2，3，依次赋给 num 变量。当检测到结果对象中的 done 为 true，循环会退出，所以 num 不会被赋值为 undefined 。
 
 如果你只想简单的迭代数组或集合中的元素，那么 for-of 循环比 for 要更好。for-of 一般不容易出错，因为要追踪的条件更少。所以还是把 for 循环留给复杂控制条件的需求吧。
 
 <br />
 
-> **注意**：对非可迭代对象，null 和 undefind 使用 for-of 会抛出错误。
+> **注意**：{% em %}对非可迭代对象，null 和 undefind 使用 for-of 会抛出错误。{% endem %}
 
 
 ### 访问默认迭代器（Accessing the Default Iterator）
@@ -323,30 +367,24 @@ for (let x of collection) {
 
 > 本章之后的 “生成器代理” 一节会描述如何使用其它对象中的迭代器。
 
-<br />
-
 现在你已经见识了数组默认迭代器的用法，然而 ECMAScript 6 还内置了许多迭代器使得操作集合中的数据更加轻松。
-
-
 
 ## 内置的迭代器（Built-in Iterators）
 
 迭代器是 ECMAScript 6 重要的一部分，你不需要为大部分内置类型创建自己的迭代器，因为 JavaScript 语言已经包含了它们。只有当这些内置的迭代器无法做出符合需求的行为时，你才需要考虑自行创建它们，尤其是在定义自己的对象和类的时候。否则，你完全可以用内置的迭代器去完成一些工作。或许使用迭代器最频繁是集合。
 
-<br />
+
 
 ### 集合迭代器（Collection Iterators）
 
 
 ECMAScript 6 内置了三种类型的集合对象：数组，map 和 set 。它们都有如下内置的迭代器供你浏览数据。
 
-* entries() - 返回一个数据集为集合中的键值对的迭代器
-* values() - 返回一个数据集为集合中的值的迭代器
-* keys() - 返回一个数据集为集合中的键的迭代器
+* <u>**entries() - 返回一个数据集为集合中的键值对的迭代器**</u>
+* <u>**values() - 返回一个数据集为集合中的值的迭代器**</u>
+* <u>**keys() - 返回一个数据集为集合中的键的迭代器**</u>
 
 你可以使用上述方法之一来提取集合中的迭代器。
-
-<br />
 
 ##### entries() 迭代器（The entries() Iterator）
 
@@ -391,8 +429,6 @@ console.log() 会做如下输出：
 
 该段代码对每一个集合类型都使用了 entries() 方法以便获取对应的迭代器，之后使用 for-of 循环来迭代各自的项。控制台的输出清晰地显示了每个类型在每次迭代的返回结果。
 
-<br />
-
 ##### values() 迭代器（The values() Iterator）
 
 
@@ -434,8 +470,6 @@ for (let value of data.values()) {
 
 在本例中，调用 values() 迭代器返回了各自类型中对应的数据而并不需要获知数据在集合中的位置。
 
-<br />
-
 ##### keys() 迭代器（the keys() Iterator）
 
 
@@ -476,8 +510,6 @@ for (let key of data.keys()) {
 ```
 
 keys() 迭代器获取了 colors，tracking 和 data 各自所有的键，并将它们在 for-of 中打印输出。数组对象只会有索引数字输出，即使你尝试给数组添加命名属性也无济于事。这和 for-in 循环有些不同，因为 for-in 会迭代数组所有的属性而不仅仅是数字索引。
-
-<br />
 
 ##### 集合类型的默认迭代器（Default Iterators for Collection Types）
 
@@ -521,7 +553,7 @@ for (let entry of data) {
 ["format", "print"]
 ```
 
-数组和 set 默认返回每一项的值，而 map 则返回每一项（可以再次直接传给 Map 构造函数）。另一方面，weak set 和 weak map 没有内置的迭代器。使用弱引用就意味着没有办法可以确切的获知集合中究竟有多少项，于是迭代它们也是不可能的。
+数组和 set 默认返回每一项的值，而 map 则返回每一项（可以再次直接传给 Map 构造函数）。另一方面，{% em %}weak set 和 weak map 没有内置的迭代器。使用弱引用就意味着没有办法可以确切的获知集合中究竟有多少项，于是迭代它们也是不可能的。{% endem %}
 
 <br />
 
@@ -547,7 +579,7 @@ for (let [key, value] of data) {
 ### 字符串迭代器（String Iterators）
 
 
-在 ECMAScript 5 发布之后，字符串就慢慢的变的越来越像数组。例如 ECMAScript 5 正式对字符串启用了方括号语法来访问字符（例如，text[0] 可以获得该字符串中的首个字符，等等）。不过实际上，方括号语法访问的是编码单元（code unit）而非字符本身，所以当获取双字节字符时会有意想不到的结果，如下例所示：
+在 ECMAScript 5 发布之后，字符串就慢慢的变的越来越像数组。{% em %}例如 ECMAScript 5 正式对字符串启用了方括号语法来访问字符（例如，text[0] 可以获得该字符串中的首个字符，等等）。不过实际上，方括号语法访问的是编码单元（code unit）而非字符本身，所以当获取双字节字符时会有意想不到的结果{% endem %}，如下例所示：
 
 ```js
 var message = "A ð ®· B";
@@ -623,7 +655,7 @@ let set = new Set([1, 2, 3, 3, 3, 4, 5]),
 console.log(array);             // [1,2,3,4,5]
 ```
 
-这段代码对数组字面量使用扩展运算符以向其填充 set 中的元素。扩展运算符可以和任意的可迭代类型搭配并使用默认的迭代器来决定包含哪些值。迭代器会按顺序返回数据集中所有的项并依次插入到数组当中。该例中由于 set 是可迭代类型所以代码能正常运行，不过使用其它迭代类型也无可厚非，例如：
+这段代码对数组字面量使用扩展运算符以向其填充 set 中的元素。{% em %}扩展运算符可以和任意的可迭代类型搭配并使用默认的迭代器来决定包含哪些值。{% endem %}迭代器会按顺序返回数据集中所有的项并依次插入到数组当中。该例中由于 set 是可迭代类型所以代码能正常运行，不过使用其它迭代类型也无可厚非，例如：
 
 ```js
 let map = new Map([ ["name", "Nicholas"], ["age", 25]]),
@@ -647,7 +679,7 @@ console.log(allNumbers);    // [0, 1, 2, 3, 100, 101, 102]
 
 在创建 allNumbers 的时候对 smallNumbers 和 bigNumbers 使用了扩展运算符。allNumbers 中的元素按照创建时插入数组的顺序排列：0 在开头，接着是 smallNumbers 中的项，紧随着的是 bigNumbers 的元素。原始数组并未发生改变，allNumbers 只是复制了它们的元素。
 
-既然扩展运算符可以用在任意的可迭代类型上，那么它就成为了将可迭代类型转换为数组最简单的办法。你可以将字符串和浏览器中的 NodeList 对象分别转换为包含字符（不是编码单元）或 DOM 节点的数组。
+{% em %}既然扩展运算符可以用在任意的可迭代类型上，那么它就成为了将可迭代类型转换为数组最简单的办法。{% endem %}你可以将字符串和浏览器中的 NodeList 对象分别转换为包含字符（不是编码单元）或 DOM 节点的数组。
 
 目前你已经明白了迭代器以及 for-of 和扩展运算符的基本工作原理，现在是时候去了解一下关于迭代器更复杂的用法。
 
@@ -679,7 +711,7 @@ console.log(iterator.next());           // "{ value: undefined, done: true }"
 
 首次调用的 next() 有些特殊，传给它的任何参数都会被忽略。因为传递给 next() 的参数会作为已返回的 yield 语句的值，那么首次调用传给 next() 的参数必须要在返回首个 yield 语句之前可供访问。显然这是不可能的，所以没有理由给首次调用的 next() 方法传参。
 
-当第二次调用 next() 时，4 作为参数被传入。在生成器函数内部该参数最终会赋值给 first 变量。因为该 yield 语句包含赋值操作，右侧的表达式会在首次调用 next() 时候计算，左侧的表达式会在第二次调用 next() 之后函数继续执行之前求值。因为第二次调用 next() 的时候传入了参数 4，该参数会被赋值给 first，之后函数继续执行。
+当第二次调用 next() 时，4 作为参数被传入。在生成器函数内部该参数最终会赋值给 first 变量。{% em %}因为该 yield 语句包含赋值操作，右侧的表达式会在首次调用 next() 时候计算，左侧的表达式会在第二次调用 next() 之后函数继续执行之前求值。因为第二次调用 next() 的时候传入了参数 4，该参数会被赋值给 first，之后函数继续执行。{% endem %}
 
 第二个 yield 使用了首个 yield 语句的结果并进行加法操作，返回的值为 6 。接下来 next() 会被第三次调用，此时 5 被作为参数传入。该值会被赋给 second 变量并在第三个 yield 语句中使用，返回的结果为 8 。
 
@@ -801,7 +833,7 @@ console.log(iterator.next());           // "{ value: undefined, done: true }"
 
 <br />
 
-> 扩展运算符和 for-of 会忽略 return 语句的返回值。如果返回对象的 done 为 true，它们就会停止读取 value 属性。然而，当使用生成器代理时 return 会相当有用。
+> {% em %}扩展运算符和 for-of 会忽略 return 语句的返回值。如果返回对象的 done 为 true，它们就会停止读取 value 属性。{% endem %}然而，当使用生成器代理时 return 会相当有用。
 
 
 
