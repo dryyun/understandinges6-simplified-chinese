@@ -51,7 +51,7 @@ ECMAScript 2015 （ES6）是 ECMAScript 发展的重要里程碑，给前端开�
 [第九章： **类 (Introducing JavaScript Classes)**](https://gitbook.dryyun.com/understandinges6-simplified-chinese/chapter_9.html)
 
 
-[第十章： **改进的数组功能（Improved Array Capabilities）**](https://gitbook.dryyun.com/understandinges6-simplified-chinese/chapter_10.html) - 未施工
+[第十章： **改进的数组功能（Improved Array Capabilities）**](https://gitbook.dryyun.com/understandinges6-simplified-chinese/chapter_10.html)
 
 
 [第十一章： **Promise 与 异步编程（Promises and Asynchronous Programming)**](https://gitbook.dryyun.com/understandinges6-simplified-chinese/chapter_11.html)

@@ -1,29 +1,18 @@
-# Improved Array Capabilities
+## 学习笔记
+
+# 改进的数组功能
 
 
 The array is a foundational JavaScript object. But while other aspects of JavaScript have evolved over time, arrays remained the same until ECMAScript 5 introduced several methods to make them easier to use. ECMAScript 6 continues to improve arrays by adding a lot more functionality, like new creation methods, several useful convenience methods, and the ability to make typed arrays.
 
-<br />
 
-### Summary
-* [创建数组](#Creating-Arrays)
-* [数组原型的新方法](#New-Methods-on-All-Arrays)
-* [类型数组](#Typed-Arrays)
-* [类型数组与普通数组的相似之处](#Similarities-Between-Typed-and-Regular-Arrays)
-* [类型数组与普通数组的差异](#Differences-Between-Typed-and-Regular-Arrays)
-* [总结](#Summary)
 
-<br />
-
-### <a id="Creating-Arrays"> Creating Arrays </a>
-
+##  创建数组
 
 Prior to ECMAScript 6, there were two primary ways to create arrays: the Array constructor and array literal syntax. Both approaches require listing array items individually and are otherwise fairly limited. Options for converting an array-like object (that is, an object with numeric indices and a length property) into an array were also limited and often required extra code. To make JavaScript arrays easier to create, ECMAScript 6 adds the Array.of() and Array.from() methods.
 
-<br />
 
-#### The Array.of() Method
-
+###  Array.of() 方法
 
 One reason ECMAScript 6 adds new creation methods to JavaScript is to help developers avoid a quirk of creating arrays with the Array constructor. The new Array() constructor actually behaves differently based on the type and number of arguments passed to it. For example:
 
@@ -83,10 +72,9 @@ In this code, the createArray() function accepts an array creator function and a
 
 > The Array.of() method does not use the Symbol.species property (discussed in Chapter 9) to determine the type of return value. Instead, it uses the current constructor (this inside the of() method) to determine the correct data type to return.
 
-<br />
 
-#### The Array.from() Method
 
+###  Array.from() 方法
 
 Converting non-array objects into actual arrays has always been cumbersome in JavaScript. For instance, if you have an arguments object (which is array-like) and want to use it like an array, then you’d need to convert it first. To convert an array-like object to an array in ECMAScript 5, you’d write a function like the one in this example:
 
@@ -207,16 +195,15 @@ Since the numbers object is an iterable, you can pass numbers directly to Array.
 
 > If an object is both array-like and iterable, then the iterator is used by Array.from() to determine the values to convert.
 
-<br />
 
-### <a id="New-Methods-on-All-Arrays"> New Methods on All Arrays </a>
+
+##  数组的新方法
 
 
 Continuing the trend from ECMAScript 5, ECMAScript 6 adds several new methods to arrays. The find() and findIndex() methods are meant to aid developers using arrays with any values, while fill() and copyWithin() are inspired by use cases for typed arrays, a form of array introduced in ECMAScript 6 that uses only numbers.
 
-<br />
 
-#### The find() and findIndex() Methods
+### find() 和 findIndex() 方法
 
 
 Prior to ECMAScript 5, searching through arrays was cumbersome because there were no built-in methods for doing so. ECMAScript 5 added the indexOf() and lastIndexOf() methods, finally allowing developers to search for specific values inside an array. These two methods were a big improvement, yet they were still fairly limited because you could only search for one value at a time. For example, if you wanted to find the first even number in a series of numbers, you’d need to write your own code to do so. ECMAScript 6 solved that problem by introducing the find() and findIndex() methods.
@@ -235,9 +222,9 @@ This code calls find() and findIndex() to locate the first value in the numbers 
 
 Both find() and findIndex() are useful to find an array element that matches a condition rather than a value. If you only want to find a value, then indexOf() and lastIndexOf() are better choices.
 
-<br />
 
-#### The fill() Method
+
+###  fill() 方法
 
 
 The fill() method fills one or more array elements with a specific value. When passed a value, fill() overwrites all of the values in an array with that value. For example:
@@ -270,10 +257,9 @@ In the numbers.fill(1,2) call, the 2 indicates to start filling elements at inde
 
 > If either the start or end index are negative, then those values are added to the array’s length to determine the final location. For instance, a start location of -1 gives array.length - 1 as the index, where array is the array on which fill() is called.
 
-<br />
 
-#### The copyWithin() Method
 
+###  copyWithin() 方法
 
 The copyWithin() method is similar to fill() in that it changes multiple array elements at the same time. However, instead of specifying a single value to assign to array elements, copyWithin() lets you copy array element values from the array itself. To accomplish that, you need to pass two arguments to the copyWithin() method: the index where the method should start filling values and the index where the values to be copied begin.
 
@@ -313,9 +299,9 @@ In this example, only the value in index 0 is copied because the optional end in
 
 The use cases for fill() and copyWithin() may not be obvious to you at this point. That’s because these methods originated on typed arrays and were added to regular arrays for consistency. As you’ll learn in the next section, however, if you use typed arrays for manipulating the bits of a number, these methods become a lot more useful.
 
-<br />
 
-### <a id="Typed-Arrays"> Typed Arrays </a>
+
+## 类型数组
 
 
 Typed arrays are special-purpose arrays designed to work with numeric types (not all types, as the name might imply). The origin of typed arrays can be traced to WebGL, a port of Open GL ES 2.0 designed for use in web pages with the <canvas> element. Typed arrays were created as part of the port to provide fast bitwise arithmetic in JavaScript.
@@ -326,7 +312,7 @@ ECMAScript 6 adopted typed arrays as a formal part of the language to ensure bet
 
 <br />
 
-#### Numeric Data Types
+### 数值数据类型
 
 
 JavaScript numbers are stored in IEEE 754 format, which uses 64 bits to store a floating-point representation of the number. This format represents both integers and floats in JavaScript, with conversion between the two formats happening frequently as numbers change. Typed arrays allow the storage and manipulation of eight different numeric types:
@@ -348,9 +334,9 @@ All of the operations and objects related to typed arrays are centered around th
 
 > In this book, I will refer to these types by the abbreviations I showed in parentheses. Those abbreviations don’t appear in actual JavaScript code; they’re just a shorthand for the much longer descriptions.
 
-<br />
 
-#### Array Buffers
+
+### 数据缓冲区
 
 
 The foundation for all typed arrays is an array buffer, which is a memory location that can contain a specified number of bytes. Creating an array buffer is akin to calling malloc() in C to allocate memory without specifying what the memory block contains. You can create an array buffer by using the ArrayBuffer constructor as follows:
@@ -384,9 +370,9 @@ Of course, creating a storage location isn’t very helpful without being able t
 
 > An array buffer always represents the exact number of bytes specified when it was created. You can change the data contained within an array buffer, but never the size of the array buffer itself.
 
-<br />
 
-#### Manipulating Array Buffers with Views
+
+### 使用视图操作数组缓冲区
 
 
 Array buffers represent memory locations, and views are the interfaces you’ll use to manipulate that memory. A view operates on an array buffer or a subset of an array buffer’s bytes, reading and writing data in one of the numeric data types. The DataView type is a generic view on an array buffer that allows you to operate on all eight numeric data types.
@@ -612,9 +598,8 @@ console.log(ints2[1]);              // 50
 
 This example creates an Int16Array and initializes it with an array of two values. Then, an Int32Array is created and passed the Int16Array. The values 25 and 50 are copied from ints1 into ints2 as the two typed arrays have completely separate buffers. The same numbers are represented in both typed arrays, but ints2 has eight bytes to represent the data while ints1 has only four.
 
-<br />
 
-### <a id="Similarities-Between-Typed-and-Regular-Arrays"> Similarities Between Typed and Regular Arrays </a>
+## 类型数组与普通数组的相似之处
 
 
 Typed arrays and regular arrays are similar in several ways, and as you’ve already seen in this chapter, typed arrays can be used like regular arrays in many situations. For instance, you can check how many elements are in a typed array using the length property, and you can access a typed array’s elements directly using numeric indices. For example:
@@ -639,9 +624,9 @@ In this code, a new Int16Array with two items is created. The items are read fro
 
 > Unlike regular arrays, you cannot change the size of a typed array using the length property. The length property is not writable, so any attempt to change it is ignored in non-strict mode and throws an error in strict mode.
 
-<br />
 
-#### Common Methods
+
+### 通用方法
 
 
 Typed arrays also include a large number of methods that are functionally equivalent to regular array methods. You can use the following array methods on typed arrays:
@@ -681,9 +666,9 @@ console.log(mapped instanceof Int16Array);  // true
 
 This code uses the map() method to create a new array based on the values in ints. The mapping function doubles each value in the array and returns a new Int16Array.
 
-<br />
 
-#### The Same Iterators
+
+### 相同的迭代器
 
 
 Typed arrays have the same three iterators as regular arrays, too. Those are the entries() method, the keys() method, and the values() method. That means you can use the spread operator and for-of loops with typed arrays just like you would with regular arrays. For example:
@@ -701,7 +686,7 @@ This code creates a new array called intsArray containing the same data as the t
 
 <br />
 
-#### of() and from() Methods
+### of() 和 from() 方法
 
 
 Lastly, all typed arrays have static of() and from() methods that work like the Array.of() and Array.from() methods. The difference is that the methods on typed arrays return a typed array instead of a regular array. Here are some examples that use these methods to create typed arrays:
@@ -724,9 +709,9 @@ console.log(floats[1]);         // 2.5
 
 The of() and from() methods in this example are used to create an Int16Array and a Float32Array, respectively. These methods ensure that typed arrays can be created just as easily as regular arrays.
 
-<br />
 
-### <a id=""> Differences Between Typed and Regular Arrays </a>
+
+## 类型数组与普通数组的差异
 
 
 The most importance difference between typed arrays and regular arrays is that typed arrays are not regular arrays. Typed arrays don’t inherit from Array and Array.isArray() returns false when passed a typed array. For example:
@@ -740,9 +725,9 @@ console.log(Array.isArray(ints));       // false
 
 Since the ints variable is a typed array, it isn’t an instance of Array and cannot otherwise be identified as an array. This distinction is important because while typed arrays and regular arrays are similar, there are many ways in which typed arrays behave differently.
 
-<br />
 
-#### Behavioral Differences
+
+### 行为差异
 
 
 While regular arrays can grow and shrink as you interact with them, typed arrays always remain the same size. You cannot assign a value to a nonexistent numeric index in a typed array like you can with regular arrays, as typed arrays ignore the operation. Here’s an example:
@@ -789,9 +774,9 @@ console.log(mapped instanceof Array);       // false
 
 Since the string value "hi" isn’t a 16-bit integer, it’s replaced with 0 in the resulting array. Thanks to this error correction behavior, typed array methods don’t have to worry about throwing errors when invalid data is present, because there will never be invalid data in the array.
 
-<br />
 
-#### Missing Methods
+
+### 缺失的方法
 
 
 While typed arrays do have many of the same methods as regular arrays, they also lack several array methods. The following methods are not available on typed arrays:
@@ -805,9 +790,9 @@ While typed arrays do have many of the same methods as regular arrays, they also
 
 Except for the concat() method, the methods in this list can change the size of an array. Typed arrays can’t change size, which is why these aren’t available for typed arrays. The concat() method isn’t available because the result of concatenating two typed arrays (especially if they deal with different data types) would be uncertain, and that would go against the reason for using typed arrays in the first place.
 
-<br />
 
-#### Additional Methods
+
+### 附加的方法
 
 
 Finally, typed arrays methods have two methods not present on regular arrays: the set() and subarray() methods. These two methods are opposites in that set() copies another array into an existing typed array, whereas subarray() extracts part of an existing typed array into a new typed array.
@@ -840,9 +825,8 @@ console.log(subints3.toString());   // 50,75
 
 Three typed arrays are created from the original ints array in this example. The subints1 array is a clone of ints that contains the same information. Since the subints2 array copies data starting from index 2, it only contains the last two elements of the ints array (75 and 100). The subints3 array contains only the middle two elements of the ints array, as subarray() was called with both a start and an end index.
 
-<br />
 
-### <a id="Summary> Summary </a>
+## 总结
 
 ECMAScript 6 continues the work of ECMAScript 5 by making arrays more useful. There are two more ways to create arrays: the Array.of() and Array.from() methods. The Array.from() method can also convert iterables and array-like objects into arrays. Both methods are inherited by derived array classes and use the Symbol.species property to determine what type of value should be returned (other inherited methods also use Symbol.species when returning an array).
 
@@ -850,4 +834,3 @@ There are also several new methods on arrays. The fill() and copyWithin() method
 
 Typed arrays are not technically arrays, as they do not inherit from Array, but they do look and behave a lot like arrays. Typed arrays contain one of eight different numeric data types and are built upon ArrayBuffer objects that represent the underlying bits of a number or series of numbers. Typed arrays are a more efficient way of doing bitwise arithmetic because the values are not converted back and forth between formats, as is the case with the JavaScript number type.
 
-<br />
