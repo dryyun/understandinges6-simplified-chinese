@@ -7,28 +7,15 @@ Promise 是异步编程的另一种选择，和其它语言一样，它延迟并
 
 为了能更好的理解 promise 的工作原理，首先且重要的是明白它建立在哪些基本概念之上。
 
-<br />
 
-* [异步编程的背景](#Asynchronous-Programming-Background)
-* [promise 的基础](#Promise-Basics)
-* [promise 的全局 Rejection 处理](#Global-Promise-Rejection-Handling)
-* [promises 链](#Chaining-Promises)
-* [响应多个 promise](#Responding-to-Multiple-Promises)
-* [promise 的继承](#Inheriting-from-Promises)
-* [Summary](#Summary)
-
-<br />
-
-### <a id="Asynchronous-Programming-Background"> 异步编程的背景（Asynchronous Programming Background） </a>
+## 异步编程的背景（Asynchronous Programming Background）
 
 JavaScript 的引擎建立在单线程事件轮询（single-threaded event loop）概念之上。单线程意味着一段时间内只能执行一段代码，与 Java 和 C++ 这些允许多段代码同时执行的多线程语言形成了鲜明对比。在基于多线程的软件中，维护并防止能被多段代码同时访问和修改的状态常常是个难题，也是经常制造 bug 的根源之一。
 
 JavaScript 引擎在相同的时间内只能执行一段代码，所以引擎不需要追踪这些可能运行的代码，而是在它们准备好执行时将它们放置到任务队列（job queue）。当代码由 JavaScript 引擎执行完毕后，引擎通过 event loop 找到并执行队列中的下一个任务。event loop 是 JavaScript 引擎内部的线程用来监控代码的执行情况和管理任务队列。需要牢记的是既然它是个队列，那么任务就会由开始到最后的顺序依次执行。
 
-<br />
 
-#### 事件模型（The Event Model）
-
+### 事件模型（The Event Model）
 
 当一个用户点击了一个按钮或按下一个键盘上的某个按键时，一个事件如 onclick 会被触发。为了响应该交互，或许一个新的任务会被添加到任务队列中。这就是 JavaScript 异步编程中最基本的形式。关于处理事件的代码知道事件发生后才会执行，此时相应的上下文（context）会出现，例如：
 
@@ -43,10 +30,9 @@ button.onclick = function(event) {
 
 事件在简单的交互下能很好的工作，但串联多个独立的异步调用会很复杂，因为你必须追踪每个事件中的作用对象（在上例中为 button）。此外，你必须保证所有相应的处理程序在事件第一次发生之间注册完毕。例如，如果按钮在 onclick 事件注册之前就被点击，那么什么事情都不会发生。于是虽然事件可用于响应用户的交互和一些相似但不常见的目的，但它们面对更复杂的需求时显得不是那么灵活。
 
-<br />
 
-#### 回调模式（The Callback Pattern）
 
+### 回调模式（The Callback Pattern）
 
 在 Node.js 诞生后，它通过在编程中广泛使用回调模式来进一步发展异步编程模型。回调模式和事件模型有些相似，因为异步的代码在之后的某一时刻才会执行。然而它们之间的差异在于前者要调用的函数是参数，如下所示：
 
@@ -126,10 +112,8 @@ method1(function(err, result) {
 
 为了实现这些需求，就要追踪多个回调函数并做一些清理工作。promise 极大地降低了实现它们的困难程度。
 
-<br />
 
-### <a id="Promise-Basics"> promise 的基础（Promise Basics） </a>
-
+##  Promise 的基础（Promise Basics） 
 
 promise 是异步操作结果的占位符。函数可以返回一个 promise，而不用订阅一个事件或向函数传递回调参数，像这样
 
@@ -140,10 +124,8 @@ let promise = readFile("example.txt");
 
 在这段代码中，readFile() 会稍后而非立即去读取文件。函数会返回一个 promise 对象来表示异步读取操作以便在之后你可以使用它。确切使用 promise 结果的时机完全取决于 promise 生命周期中的行为。
 
-<br />
 
-#### promise 的生命周期（The Promise Lifecycle）
-
+### Promise 的生命周期（The Promise Lifecycle）
 
 每个 promise 的生命周期一开始都会处于短暂的挂起（pending）状态，表示异步操作仍未完成，即挂起的 promise 被认定是未定的（unsettled）。上例中的 promise 在 readFile() 返回结果之前就是处于挂起状态。一旦异步操作完成，promise 就被认为是已定（settled）的并处于以下的两种状态之一：
 
@@ -227,10 +209,9 @@ promise.then(function(contents) {
 
 > 每次调用 then() 和 catch() 都会创建一个新的任务并在 promise 可用后执行。不过这些任务会被放置到一个单独的完全针对 promise 的任务队列中。只要你大体上了解任务队列的运行机制，那么这个单独的任务队列的细节对你学习如何使用 promise 来讲没有重要的影响。
 
-<br />
 
-#### 创建未定的 promise（Creating Unsettled Promises）
 
+### 创建未定的 Promises（Creating Unsettled Promises）
 
 promise 由 Promise 构造函数创建。该构造函数接收一个参数：包含初始化 promise 代码的执行（executor）函数。该执行函数接收 resolve() 和 reject() 两个参数。resolve() 函数会在执行函数成功运行后发出信号表示该 promise 已经可用，而 reject() 函数代表改执行函数运行失败。
 
@@ -334,10 +315,8 @@ Resolved
 
 注意虽然调用 then() 的位置在 console.log("Hi!") 之前，实际上它并不会立即执行（和执行函数不同）。这是因为 fulfillment 和 rejection 处理总会在执行函数运行完毕后被添加到任务队列的末尾。
 
-<br />
 
-#### 创建已定 promise（Creating Settled Promises）
-
+### 创建已处理的Promise（Creating Settled Promises）
 
 Promise 构造函数由于其内部执行函数与生俱来的动态特性使得它是创建未定 promise 的最佳方式。如果你想创建一个 promise 来代表已知的单个值呢？若只是简单的将该值传递给 resolve() 函数来调度任务，这样做并没有意义。相反，有额外的两个方法专为这种传递特定值的已定 promise 而生。
 
@@ -430,9 +409,8 @@ p1.catch(function(value) {
 
 Proimse.resolve() 和 Promise.reject() 以上述的方式工作以便使你方便的操作非 promise 的 thenable 对象。很多库都在 promise 被引入 ECMAScript 6 之前就使用了 thenable，所以将 thenable 转化为正式 promise 的向后兼容特性对于这些已存在的库来讲至关重要。如果你不确定一个对象是否是 promise，最好的办法就是将该对象传入 Promise.resolve() 或 Promise.reject()（取决于你期望的方式），因为 promise 在这些函数中不会发生任何改变。
 
-<br />
 
-#### 执行错误（Executor Errors）
+### 执行错误（Executor Errors）
 
 
 当执行函数中抛出了错误，promise 的 rejection 处理会被调用。例如：
@@ -465,9 +443,8 @@ promise.catch(function(error) {
 
 执行函数直接负责捕捉抛出的错误以简化该场景的实现，不过执行函数内部抛出的错误只会在 rejection 处理中显现。否则，该错误就会销声匿迹。这在开发者早期使用 promise 时是个麻烦，不过 JavaScript 环境通过提供 hook（挂钩）捕捉 rejected 状态的 promise 解决了该问题。
 
-<br />
 
-### <a id="Global-Promise-Rejection-Handling"> promise 的全局 Rejection 处理 </a>
+## Promise 的全局 Rejection 处理 
 
 promise 最有争议的部分在于如果未提供 rejection 处理，那么 promise 中的错误会悄无声息的发生。有些人认为这是该规范中最大的败笔，因为它是 JavaScript 语言中唯一不会让错误自动浮出水面的场景。
 
@@ -489,9 +466,9 @@ rejected.catch(function(value) {
 
 虽然下个版本的 ECMAScript 很有可能会解决这个问题 ，但是浏览器和 Node.js 都施行了一些变化以解决开发者的痛点。这些变化并不是 ECMAScript 6 规范的一部分但都是处理 promise 的宝贵工具。
 
-<br />
 
-#### Node.js 中的 rejection 处理（Node.js Rejection Handling）
+
+### Node.js 中的 rejection 处理（Node.js Rejection Handling）
 
 
 在 Node.js 中，process 对象上有两个事件和 promise 的 rejection 处理有关：
@@ -570,9 +547,8 @@ setInterval(function() {
 
 这些仅是 Node.js 的特性，浏览器实现了相似的机制将未处理的 rejection 通知给开发者。
 
-<br />
 
-#### 浏览器中的 rejection 处理（Browser Rejection Handling）
+### 浏览器中的 rejection 处理（Browser Rejection Handling）
 
 
 浏览器同样设置了两个事件以便查找未处理的 rejection 。这些事件由 window 对象触发并等效于 Node.js 的相关实现。
@@ -640,9 +616,9 @@ setInterval(function() {
 
 处理 promise 的 rejection 可能有些棘手，不过你已经初步了解了 promise 的强大之处。现在是时候迈向下一步来串联使用一些 promise 了。
 
-<br />
 
-### <a id="Chaining-Promises"> promise 链（Chaining Promises） </a>
+
+## Promise 链（Chaining Promises）
 
 
 目前来看，promise 仅仅是回调和 setTimeout() 函数的混合和改进，实际上 proimse 还有很多能力未呈现出来。更确切地讲，有很多种方法通过串联 promise 来完成更复杂地异步操作。
@@ -686,10 +662,9 @@ p2.then(function() {
 
 在未使用链式代码的版本中，p1.then() 的结果存储到了 p2 中，p2.then() 被调用后最后的 fulfillment 处理才会被添加。正如你所想的那样，p2.then() 也会返回一个 promise，只是该例没有进一步使用它。
 
-<br />
 
-#### 捕获错误（Catching Errors）
 
+### 捕获错误（Catching Errors）
 
 promise 链允许你捕获上一个 promise 的 fulfillment 或 rejection 处理中的错误。例如：
 
@@ -726,10 +701,9 @@ p1.catch(function(error) {
 
 > 为了确保你能正确处理可能发生的错误，你总是需要在 promise 链的末尾添加一个 rejection 处理。
 
-<br />
 
-#### promise 链中的返回值（Returning Values in Promise Chains）
 
+### promise 链中的返回值（Returning Values in Promise Chains）
 
 promise 链的另一个重要特征是链中的 promise 能够向下一个 promise 传递数据。你已经知道执行函数中的 resolve() 的参数会被传递给 promise 的 fulfillment 处理函数。你同样可以在 fulfillment 处理中通过返回某个指定值来在链中传递数据。例如：
 
@@ -767,10 +741,8 @@ p1.catch(function(value) {
 
 这在里，执行函数调用了 reject() 并传入 42 。它被传给 promise 的 rejection 处理，并返回 value + 1 的值。尽管这个返回值来自于 rejection 处理，他仍然会被链中的下一个 promise 的 fulfillment 处理使用。如果链中的某个 promise 失败，必要的话，可以通过上述方法来恢复整个 promise 链。
 
-<br />
 
-#### promise 链中的 promise 返回（Returning Promises in Promise Chains）
-
+### 在 Promise 链中返回 Promise（Returning Promises in Promise Chains）
 
 fulfillment 和 rejection 处理返回的原始值允许在 promise 中传递数据。如果你想返回一个对象呢？假设这个对象是 promise，那么为了决定下一步该做些什么，这里需要额外的步骤。考虑下面的示例：
 
@@ -887,14 +859,13 @@ p1.then(function(value) {
 
 <br />
 
-### <a id="Responding-to-Multiple-Promises"> 响应多个 promise（Responding to Multiple Promises） </a>
+## 响应多个 Promise（Responding to Multiple Promises）
 
 
 到目前为止，本章中的每个示例在同一时间内都只响应了一个 promise。不过有时，你想要观察多个 promise 的进度来决定下一步的操作。ECMAScript 6 提供了两个方法负责此事：Promise.all() 和 Promise.race()
 
-<br />
 
-#### Promise.all() 方法（The Promise.all() Method）
+### Promise.all() 方法（The Promise.all() Method）
 
 
 Promise.all() 方法接收单个包含 promise 的可迭代对象参数（如数组），并在该对象包含的所有 promise 全部处理完毕之后返回一个已处理的 promise 。这个返回的 promise 会在所有 promise 处于 fulfilled 状态之后转变为该状态，如下所示：
@@ -951,9 +922,8 @@ p4.catch(function(value) {
 
 rejection 处理总是会接收单个值，而不是数组，并且该值是 rejected 状态的 promise 所返回的。在本例的情况下，rejection 处理接收的参数为 p2 传递的 43 。
 
-<br />
 
-#### Promise.race() 方法（The Promise.race() Method）
+### Promise.race() 方法（The Promise.race() Method）
 
 
 Promise.race() 方法以另一种稍稍不同的方式来观察多个 promise 。该方法同样接收一个包含 promise 的可迭代类型并返回一个 promise，不过返回的时机是在单个 promise 执行完毕的那一刻，而不是像 Promise.all() 那样需要等待所有的 promise 都处于 fulfilled 状态。只要有 promise 转变为 fulfilled 状态，那么Promise.race() 就会返回它。例如：
@@ -998,10 +968,9 @@ p4.catch(function(value) {
 
 这里，p2 在 Promise.race() 调用时已经处于 rejected 状态，所以 p4 的状态也是 rejected。虽然 p1 和 p3 处于 fulfilled 状态，但由于 p2 的原因它们被忽略了。
 
-<br />
 
-### <a id="Inheriting-from-Promises"> promise 继承（Promise Inheriting from Promises） </a>
 
+##  Promise 继承（Inheriting from Promises） 
 
 和其它内置类型相似，你可以讲 promise 作为派生类的基类。这允许你以内置的 promise 为基础做一些改进。假如，你想创建一个包含 success() 和 failure() 方法的 promise 但又不想丢掉内置版本中的 then() 和 catch()，你可以如下创建该 promise 类型：
 
@@ -1056,10 +1025,8 @@ console.log(p2 instanceof MyPromise);   // true
 
 如果 MyPromise 的实例直接传递给 MyPromise.resolve() 或 MyPromise.reject() 方法，它们会直接返回而不需要被处理。在其它方面这两个方法与 Promise.resolve() 及 Promise.reject() 无异。
 
-<br />
 
-#### 运行异步任务（Asynchronous Task Running）
-
+### 运行异步任务（Asynchronous Task Running）
 
 在第八章，我介绍了生成器并演示了如何使用它来运行异步任务，像这样“
 
@@ -1204,9 +1171,8 @@ run() 函数可以运行任何使用 yield 操作异步代码的生成器，同�
 
 > await 语法有望在 ECMAScript 2017（ECMAScript 8）中正式采用。（译者：已经被纳入ES8）
 
-<br />
 
-### <a id="Summary"> 总结（Summary） </a>
+## 总结（Summary）
 
 JavaScript 引入并提供给 promise 更甚于事件和回调的控制性与组合性来提升异步编程的体验。JavaScript 引擎将 promise 添加给任务队列并通过任务调度来它们延期执行，同时另一个任务队列追踪 promise 的 fulfillment 和 rejection 以确保这些处理运行无误。
 
@@ -1217,6 +1183,4 @@ Promise 存在三种状态：挂起，fulfilled 和 rejected 。一个 promise �
 当混合生成器和 promise 时，运行异步任务更加方便，因为 promise 提供了异步操作可以返回的公共接口形式。于是你可以使用生成器和 yield 操作符来等待异步操作的完成并正确的响应它们。
 
 很多新的 web API 建立在 promise 之上，你可以期待未来还会有络绎不绝的以 promise 为基础的 API 出现。
-
-<br />
 
