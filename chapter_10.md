@@ -1,20 +1,22 @@
 ## 学习笔记
 
+- [Array.of()](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/of) 和 [Array.from()](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/from)
+- [Array.find()](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/find) 和 [Array.findIndex()](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex)
+- [fill()](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/fill) 和 [copyWithin()](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin)
+- [Typed Array ](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypedArray) 没细看，就了解了一下
+
 # 改进的数组功能
 
 
-The array is a foundational JavaScript object. But while other aspects of JavaScript have evolved over time, arrays remained the same until ECMAScript 5 introduced several methods to make them easier to use. ECMAScript 6 continues to improve arrays by adding a lot more functionality, like new creation methods, several useful convenience methods, and the ability to make typed arrays.
-
-
+数组是 JS 中的一种基本对象。 JS 的其他方面都随着时间的推移在进化，而数组却基本保持不变，直到 ES5 才添加了几个相关的方法让数组更易使用。 ES6 也添加了很多功能来继续强化数组，例如新的创建方法、几个有用的便捷方法，还增加了创建类型化数组（typed array）的能力。
 
 ##  创建数组
 
-Prior to ECMAScript 6, there were two primary ways to create arrays: the Array constructor and array literal syntax. Both approaches require listing array items individually and are otherwise fairly limited. Options for converting an array-like object (that is, an object with numeric indices and a length property) into an array were also limited and often required extra code. To make JavaScript arrays easier to create, ECMAScript 6 adds the Array.of() and Array.from() methods.
-
+在 ES6 之前创建数组主要存在两种方式： `Array` 构造器与数组字面量写法。这两种方式都需要将数组的项分别列出，并且还要受到其他限制。将“类数组对象”（即：拥有数值类型索引与长度属性的对象）转换为数组也并不自由，经常需要书写额外的代码。为了使数组更易创建， ES6 新增了 `Array.of()` 与 `Array.from()` 方法。
 
 ###  Array.of() 方法
 
-One reason ECMAScript 6 adds new creation methods to JavaScript is to help developers avoid a quirk of creating arrays with the Array constructor. The new Array() constructor actually behaves differently based on the type and number of arguments passed to it. For example:
+ES6 为数组新增创建方法的目的之一，是帮助开发者在使用 `Array` 构造器时避开 JS 语言的一个怪异点。调用 `new Array()` 构造器时，根据传入参数的类型与数量的不同，实际上会导致一些不同的结果。例如
 
 ```js
 let items = new Array(2);
@@ -37,9 +39,9 @@ console.log(items[0]);              // 3
 console.log(items[1]);              // "2"
 ```
 
-When the Array constructor is passed a single numeric value, the length property of the array is set to that value. If a single non-numeric value is passed, then that value becomes the one and only item in the array. If multiple values are passed (numeric or not), then those values become items in the array. This behavior is both confusing and risky, as you may not always be aware of the type of data being passed.
+当使用单个数值参数来调用 `Array` 构造器时，数组的长度属性会被设置为该参数；而如果使用单个的非数值型参数来调用，该参数就会成为目标数组的唯一项；如果使用多个参数（无论是否为数值类型）来调用，这些参数也会成为目标数组的项。数组的这种行为既混乱又有风险，因为有时可能不会留意所传参数的类型。
 
-ECMAScript 6 introduces Array.of() to solve this problem. The Array.of() method works similarly to the Array constructor but has no special case regarding a single numeric value. The Array.of() method always creates an array containing its arguments regardless of the number of arguments or the argument types. Here are some examples that use the Array.of() method:
+ES6 引入了 `Array.of` 方法来解决这个问题。该方法的作用非常类似 Array 构造器，但在使用单个数值参数的时候并不会导致特殊结果。 `Array.of()` 方法总会创建一个包含所有传入参数的数组，而不管参数的数量与类型。下面几个例子演示了 `Array.of()` 的用法：
 
 ```js
 let items = Array.of(1, 2);
@@ -56,7 +58,7 @@ console.log(items.length);          // 1
 console.log(items[0]);              // "2"
 ```
 
-To create an array with the Array.of() method, just pass it the values you want in your array. The first example here creates an array containing two numbers, the second array contains one number, and the last array contains one string. This is similar to using an array literal, and you can use an array literal instead of Array.of() for native arrays most of the time. But if you ever need to pass the Array constructor into a function, then you might want to pass Array.of() instead to ensure consistent behavior. For example:
+在使用 `Array.of()` 方法创建数组时，只需将想要包含在数组内的值作为参数传入。第一个例子创建了一个包含两个项的数组，第二个数组只包含了单个数值项，而最后一个数组则包含了单个字符串项。这个结果类似于使用数组字面量写法，通常你都可以在原生数组上使用字面量写法来代替 Array.of() ，但若想向函数传递参数，使用 Array.of() 而非 Array 构造器能够确保行为一致。例如
 
 ```js
 function createArray(arrayCreator, value) {
@@ -66,17 +68,13 @@ function createArray(arrayCreator, value) {
 let items = createArray(Array.of, value);
 ```
 
-In this code, the createArray() function accepts an array creator function and a value to insert into the array. You can pass Array.of() as the first argument to createArray() to create a new array. It would be dangerous to pass Array directly if you cannot guarantee that value won’t be a number.
+此代码中的 `createArray()` 函数接受两个参数，一个数组创建器与一个值，并会将后者插入到目标数组中。你应该想 createArray() 函数传递 Array.of() 作为第一个参数来创建新数组；相反，若传递 `Array` 构造器则会有危险，因为你无法保证第二个参数类型。
 
-<br />
-
-> The Array.of() method does not use the Symbol.species property (discussed in Chapter 9) to determine the type of return value. Instead, it uses the current constructor (this inside the of() method) to determine the correct data type to return.
-
-
+> Array.of() 方法并没有使用 Symbol.species 属性（参阅第九章）来决定返回值的类型，而是使用了当前的构造器（即 of() 方法内部的 this ）来做决定。
 
 ###  Array.from() 方法
 
-Converting non-array objects into actual arrays has always been cumbersome in JavaScript. For instance, if you have an arguments object (which is array-like) and want to use it like an array, then you’d need to convert it first. To convert an array-like object to an array in ECMAScript 5, you’d write a function like the one in this example:
+在 JS 中将非数组对象转换为真正的数组总是很麻烦。例如，若想将类数组的 `arguments` 对象当做数组来使用，那么你首先需要对其进行转换。在 ES5 中，进行这种转换需要编写一个函数，类似
 
 ```js
 function makeArray(arrayLike) {
@@ -96,7 +94,7 @@ function doSomething() {
 }
 ```
 
-This approach manually creates a result array and copies each item from arguments into the new array. That works but takes a decent amount of code to perform a relatively simple operation. Eventually, developers discovered they could reduce the amount of code by calling the native slice() method for arrays on array-like objects, like this:
+该方式手动创建了一个 `result` 数组，并将 arguments 对象的所有项复制到该数组中。这种方式虽然有效，却为一个简单操作书写了过多的代码。开发者最终发现他们可以调用数组原生的 `slice()` 方法来减少代码量，类似：
 
 ```js
 function makeArray(arrayLike) {
@@ -110,10 +108,11 @@ function doSomething() {
 }
 ```
 
-This code is functionally equivalent to the previous example, and it works because it sets the this value for slice() to the array-like object. Since slice() needs only numeric indices and a length property to function correctly, any array-like object will work.
-Even though this technique requires less typing, calling Array.prototype.slice.call(arrayLike) doesn’t obviously translate to, “Convert arrayLike to an array.” Fortunately, ECMAScript 6 added the Array.from() method as an obvious, yet clean, way to convert objects into arrays.
+这段代码的功能与前一段代码等效。它能正常工作是因为将 slice() 方法的 this 设置为类数组对象，slice() 只需要有数值类型的索引与长度属性就能正常工作，而类数组对象能满足这些要求。
 
-Given either an iterable or an array-like object as the first argument, the Array.from() method returns an array. Here’s a simple example:
+尽管这种技巧所用的代码量更少，但调用 `Array.prototype.slice.call(arrayLike)` 并没有明确体现出“要将类数组对象转换为数组”的目的。幸运的是，ES6 新增了 Array.from() 方法来提供一种明确清晰的方式以解决这方面的需求。
+
+将可迭代对象或者类数组对象作为第一个参数传入，`Array.from()` 就能返回一个数组。这里有个简单的例子：
 
 ```js
 function doSomething() {
@@ -123,18 +122,14 @@ function doSomething() {
 }
 ```
 
-The Array.from() call creates a new array based on the items in arguments. So args is an instance of Array that contains the same values in the same positions as arguments.
+这里调用 `Array.from()` 方法，使用 `arguments` 对象创建一个新数组 `args`，他是一个数组实例，包含 `arguments` 对象的所有项，同时保持项的顺序。
 
-<br />
+>  Array.from() 同样使用 this 来决定返回什么类型的数组
 
-> The Array.from() method also uses this to determine the type of array to return.
-
-<br />
-
-##### Mapping Conversion
+##### 映射转换
 
 
-If you want to take array conversion a step further, you can provide Array.from() with a mapping function as a second argument. That function operates on each value from the array-like object and converts it to some final form before storing the result at the appropriate index in the final array. For example:
+如果你想实行进一步的数组转换，你可以向 Array.from() 方法传递一个映射用的函数作为第二个参数。此函数会将类数组对象的每一个值转换为目标形式，并将其存储在目标数组的对应位置上。例如：
 
 ```js
 function translate() {
@@ -146,7 +141,7 @@ let numbers = translate(1, 2, 3);
 console.log(numbers);               // 2,3,4
 ```
 
-Here, Array.from() is passed (value) => value + 1 as a mapping function, so it adds 1 to each item in the array before storing the item. If the mapping function is on an object, you can also optionally pass a third argument to Array.from() that represents the this value for the mapping function:
+此代码将 (value) => value + 1 作为映射函数传递给了 Array.from() 方法，对每个项进行了一次 +1 处理。如果映射函数需要在对象上工作，你可以手动传递第三个参数给 Array.from() 方法，从而指定映射函数内部的 this 值。
 
 ```js
 let helper = {
@@ -166,14 +161,12 @@ let numbers = translate(1, 2, 3);
 console.log(numbers);               // 2,3,4
 ```
 
-This example passes helper.add() as the mapping function for the conversion. Since helper.add() uses the this.diff property, you need to provide the third argument to Array.from() specifying the value of this. Thanks to the third argument, Array.from() can easily convert data without calling bind() or specifying the this value in some other way.
+这个例子使用了 `helper.add` 作为映射函数。由于该函数使用了 `this.diff` 属性，你必须向 Array.from() 方法传递第三个参数用于指定 this ，借助这个参数， Array.from() 就可以方便地进行数据转换，而无须调用 bind() 方法或用其他方式去指定 this 值。
 
-<br />
-
-##### Use on Iterables
+##### 在可迭代对象上使用
 
 
-The Array.from() method works on both array-like objects and iterables. That means the method can convert any object with a Symbol.iterator property into an array. For example:
+Array.from() 方法不仅可用于类数组对象，也可用于可迭代对象，这意味着该方法可以将任意包含 `Symbol.iterator` 属性的对象转换为数组。例如：
 
 ```js
 let numbers = {
@@ -189,27 +182,25 @@ let numbers2 = Array.from(numbers, (value) => value + 1);
 console.log(numbers2);              // 2,3,4
 ```
 
-Since the numbers object is an iterable, you can pass numbers directly to Array.from() to convert its values into an array. The mapping function adds one to each number so the resulting array contains 2, 3, and 4 instead of 1, 2, and 3.
+由于代码中的 numbers 对象是一个可迭代对象，你可以把它直接传递给 Array.from() 方法，从而将它包含的值转换为数组。映射函数对每个数都进行了 +1 处理，因此目标数组的内容就是 2 、 3 、 4 ，而不是 1 、 2 、 3 。
 
-<br />
-
-> If an object is both array-like and iterable, then the iterator is used by Array.from() to determine the values to convert.
-
+> 如果一个对象既是类数组对象，又是可迭代对象，那么迭代器就会使用  Array.from 方法来决定需要转换的值。
 
 
 ##  数组的新方法
 
 
-Continuing the trend from ECMAScript 5, ECMAScript 6 adds several new methods to arrays. The find() and findIndex() methods are meant to aid developers using arrays with any values, while fill() and copyWithin() are inspired by use cases for typed arrays, a form of array introduced in ECMAScript 6 that uses only numbers.
+ES6 延续了 ES5 的工作，为数组增加了几个新方法。 `find()` 与 `findIndex()` 方法是为了让开发者能够处理包含任意值的数组，而 `fill()` 与 `copyWithin()` 方法则是受到了类型化数组（ typed arrays ）的启发。类型化数组是在 ES6 中引入的，只允许包含数值类型的值。
 
 
 ### find() 和 findIndex() 方法
 
 
-Prior to ECMAScript 5, searching through arrays was cumbersome because there were no built-in methods for doing so. ECMAScript 5 added the indexOf() and lastIndexOf() methods, finally allowing developers to search for specific values inside an array. These two methods were a big improvement, yet they were still fairly limited because you could only search for one value at a time. For example, if you wanted to find the first even number in a series of numbers, you’d need to write your own code to do so. ECMAScript 6 solved that problem by introducing the find() and findIndex() methods.
+在 ES5 之前，检索数组是件麻烦事，因为没有对应的原生方法可用。 ES5 增加了 `indexOf()` 与 `lastIndexOf()` 方法，从而允许开发者在数组中查找特定值。这虽然是很大的进步，但依然受到了一些限制，因为你每次只能用它们来查找某个特定值。例如，若想在一系列的数中间查找第一个偶数，你必须自己写代码来实现这个意图。而 ES6 引入了 find() 与 findIndex() 方法，从而解决了这方面的问题。
 
-Both find() and findIndex() accept two arguments: a callback function and an optional value to use for this inside the callback function. The callback function is passed an array element, the index of that element in the array, and the array itself–the same arguments passed to methods like map() and forEach(). The callback should return true if the given value matches some criteria you define. Both find() and findIndex() also stop searching the array the first time the callback function returns true.
-The only difference between these methods is that find() returns the value whereas findIndex() returns the index at which the value was found. Here’s an example to demonstrate:
+find() 与 findIndex() 方法均接受两个参数：一个回调函数、一个可选值用于指定回调函 数内部的 this 。该回调函数可接收三个参数：数组的某个元素、该元素对应的索引位置、 以及该数组自身，这与 `map()` 和 `forEach()` 方法的回调函数所用的参数一致。该回调函数应当在给定的元素满足你定义的条件时返回 `true`，而 find() 与 findIndex() 会在回调函数第一次返回 true 时停止查找。
+
+二者唯一的区别是：find() 方法会返回匹配的值，而 findeIndex() 方法则会返回匹配位置的索引，示例：
 
 ```js
 let numbers = [25, 30, 35, 40, 45];
@@ -218,16 +209,14 @@ console.log(numbers.find(n => n > 33));         // 35
 console.log(numbers.findIndex(n => n > 33));    // 2
 ```
 
-This code calls find() and findIndex() to locate the first value in the numbers array that is greater than 33. The call to find() returns 35 and findIndex() returns 2, the location of 35 in the numbers array.
+这段代码使用了 find() 与 findIndex() 方法在 numbers 数组中查找第一个大于 33 的元 素，前者返回 35，后者返回 2 ，也就是 35 的索引值。
 
-Both find() and findIndex() are useful to find an array element that matches a condition rather than a value. If you only want to find a value, then indexOf() and lastIndexOf() are better choices.
-
-
+find() 与 findIndex() 方法在查找特定条件的数组元素时非常有用。但若想查找特定值，则只用 indexOf() 与 lastIndexOf () 方法会是更好的选择。
 
 ###  fill() 方法
 
 
-The fill() method fills one or more array elements with a specific value. When passed a value, fill() overwrites all of the values in an array with that value. For example:
+fill() 方法能使用特定值填充数组中的一个或多个元素 。当只使用一个参数的时候，该方法会用该参数的值填充整个数组，例如：
 
 ```js
 let numbers = [1, 2, 3, 4];
@@ -237,7 +226,7 @@ numbers.fill(1);
 console.log(numbers.toString());    // 1,1,1,1
 ```
 
-Here, the call to numbers.fill(1) changes all values in numbers to 1. If you only want to change some of the elements, rather than all of them, you can optionally include a start index and an exclusive end index, like this:
+此代码中的 `numbers.fill(1)` 调用将 numbers 数组中的所有元素都填充为 1 。若你不想改变数组中的所有元素，而只想改变其中一部分，那么可以使用可选的起始位置参数与结束位置参数（不包括结束位置的那个元素），想这样：
 
 ```js
 let numbers = [1, 2, 3, 4];
@@ -251,19 +240,16 @@ numbers.fill(0, 1, 3);
 console.log(numbers.toString());    // 1,0,0,1
 ```
 
-In the numbers.fill(1,2) call, the 2 indicates to start filling elements at index 2. The exclusive end index isn’t specified with a third argument, so numbers.length is used as the end index, meaning the last two elements in numbers are filled with 1. The numbers.fill(0, 1, 3) operation fills array elements at indices 1 and 2 with 0. Calling fill() with the second and third arguments allows you to fill multiple array elements at once without overwriting the entire array.
+当进行 numbers.fill(1,2) 调用时，第二个参数 2 指定从数组索引值为 2 的元素（即数组的第 3 个元素）开始填充，而此时没有指定第三个参数，因此结束位置默认为 numbers 数组的长度，意味着该数组的最后两个元素会被填充为 1 。而 numbers.fill(0, 1, 3) 调用则将该数组索引值为 1 与 2 的元素填充为 0 。在调用 fill() 方法时指定第二个和第三个参数，允许你一次性填充数组中多个元素，避免改写整个数组。
 
-<br />
-
-> If either the start or end index are negative, then those values are added to the array’s length to determine the final location. For instance, a start location of -1 gives array.length - 1 as the index, where array is the array on which fill() is called.
-
+> 如果提供的起始位置或结束位置为负数，则它们会被加上数组的长度来算出最终的位置。例如：将起始位置指定为 -1 ，就等于是 array.length - 1 ，这里的 array 指的是 fill() 方法所要处理的数组。
 
 
 ###  copyWithin() 方法
 
-The copyWithin() method is similar to fill() in that it changes multiple array elements at the same time. However, instead of specifying a single value to assign to array elements, copyWithin() lets you copy array element values from the array itself. To accomplish that, you need to pass two arguments to the copyWithin() method: the index where the method should start filling values and the index where the values to be copied begin.
+copyWithin() 方法与 fill() 类似，可以一次性修改数组的多个元素。不过，与 fill() 使用单个值来填充数组不同，copyWithin() 方法允许你在数组内部复制自身元素。为此你需要传递两个参数给 copyWithin() 方法：从什么位置开始进行填充，以及被用来复制的数据的其实位置索引。
 
-For instance, to copy the values from the first two elements in an array to the last two items in the array, you can do the following:
+例如，将数组的前两个元素复制到数组的最后两个位置，你可以这么做：
 
 ```js
 let numbers = [1, 2, 3, 4];
@@ -275,8 +261,9 @@ numbers.copyWithin(2, 0);
 console.log(numbers.toString());    // 1,2,1,2
 ```
 
-This code pastes values into numbers beginning from index 2, so both indices 2 and 3 will be overwritten. Passing 0 as the second argument to copyWithin() indicates to start copying values from index 0 and continue until there are no more elements to copy into.
-By default, copyWithin() always copies values up to the end of the array, but you can provide an optional third argument to limit how many elements will be overwritten. That third argument is an exclusive end index at which copying of values stops. Here’s an example:
+这段代码从 numbers 数组索引值为 2 的元素开始进行填充，因此索引值为 2 与 3 的元素都会被覆盖；调用 copyWithin() 方法时将第二个参数指定为 0 ，表示被复制的数据从索引值为 0 的元素开始，一直到没有元素可供复制为止。
+
+默认情况下， copyWithin() 方法总是会一直复制到数组末尾，不过你还可以提供一个可选参数来限制到底有多少元素会被覆盖。这第三个参数指定了复制停止的位置（不包含该位置自身），例子：
 
 ```js
 let numbers = [1, 2, 3, 4];
@@ -289,17 +276,12 @@ numbers.copyWithin(2, 0, 1);
 console.log(numbers.toString());    // 1,2,1,4
 ```
 
-In this example, only the value in index 0 is copied because the optional end index is set to 1. The last element in the array remains unchanged.
-
-<br />
-
-> As with the fill() method, if you pass a negative number for any argument to the copyWithin() method, the array’s length is automatically added to that value to determine the index to use.
-
-<br />
-
-The use cases for fill() and copyWithin() may not be obvious to you at this point. That’s because these methods originated on typed arrays and were added to regular arrays for consistency. As you’ll learn in the next section, however, if you use typed arrays for manipulating the bits of a number, these methods become a lot more useful.
+在这个例子中，因为可选的结束位置参数被指定为 1 ，于是只有索引值为 0 的元素被复制了，而该数组的最后一个元素并没有被修改。
 
 
+> 类似于 fill() 方法，如果你向 copyWithin() 方法传递负数参数，数组的长度会自动 被加到该参数的值上，以便算出正确的索引位置。
+
+ fill() 和 copyWithin() 方法初看起来不是那么有用，因为它们起源于类型化数组的需求，而出于功能一致性的目的才被添加到常规数组上。不过，接下来的小节你就会学到如何用类 型化数组来按位操作数值，此时这两个方法就会变得非常有用了。
 
 ## 类型数组
 
