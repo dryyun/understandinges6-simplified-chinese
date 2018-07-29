@@ -1,24 +1,12 @@
+## 学习笔记
+
 # 模块（Encapsulating Code With Modules）
 
 
 JavaScript 采用 “共享一切” 的代码加载方式是该语言中最令人迷惑且容易出错的方面之一。其它语言使用包（package）的概念来定义代码的作用范围，然而在 ECMAScript 6 之前，每个 JavaScript 文件中定义的内容都由全局作用域共享。当 web 应用变得复杂并需要书写更多的 JavaScript 代码时，上述加载方式会出现命名冲突或安全方面的问题。ECMAScript 6 的目标之一就是解决作用域的问题并将 JavaScript 应用中的代码整理得更有条理，于是模块应运而生。
 
-<br />
 
-### 本章小结
-* [什么是模块?](#What-are-Modules)
-* [输出的基本概念](#Basic-Exporting)
-* [引入的基本概念](#Basic-Importing)
-* [export 和 import 的重命名](#Renaming-Exports-and-Imports)
-* [模块中的默认值](#Default-Values-in-Modules)
-* [绑定的再输出](#Re-exporting-a-Binding)
-* [全局引入](#Importing-Without-Bindings)
-* [模块加载](#Loading-Modules)
-* [总结](#Summary)
-
-<br />
-
-### <a id="What-are-Modules"> 什么是模块？（What are Modules?） </a>
+## 什么是模块？（What are Modules?）
 
 
 模块是指采取不同于现有加载方式的 JavaScript 文件（与 script 这种传统的加载模式相对）。这种方式很有必要，因为它和 script 使用不同的语义：
@@ -32,10 +20,8 @@ JavaScript 采用 “共享一切” 的代码加载方式是该语言中最令�
 
 这些差异刚开始看上去觉得并不是很大，不过它们体现了 JavaScript 关于加载和计算代码的显著变更，本章随后我会解释它们。模块真正的好处在于可以输出和引入需要的绑定，而不是文件中的所有内容。理解输出和引入是领悟模块与 script 之间差异的基础。
 
-<br />
 
-### <a id="Basic-Exporting"> 引入的基本概念（Basic Exporting） </a>
-
+## 基本的导出（Basic Exporting）
 
 你可以使用 export 关键字来对外暴露模块中的部分代码。一般情况下，你可以在任何变量，函数或类声明之前添加这个关键字来输出它们，像这样：
 
@@ -76,9 +62,8 @@ export { multiply };
 
 其次，multiply() 函数并未在定义的时候被输出。这是因为你不必每次都要输出一个声明：你可以输出一个引用。最后，该例中并未输出 subtract() 函数。该函数在外部是不可见的，因为任何未显式输出的变量，函数或类都是模块私有的。
 
-<br />
 
-### <a id="Basic-Importing"> 引入的基本概念（Basic Importing） </a>
+##  基本的导入（Basic Importing）
 
 
 一旦你有了包含输出内容的模块，你可以在另一个模块内使用 import 关键字来获取它的相关功能。import 语句包含两部分内容，分别为引入的标识符和输出这些标识符的模块。以下是该语句的基本形式：
@@ -97,9 +82,8 @@ import 之后的花括号表示从模块中引入的绑定。from 关键字表�
 
 当从模块引入了一个绑定时，该绑定的行为类似于 const 。这意味着你不能再次定义一个同名的变量（包括再次引入同名绑定），或在 import 语句之前使用这个标识符，更改它的值也是不被允许的。
 
-<br />
 
-#### 引入单个绑定（Importing a Single Binding）
+### 引入单个绑定（Importing a Single Binding）
 
 假设 “输出的基本概念” 一节中的首个示例中的代码包含在一个命名为 example.js 的模块中。你可以使用多种方式来引入并使用这个模块中的绑定。例如，只引入一个标识符：
 
@@ -118,10 +102,8 @@ sum = 1;        // 错误
 
 > **注意**：确保文件的路径开头包含 /，./ 或 ../ 以保证浏览器和 Node.js 之间的最佳兼容
 
-<br />
 
-#### 引入多个绑定（Importing Multiple Bindings）
-
+### 引入多个绑定（Importing Multiple Bindings）
 
 如果你想从 example 模块引入多个绑定，你可以像下面这样显式的列出它们：
 
@@ -134,9 +116,8 @@ console.log(multiply(1, 2));        // 2
 
 该例引入了 example 模块中的三个绑定：sum，multiply 和 magicNumber。之后它们以类似于本地定义的方式使用。
 
-<br />
 
-#### 引入所有绑定（Importing All of a Module）
+### 导入整个模块（Importing All of a Module）
 
 
 有一种特殊的情况允许你将整个模块视为单个对象引入。所有的输出可以以对象属性的方式访问。例如：
@@ -184,10 +165,8 @@ function tryImport() {
 
 > 基于和 export 相同的理由，你也不能动态地使用 import 绑定。export 和 import 关键字是静态的，所以文本编辑器可以很容易的获取模块中可用内容的信息。
 
-<br />
 
-#### import 绑定中微妙的怪异之处（A Subtle Quirk of Imported Bindings）
-
+### import 绑定中微妙的怪异之处（A Subtle Quirk of Imported Bindings）
 
 ECMAScript 6 中的 import 语句创建了只读的变量，函数和类而不仅仅只是普通的针对源绑定的引用。虽然从模块中引入的绑定不能对值进行更改，但是输出标识符的模块有这个权利。假如你想使用下面的模块：
 
@@ -212,10 +191,8 @@ name = "Nicholas";       // 错误
 
 调用 setName("Greg") 会回溯到输出 setName() 的模块本身并在那里执行，将 name 更改为 "Greg"。注意这个变化会自动反射到引入的 name 绑定上，因为它是模块输出的 name 标识符的本地命名。以上代码中使用的 name 和模块输出的 name 并不相同。
 
-<br />
 
-### <a id="Renaming-Exports-and-Imports"> export 和 import 的重命名（Renaming Exports and Imports） </a>
-
+##  export 和 import 的重命名（Renaming Exports and Imports）
 
 有时候，你不想使用模块中输出的变量，函数和类的原始命名。幸运的是，不论是输出还是引入你都可以对命名进行更改。
 
@@ -245,16 +222,13 @@ console.log(sum(1, 2));             // 3
 
 该段代码引入了 add() 函数并将它重命名为 sum()（本地变量）。这意味着 add 标识符没有添加到该模块内。
 
-<br />
 
-### <a id="Default-Values-in-Modules"> 模块中的默认值（Default Values in Modules） </a>
-
+##  模块中的默认值（Default Values in Modules）
 
 当输出和引用模块的默认值时，模块语法得到了充分地利用，因为这种模式在其它模块系统，如 CommonJS（另一种在浏览器之外运行 JavaScrpit 的模块规范）。模块的默认值是由 default 关键字定义的单个变量，函数或类，而且你只能给模块设定一个默认值。多次使用 default 关键字会抛出语法错误。
 
-<br />
 
-#### 输出默认值（Exporting Default Values）
+### 导出默认值（Exporting Default Values）
 
 
 下面是个使用 default 关键字的简单例子：
@@ -291,9 +265,8 @@ export { sum as default };
 
 在重命名的输出中，default 标识符有着特殊的含义，它表明某个值应该由模块默认输出。由于在 JavaScript 中 default 是个关键字，所以它不能被用作变量，函数或类的名称（不过它可以用作属性名）。所以使用 default 作为重命名的输出是个特例，不过它与非默认输出语法保持了一致性。
 
-<br />
 
-#### 引入默认值（Importing Default Values）
+### 导入默认值（Importing Default Values）
 
 你可以使用下面的语法引入模块的默认值：
 
@@ -339,9 +312,8 @@ console.log(color);         // "red"
 
 该段代码中，默认的输出（default）被重命名为 sum 并和 color 同时被引入。它和上个示例是等效的。
 
-<br />
 
-### <a id="Re-exporting-a-Binding"> 绑定的再输出（Re-exporting a Binding） </a>
+##  绑定的再输出（Re-exporting a Binding）
 
 有时你会想重新输出一些引入的模块（例如，你创建了包含一些小模块的库）。你可以使用本章中已经讨论过的方式来重新输出它们：
 
@@ -374,9 +346,8 @@ export * from "./example.js";
 
 输出的全部内容包括默认值（default）和已命名的输出，这会影响当前模块可输出的内容。如果 example.js 包含默认的输出值，你就不能再使用 export default 语法来定义当前模块的默认值。
 
-<br />
 
-### <a id="Importing-Without-Bindings"> 全局引入（Importing Without Bindings） </a>
+## 无绑定导入（Importing Without Bindings）
 
 一些模块可能并不输出任何内容，相反，他们只是修改全局作用域内的对象。虽然模块内部的顶级变量，函数和类并不会自动添加到全局作用域，但这不代表它们不能访问全局作用域。共享的内置对象如 Array 和 Object 在模块内部是可供访问的，而且对它们的修改还会影响到其它模块。
 
@@ -413,15 +384,12 @@ items.pushAll(colors);
 
 > 全局引入一般被用来创建 polyfill 和 shim 。
 
-<br />
-
-### <a id="Loading-Modules"> 模块加载（Loading Modules） </a>
+## 模块加载（Loading Modules）
 
 ECMAScript 6 只定义了模块的语法而未说明如何加载它们。后者如果纳入规范会比较复杂，它应由实现环境自行决定。ECMAScript 6 只对一个未详细说明并被称为 HostResolveImportedModule 的内部操作定义了加载机制的语法和相关抽象，并没有规范所有的 JavaScript 环境。具体实现由浏览器或 Node.js 根据各自环境的情况来自行决定。
 
-<br />
 
-#### 在浏览器中使用模块（Using Modules in Web Browsers）
+### 在浏览器中使用模块（Using Modules in Web Browsers）
 
 
 在 ECMAScript 6 出现之前，浏览器中的 web 应用拥有多种加载 JavaScript 的方式。如下所示：
@@ -517,10 +485,8 @@ let result = sum(1, 2);
 
 > 向 `<script type="module">` 添加 defer 属性会被忽略，因为它已经实行了该属性。
 
-<br />
 
 ##### 浏览器中异步模块的加载顺序（Asynchronous Module Loading in Web Browsers）
-
 
 或许你对 `script` 元素的 async 属性十分熟悉。当使用 script 时，async 会让 script 在下载和解析之后立即执行。文档中 async script 出现的顺序并不会会影响相互之间的执行顺序。它们在下载之后会立即执行而不需要等待文档解析完毕。
 
@@ -537,7 +503,6 @@ async 属性也可以用于模块。对 `<script type="module">` 添加 async �
 <br />
 
 ##### 在 worker 中加载模块（Loading Modules as Workers）
-
 
 worker，包括 web worker 和 service worker，会在网页之外的上下文中执行 JavaScript 代码。创建一个新的 worker 需要 worker 实例（或类）并传递 JavaScript 文件的位置。worker 默认的加载机制是将文件视为 script，像这样：
 
@@ -557,10 +522,7 @@ let worker = new Worker("module.js", { type: "module" });
 
 worker 模块与 worker script 大体上相同，不过还是有一些区别。首先，worker script 只能由同源的网页引用并加载，而 worker 模块没有完全被该限制所束缚。虽然 worker 模块的默认限制与 worker script 相同，不过当响应头中包含跨域资源共享（Cross-Origin Resource Sharing, CORS）设置时，它们可以加载那些文件。此外，worker scrpit 使用 self.importScripts() 方法来向 worker 引入额外的 script，但是该方法在 worker 模块中不会执行，你应该使用 import 。
 
-<br />
-
-##### Browser Module Specifier Resolution
-
+### 浏览器模块说明符解析 （Browser Module Specifier Resolution）
 
 本章到此为止的所有示例都是用了相对模块指示符（relative module specifier）路径，如 "./example.js" 。浏览器中的模块指示符需要符合以下形式之一：
 
@@ -597,10 +559,7 @@ import { second } from "example/index.js";
 
 以上的模块指示符不能被浏览器识别。它们是以非法的形式存在（缺失正确的起始字符），即使它们能作为 `<script>` 标签中的 src 属性值并正常工作。`<script>` 和 import 之间的这种差异是有意制造的。
 
-<br />
-
-### Summary
-
+## 总结（Summary）
 
 ECMAScript 6 向 JavaScript 语言中添加了模块以用来打包和封装功能。模块的行为和 script 不同，它们不会修改全局作用域中的顶级变量，函数和类，同时 this 的值为 undefined 。为了实现这些差异，模块使用了不同的加载机制。
 
@@ -609,5 +568,3 @@ ECMAScript 6 向 JavaScript 语言中添加了模块以用来打包和封装功�
 如果模块操作的是全局作用域，那么它不必输出任何内容。实际上你不必使用任何绑定来引入这个模块。
 
 因为模块必须由不同的方式来加载，浏览器引入了 `<script type="module">` 来表示该源文件或内联代码被视为一个模块。`<script type="module">` 默认以 defer 属性的行为来加载模块文件。在文档被完整解析以后，它们会以出现在文档中的顺序来先后执行。
-
-<br />

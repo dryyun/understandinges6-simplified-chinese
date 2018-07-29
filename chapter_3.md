@@ -1287,7 +1287,7 @@ function factorial(n, p = 1) {
 
 在书写递归函数的时候你应该考虑尾调用优化，因为它能提供显著的性能提升，尤其是那些带有昂贵计算（computationally-expensive）的函数。
 
-<br />
+
 
 ## 总结（Summary）
 
