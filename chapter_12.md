@@ -1,34 +1,12 @@
-# Proxies and the Reflection API
 
+# 代理（Proxy）和反射（Reflection）API
 
 ECMAScript 5 and ECMAScript 6 were both developed with demystifying JavaScript functionality in mind. For example, JavaScript environments contained nonenumerable and nonwritable object properties before ECMAScript 5, but developers couldn’t define their own nonenumerable or nonwritable properties. ECMAScript 5 included the Object.defineProperty() method to allow developers to do what JavaScript engines could do already.
 
 ECMAScript 6 gives developers further access to JavaScript engine capabilities by adding built-in objects. To allow developers to create built-in objects, the language exposes the inner workings of objects through proxies, which are wrappers that can intercept and alter low-level operations of the JavaScript engine. This chapter starts by describing the problem that proxies are meant to address in detail, and then discusses how you can create and use proxies effectively.
 
-<br />
 
-### Summary
-* [](#The-Array-Problem)
-* [](#What-are-Proxies-and-Reflection)
-* [](#Creating-a-Simple-Proxy)
-* [](#Validating-Properties-Using-the-set-Trap)
-* [](#Object-Shape-Validation-Using-the-get-Trap)
-* [](#Hiding-Property-Existence-Using-the-has-Trap)
-* [](#Preventing-Property-Deletion-with-the-deleteProperty-Trap)
-* [](#Prototype-Proxy-Traps)
-* [](#Object-Extensibility-Traps)
-* [](#Property-Descriptor-Traps)
-* [](#The-ownKeys-Trap)
-* [](#Function-Proxies-with-the-apply-and-construct-Traps)
-* [](#Revocable-Proxies)
-* [](#Solving-the-Array-Problem)
-* [](#Using-a-Proxy-as-a-Prototype)
-* [](#Summary)
-
-<br />
-
-### <a id="The-Array-Problem"> The Array Problem </a>
-
+## 数组的问题
 
 The JavaScript array object behaves in ways that developers couldn’t mimic in their own objects before ECMASCript 6. An array’s length property is affected when you assign values to specific array items, and you can modify array items by modifying the length property. For example:
 
@@ -56,10 +34,8 @@ The colors array starts with three items. Assigning "black" to colors[3] automat
 
 > This nonstandard behavior is why arrays are considered exotic objects in ECMAScript 6.
 
-<br />
 
-### <a id="What-are-Proxies-and-Reflection"> What are Proxies and Reflection? </a>
-
+## 什么是代理与反射？
 
 You can create a proxy to use in place of another object (called the target) by calling new Proxy(). The proxy virtualizes the target so that the proxy and the target appear to be the same object to functionality using the proxy.
 
@@ -91,10 +67,7 @@ Each trap overrides some built-in behavior of JavaScript objects, allowing you t
 
 > The original ECMAScript 6 specification had an additional trap called enumerate that was designed to alter how for-in and Object.keys() enumerated properties on an object. However, the enumerate trap was removed in ECMAScript 7 (also called ECMAScript 2016) as difficulties were discovered during implementation. The enumerate trap no longer exists in any JavaScript environment and is therefore not covered in this chapter.
 
-<br />
-
-### <a id="Creating-a-Simple-Proxy"> Creating a Simple Proxy </a>
-
+## 创建一个简单的代理
 
 When you use the Proxy constructor to make a proxy, you’ll pass it two arguments: the target and a handler. A handler is an object that defines one or more traps. The proxy uses the default behavior for all operations except when traps are defined for that operation. To create a simple forwarding proxy, you can use a handler without any traps:
 
@@ -114,10 +87,8 @@ console.log(target.name);       // "target"
 
 In this example, proxy forwards all operations directly to target. When "proxy" is assigned to the proxy.name property, name is created on target. The proxy itself is not storing this property; it’s simply forwarding the operation to target. Similarly, the values of proxy.name and target.name are the same because they are both references to target.name. That also means setting target.name to a new value causes proxy.name to reflect the same change. Of course, proxies without traps aren’t very interesting, so what happens when you define a trap?
 
-<br />
 
-### <a id="Validating-Properties-Using-the-set-Trap"> Validating Properties Using the set Trap </a>
-
+## 使用 set 陷阱函数验证属性值
 
 Suppose you want to create an object whose property values must be numbers. That means every new property added to the object must be validated, and an error must be thrown if the value isn’t a number. To accomplish this, you could define a set trap that overrides the default behavior of setting a value. The set trap receives four arguments:
 
@@ -172,10 +143,8 @@ When proxy.anotherName is assigned a string, however, an error is thrown. The an
 
 Where the set proxy trap lets you intercept when properties are being written to, the get proxy trap lets you intercept when properties are being read.
 
-<br />
 
-### <a id="Object-Shape-Validation-Using-the-get-Trap"> Object Shape Validation Using the get Trap </a>
-
+## 使用 get 陷阱函数进行对象外形验证
 
 One of the interesting, and sometimes confusing, aspects of JavaScript is that reading nonexistent properties doesn’t throw an error. Instead, the value undefined is used for the property value, as in this example:
 
@@ -222,10 +191,8 @@ In this example, the get trap intercepts property read operations. The in operat
 
 This code allows new properties like proxy.name to be added, written to, and read from with no problems. The last line contains a typo: proxy.nme should probably be proxy.name instead. This throws an error because nme doesn’t exist as a property.
 
-<br />
 
-### <a id="Hiding-Property-Existence-Using-the-has-Trap"> Hiding Property Existence Using the has Trap </a>
-
+## 使用 has 陷阱函数隐藏属性
 
 The in operator determines whether a property exists on a given object and returns true if there is either an own property or a prototype property matching the name or symbol. For example:
 
@@ -272,10 +239,7 @@ console.log("toString" in proxy);   // true
 
 The has trap for proxy checks to see if key is "value" returns false if so. Otherwise, the default behavior is used via a call to the Reflect.has() method. As a result, the in operator returns false for the value property even though value actually exists on the target. The other properties, name and toString, correctly return true when used with the in operator.
 
-<br />
-
-### <a id="Preventing-Property-Deletion-with-the-deleteProperty-Trap"> Preventing Property Deletion with the deleteProperty Trap </a>
-
+## 使用 deleteProperty 陷阱函数避免属性被删除
 
 The delete operator removes a property from an object and returns true when successful and false when unsuccessful. In strict mode, delete throws an error when you attempt to delete a nonconfigurable property; in nonstrict mode, delete simply returns false. Here’s an example:
 
@@ -348,10 +312,8 @@ console.log("name" in proxy);       // false
 
 This code is very similar to the has trap example in that the deleteProperty trap checks to see if the key is "value" and returns false if so. Otherwise, the default behavior is used by calling the Reflect.deleteProperty() method. The value property can’t be deleted through proxy because the operation is trapped, but the name property is deleted as expected. This approach is especially useful when you want to protect properties from deletion without throwing an error in strict mode.
 
-<br />
 
-### <a id="Prototype-Proxy-Traps"> Prototype Proxy Traps </a>
-
+## 原型代理陷阱
 
 Chapter 4 introduced the Object.setPrototypeOf() method that ECMAScript 6 added to complement the ECMAScript 5 Object.getPrototypeOf() method. Proxies allow you to intercept execution of both methods through the setPrototypeOf and getPrototypeOf traps. In both cases, the method on Object calls the trap of the corresponding name on the proxy, allowing you to alter the methods’ behavior.
 
@@ -362,10 +324,8 @@ Since there are two traps associated with prototype proxies, there’s a set of 
 
 These are the same arguments passed to the Object.setPrototypeOf() and Reflect.setPrototypeOf() methods. The getPrototypeOf trap, on the other hand, only receives the trapTarget argument, which is the argument passed to the Object.getPrototypeOf() and Reflect.getPrototypeOf() methods.
 
-<br />
 
-#### How Prototype Proxy Traps Work
-
+### 原型代理陷阱的运行机制
 
 There are some restrictions on these traps. First, the getPrototypeOf trap must return an object or null, and any other return value results in a runtime error. The return value check ensures that Object.getPrototypeOf() will always return an expected value. Similarly, the return value of the setPrototypeOf trap must be false if the operation doesn’t succeed. When setPrototypeOf returns false, Object.setPrototypeOf() throws an error. If setPrototypeOf returns any value other than false, then Object.setPrototypeOf() assumes the operation succeeded.
 
@@ -426,10 +386,8 @@ Object.setPrototypeOf(proxy, {});
 
 In this example, you can use target and proxy interchangeably and get the same results because the getPrototypeOf and setPrototypeOf traps are just passing through to use the default implementation. It’s important that this example use the Reflect.getPrototypeOf() and Reflect.setPrototypeOf() methods rather than the methods of the same name on Object due to some important differences.
 
-<br />
 
-#### Why Two Sets of Methods?
-
+### 为什么有两组方法
 
 The confusing aspect of Reflect.getPrototypeOf() and Reflect.setPrototypeOf() is that they look suspiciously similar to the Object.getPrototypeOf() and Object.setPrototypeOf() methods. While both sets of methods perform similar operations, there are some distinct differences between the two.
 
@@ -468,19 +426,15 @@ In this example, Object.setPrototypeOf() returns target1 as its value, but Refle
 
 > Both sets of methods will call the getPrototypeOf and setPrototypeOf proxy traps when used on a proxy.
 
-<br />
 
-### <a id="Object-Extensibility-Traps"> Object Extensibility Traps </a>
+## 对象可扩展性陷阱
 
 
 ECMAScript 5 added object extensibility modification through the Object.preventExtensions() and Object.isExtensible() methods, and ECMAScript 6 allows proxies to intercept those method calls to the underlying objects through the preventExtensions and isExtensible traps. Both traps receive a single argument called trapTarget that is the object on which the method was called. The isExtensible trap must return a boolean value indicating whether the object is extensible while the preventExtensions trap must return a boolean value indicating if the operation succeeded.
 
 There are also Reflect.preventExtensions() and Reflect.isExtensible() methods to implement the default behavior. Both return boolean values, so they can be used directly in their corresponding traps.
 
-<br />
-
-#### Two Basic Examples
-
+### 两个基本示例
 
 To see object extensibility traps in action, consider the following code, which implements the default behavior for the isExtensible and preventExtensions traps:
 
@@ -530,10 +484,8 @@ console.log(Object.isExtensible(proxy));        // true
 
 Here, the call to Object.preventExtensions(proxy) is effectively ignored because the preventExtensions trap returns false. The operation isn’t forwarded to the underlying target, so Object.isExtensible() returns true.
 
-<br />
 
-#### Duplicate Extensibility Methods
-
+### 重复的可扩展性方法
 
 You may have noticed that, once again, there are seemingly duplicate methods on Object and Reflect. In this case, they’re more similar than not. The methods Object.isExtensible() and Reflect.isExtensible() are similar except when passed a non-object value. In that case, Object.isExtensible() always returns false while Reflect.isExtensible() throws an error. Here’s an example of that behavior:
 
@@ -563,9 +515,8 @@ let result3 = Reflect.preventExtensions(2);
 
 Here, Object.preventExtensions() passes through the value 2 as its return value even though 2 isn’t an object. The Reflect.preventExtensions() method returns true when an object is passed to it and throws an error when 2 is passed to it.
 
-<br />
 
-### <a id="Property-Descriptor-Traps"> Property Descriptor Traps </a>
+## 属性描述符陷阱
 
 
 One of the most important features of ECMAScript 5 was the ability to define property attributes using the Object.defineProperty() method. In previous versions of JavaScript, there was no way to define an accessor property, make a property read-only, or make a property nonenumerable. All of these are possible with the Object.defineProperty() method, and you can retrieve those attributes with the Object.getOwnPropertyDescriptor() method.
@@ -602,10 +553,8 @@ console.log(descriptor.value);      // "proxy"
 
 This code defines a property called "name" on the proxy with the Object.defineProperty() method. The property descriptor for that property is then retrieved by the Object.getOwnPropertyDescriptor() method.
 
-<br />
 
-#### Blocking Object.defineProperty()
-
+### 给 Object.defineProperty() 添加限制
 
 The defineProperty trap requires you to return a boolean value to indicate whether the operation was successful. When true is returned, Object.defineProperty() succeeds as usual; when false is returned, Object.defineProperty() throws an error. You can use this functionality to restrict the kinds of properties that the Object.defineProperty() method can define. For instance, if you want to prevent symbol properties from being defined, you could check that the key is a string and return false if not, like this:
 
@@ -642,10 +591,8 @@ The defineProperty proxy trap returns false when key is a symbol and otherwise p
 
 > You can also have Object.defineProperty() silently fail by returning true and not calling the Reflect.defineProperty() method. That will suppress the error while not actually defining the property.
 
-<br />
 
-#### Descriptor Object Restrictions
-
+### 描述符对象限制
 
 To ensure consistent behavior when using the Object.defineProperty() and Object.getOwnPropertyDescriptor() methods, descriptor objects passed to the defineProperty trap are normalized. Objects returned from getOwnPropertyDescriptor trap are always validated for the same reason.
 
@@ -687,17 +634,12 @@ let descriptor = Object.getOwnPropertyDescriptor(proxy, "name");
 
 The property name isn’t allowable on property descriptors, so when Object.getOwnPropertyDescriptor() is called, the getOwnPropertyDescriptor return value triggers an error. This restriction ensures that the value returned by Object.getOwnPropertyDescriptor() always has a reliable structure regardless of use on proxies.
 
-<br />
 
-#### Duplicate Descriptor Methods
-
+### 重复的描述符方法
 
 Once again, ECMAScript 6 has some confusingly similar methods, as the Object.defineProperty() and Object.getOwnPropertyDescriptor() methods appear to do the same thing as the Reflect.defineProperty() and Reflect.getOwnPropertyDescriptor() methods, respectively. Like other method pairs discussed earlier in this chapter, these have some subtle but important differences.
 
-<br />
-
-##### defineProperty() Methods
-
+#### defineProperty() 方法
 
 The Object.defineProperty() and Reflect.defineProperty() methods are exactly the same except for their return values. The Object.defineProperty() method returns the first argument, while Reflect.defineProperty() returns true if the operation succeeded and false if not. For example:
 
@@ -715,10 +657,9 @@ console.log(result2);                   // true
 
 When Object.defineProperty() is called on target, the return value is target. When Reflect.defineProperty() is called on target, the return value is true, indicating that the operation succeeded. Since the defineProperty proxy trap requires a boolean value to be returned, it’s better to use Reflect.defineProperty() to implement the default behavior when necessary.
 
-<br />
 
-##### getOwnPropertyDescriptor() Methods
 
+#### getOwnPropertyDescriptor() 方法
 
 The Object.getOwnPropertyDescriptor() method coerces its first argument into an object when a primitive value is passed and then continues the operation. On the other hand, the Reflect.getOwnPropertyDescriptor() method throws an error if the first argument is a primitive value. Here’s an example showing both:
 
@@ -732,9 +673,8 @@ let descriptor2 = Reflect.getOwnPropertyDescriptor(2, "name");
 
 The Object.getOwnPropertyDescriptor() method returns undefined because it coerces 2 into an object, and that object has no name property. This is the standard behavior of the method when a property with the given name isn’t found on an object. When Reflect.getOwnPropertyDescriptor() is called, however, an error is thrown immediately because that method doesn’t accept primitive values for the first argument.
 
-<br />
 
-### <a id="The-ownKeys-Trap"> The ownKeys Trap </a>
+## ownKeys陷阱
 
 
 The ownKeys proxy trap intercepts the internal method [[OwnPropertyKeys]] and allows you to override that behavior by returning an array of values. This array is used in four methods: the Object.keys() method, the Object.getOwnPropertyNames() method, the Object.getOwnPropertySymbols() method, and the Object.assign() method. (The Object.assign() method uses the array to determine which properties to copy.)
@@ -780,10 +720,8 @@ While the ownKeys proxy trap allows you to alter the keys returned from a small 
 
 > The ownKeys trap also affects the for-in loop, which calls the trap to determine which keys to use inside of the loop.
 
-<br />
 
-### <a id="Function-Proxies-with-the-apply-and-construct-Traps"> Function Proxies with the apply and construct Traps </a>
-
+## 函数代理中的apply和construct陷阱
 
 Of all the proxy traps, only apply and construct require the proxy target to be a function. Recall from Chapter 3 that functions have two internal methods called [[Call]] and [[Construct]] that are executed when a function is called without and with the new operator, respectively. The apply and construct traps correspond to and let you override those internal methods. When a function is called without new, the apply trap receives, and Reflect.apply() expects, the following arguments:
 
@@ -823,10 +761,8 @@ console.log(instance instanceof target);    // true
 
 This example has a function that returns the number 42. The proxy for that function uses the apply and construct traps to delegate those behaviors to the Reflect.apply() and Reflect.construct() methods, respectively. The end result is that the proxy function works exactly like the target function, including identifying itself as a function when typeof is used. The proxy is called without new to return 42 and then is called with new to create an object called instance. The instance object is considered an instance of both proxy and target because instanceof uses the prototype chain to determine this information. Prototype chain lookup is not affected by this proxy, which is why proxy and target appear to have the same prototype to the JavaScript engine.
 
-<br />
 
-#### Validating Function Parameters
-
+### 验证函数参数
 
 The apply and construct traps open up a lot of possibilities for altering the way a function is executed. For instance, suppose you want to validate that all arguments are of a specific type. You can check the arguments in the apply trap:
 
@@ -896,10 +832,8 @@ NumbersProxy(1, 2, 3, 4);
 
 Here, the apply trap throws an error while the construct trap uses the Reflect.construct() method to validate input and return a new instance. Of course, you can accomplish the same thing without proxies using new.target instead.
 
-<br />
 
-#### Calling Constructors Without new
-
+### 不用 new 调用构造函数
 
 Chapter 3 introduced the new.target metaproperty. To review, new.target is a reference to the function on which new is called, meaning that you can tell if a function was called using new or not by checking the value of new.target like this:
 
@@ -948,10 +882,8 @@ console.log(instance.values);               // [1,2,3,4]
 
 The NumbersProxy function allows you to call Numbers without using new and have it behave as if new were used. To do so, the apply trap calls Reflect.construct() with the arguments passed into apply. The new.target inside of Numbers is equal to Numbers itself, and no error is thrown. While this is a simple example of modifying new.target, you can also do so more directly.
 
-<br />
 
-#### Overriding Abstract Base Class Constructors
-
+### 覆写抽象基类构造函数
 
 You can go one step further and specify the third argument to Reflect.construct() as the specific value to assign to new.target. This is useful when a function is checking new.target against a known value, such as when creating an abstract base class constructor (discussed in Chapter 9). In an abstract base class constructor, new.target is expected to be something other than the class constructor itself, as in this example:
 
@@ -1003,10 +935,8 @@ console.log(instance.values);               // [1,2,3,4]
 
 The AbstractNumbersProxy uses the construct trap to intercept the call to the new AbstractNumbersProxy() method. Then, the Reflect.construct() method is called with arguments from the trap and adds an empty function as the third argument. That empty function is used as the value of new.target inside of the constructor. Because new.target is not equal to AbstractNumbers, no error is thrown and the constructor executes completely.
 
-<br />
 
-#### Callable Class Constructors
-
+### 可调用的类构造函数
 
 Chapter 9 explained that class constructors must always be called with new. That happens because the internal [[Call]] method for class constructors is specified to throw an error. But proxies can intercept calls to the [[Call]] method, meaning you can effectively create callable class constructors by using a proxy. For instance, if you want a class constructor to work without using new, you can use the apply trap to create a new instance. Here’s some sample code:
 
@@ -1032,9 +962,8 @@ console.log(me instanceof PersonProxy); // true
 
 The PersonProxy object is a proxy of the Person class constructor. Class constructors are just functions, so they behave like functions when used in proxies. The apply trap overrides the default behavior and instead returns a new instance of trapTarget that’s equal to Person. (I used trapTarget in this example to show that you don’t need to manually specify the class.) The argumentList is passed to trapTarget using the spread operator to pass each argument separately. Calling PersonProxy() without using new returns an instance of Person; if you attempt to call Person() without new, the constructor will still throw an error. Creating callable class constructors is something that is only possible using proxies.
 
-<br />
 
-### <a id="Revocable-Proxies"> Revocable Proxies </a>
+## 可撤销的代理
 
 
 Normally, a proxy can’t be unbound from its target once the proxy has been created. All of the examples to this point in this chapter have used nonrevocable proxies. But there may be situations when you want to revoke a proxy so that it can no longer be used. You’ll find it most helpful to revoke proxies when you want to provide an object through an API for security purposes and maintain the ability to cut off access to some functionality at any point in time.
@@ -1063,9 +992,8 @@ console.log(proxy.name);
 
 This example creates a revocable proxy. It uses destructuring to assign the proxy and revoke variables to the properties of the same name on the object returned by the Proxy.revocable() method. After that, the proxy object can be used just like a nonrevocable proxy object, so proxy.name returns "target" because it passes through to target.name. Once the revoke() function is called, however, proxy no longer functions. Attempting to access proxy.name throws an error, as will any other operation that would trigger a trap on proxy.
 
-<br />
 
-### <a id="Solving-the-Array-Problem"> Solving the Array Problem </a>
+## 解决数组的问题
 
 
 At the beginning of this chapter, I explained how developers couldn’t mimic the behavior of an array accurately in JavaScript prior to ECMAScript 6. Proxies and the reflection API allow you to create an object that behaves in the same manner as the built-in Array type when properties are added and removed. To refresh your memory, here’s an example showing the behavior that proxies help to mimick:
@@ -1095,9 +1023,9 @@ There are two particularly important behaviors to notice in this example:
 
 These two behaviors are the only ones that need to be mimicked to accurately recreate how built-in arrays work. The next few sections describe how to make an object that correctly mimics them.
 
-<br />
 
-#### Detecting Array Indices
+
+### 检索数组索引
 
 
 Keep in mind that assigning to an integer property key is a special case for arrays, as those are treated differently from non-integer keys. The ECMAScript 6 specification gives these instructions on how to determine if a property key is an array index:
@@ -1120,9 +1048,8 @@ function isArrayIndex(key) {
 
 The toUint32() function converts a given value into an unsigned 32-bit integer using an algorithm described in the specification. The isArrayIndex() function first converts the key into a uint32 and then performs the comparisons to determine if the key is an array index or not. With these utility functions available, you can start to implement an object that will mimic a built-in array.
 
-<br />
 
-#### Increasing length when Adding New Elements
+### 添加新元素时增加  length
 
 
 You might have noticed that both array behaviors I described rely on the assignment of a property. That means you really only need to use the set proxy trap to accomplish both behaviors. To get started, here’s an example that implements the first of the two behaviors by incrementing the length property when an array index larger than length - 1 is used:
@@ -1179,10 +1106,8 @@ The initial custom array is created by calling createMyArray() with a length of 
 
 With the first behavior working, it’s time to move on to the second.
 
-<br />
 
-#### Deleting Elements on Reducing length
-
+### 减少 length 的值来删除元素
 
 The first array behavior to mimic is used only when an array index is greater than or equal to the length property. The second behavior does the opposite and removes array items when the length property is set to a smaller value than it previously contained. That involves not only changing the length property, but also deleting all items that might otherwise exist. For instance, if an array with a length of 4 has length set to 2, the items in positions 2 and 3 are deleted. You can accomplish this inside the set proxy trap alongside the first behavior. Here’s the previous example again, with an updated createMyArray method:
 
@@ -1251,10 +1176,8 @@ This example adds four colors to colors and then sets the length property to 2. 
 
 With both behaviors implemented, you can easily create an object that mimics the behavior of built-in arrays. But doing so with a function isn’t as desirable as creating a class to encapsulate this behavior, so the next step is to implement this functionality as a class.
 
-<br />
 
-#### Implementing the MyArray Class
-
+### 实现 MyArray 类
 
 The simplest way to create a class that uses a proxy is to define the class as usual and then return a proxy from the constructor. That way, the object returned when a class is instantiated will be the proxy instead of the instance. (The instance is the value of this inside the constructor.) The instance becomes the target of the proxy and the proxy is returned as if it were the instance. The instance will be completely private and you won’t be able to access it directly, though you’ll be able to access it indirectly through the proxy.
 
@@ -1346,10 +1269,9 @@ This code creates a MyArray class that returns a proxy from its constructor. The
 
 Although returning a proxy from a class constructor is easy, it does mean that a new proxy is created for every instance. There is, however, a way to have all instances share one proxy: you can use the proxy as a prototype.
 
-<br />
 
-### <a id="Using-a-Proxy-as-a-Prototype"> Using a Proxy as a Prototype </a>
 
+## 将代理用作原型
 
 Proxies can be used as prototypes, but doing so is a bit more involved than the previous examples in this chapter. When a proxy is a prototype, the proxy traps are only called when the default operation would normally continue on to the prototype, which does limit a proxy’s capabilities as a prototype. Consider this example:
 
@@ -1379,9 +1301,9 @@ The Object.defineProperty() method is called on newTarget to create an own prope
 
 While proxies are severely limited when used as prototypes, there are a few traps that are still useful.
 
-<br />
 
-#### Using the get Trap on a Prototype
+
+### 在原型上使用 get 陷阱
 
 
 When the internal [[Get]] method is called to read a property, the operation looks for own properties first. If an own property with the given name isn’t found, then the operation continues to the prototype and looks for a property there. The process continues until there are no further prototypes to check.
@@ -1410,9 +1332,9 @@ When the last line executes, unknown isn’t an own property of thing, so the op
 
 It’s important to understand that in this example, trapTarget and receiver are different objects. When a proxy is used as a prototype, the trapTarget is the prototype object itself while the receiver is the instance object. In this case, that means trapTarget is equal to target and receiver is equal to thing. That allows you access both to the original target of the proxy and the object on which the operation is meant to take place.
 
-<br />
 
-#### Using the set Trap on a Prototype
+
+### 在原型上使用 set 陷阱
 
 
 The internal [[Set]] method also checks for own properties and then continues to the prototype if needed. When you assign a value to an object property, the value is assigned to the own property with the same name if it exists. If no own property with the given name exists, then the operation continues to the prototype. The tricky part is that even though the assignment operation continues to the prototype, assigning a value to that property will create a property on the instance (not the prototype) by default, regardless of whether a property of that name exists on the prototype.
@@ -1445,9 +1367,9 @@ In this example, target starts with no own properties. The thing object has a pr
 
 Once the name property is created on thing, setting thing.name to a different value will no longer call the set proxy trap. At that point, name is an own property so the [[Set]] operation never continues on to the prototype.
 
-<br />
 
-#### Using the has Trap on a Prototype
+
+### 在原型上使用 has 陷阱
 
 
 Recall that the has trap intercepts the use of the in operator on objects. The in operator searches first for an object’s own property with the given name. If an own property with that name doesn’t exist, the operation continues to the prototype. If there’s no own property on the prototype, then the search continues through the prototype chain until the own property is found or there are no more prototypes to search.
@@ -1475,9 +1397,8 @@ This code creates a has proxy trap on the prototype of thing. The has trap isn�
 
 The prototype examples to this point have centered around objects created using the Object.create() method. But if you want to create a class that has a proxy as a prototype, the process is a bit more involved.
 
-<br />
 
-#### Proxies as Prototypes on Classes
+### 将代理用作类的原型
 
 Classes cannot be directly modified to use a proxy as a prototype because their prototype property is non-writable. You can, however, use a bit of misdirection to create a class that has a proxy as its prototype by using inheritance. To start, you need to create an ECMAScript 5-style type definition using a constructor function. You can then overwrite the prototype to be a proxy. Here’s an example:
 
@@ -1610,10 +1531,8 @@ Here, the Square class has a getArea() method. The getArea() method is automatic
 
 Even though it takes a little bit of extra code to create a class with a proxy in its prototype chain, it can be worth the effort if you need such functionality.
 
-<br />
 
-### <a id="Summary> Summary </a>
-
+## 总结
 
 Prior to ECMAScript 6, certain objects (such as arrays) displayed nonstandard behavior that developers couldn’t replicate. Proxies change that. They let you define your own nonstandard behavior for several low-level JavaScript operations, so you can replicate all behaviors of built-in JavaScript objects through proxy traps. These traps are called behind the scenes when various operations take place, like a use of the in operator.
 
@@ -1623,4 +1542,3 @@ Revocable proxies are a special proxies that can be effectively disabled by usin
 
 While using proxies directly is the most powerful use case, you can also use a proxy as the prototype for another object. In that case, you are severely limited in the number of proxy traps you can effectively use. Only the get, set, and has proxy traps will ever be called on a proxy when it’s used as a prototype, making the set of use cases much smaller.
 
-<br />
