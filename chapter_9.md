@@ -1,4 +1,35 @@
-## 学习笔记
+## 学习笔记 
+
+- 主要是 Class ，比较了 es5 的实现 和 es6 的实现，其实就是语法糖，都可以用 es5 实现。
+- ES5 模拟类实现，定义一个 function，在原型 prototype 上面增加方法
+- ES6 Class 类申明，只是 function 实现的语法糖，typeof className = 'function' 
+- Class 立即执行  
+
+```js
+let person = new class {
+
+    constructor(name) {
+        this.name = name;
+    }
+
+    sayName() {
+        console.log(this.name);
+    }
+
+}("Nicholas");
+
+person.sayName();       // "Nicholas"
+```
+- 访问器属性，在方法前加上 get、set
+- 动态计算方法名
+- 类的继承 extends  
+
+```
+super()
+
+```
+- 在构造函数中使用 new.target
+
 
 # JavaScript 中的类（Introducing JavaScript Classes）
 
@@ -32,8 +63,7 @@ console.log(person instanceof Object);      // true
 很多 JavaScript 库都是用这种基本的模式来对类进行模拟，同时这也是 ECMAScript 6 类的基础。
 
 
-
-## <a id="Class-Declarations"> 类声明（Class-Declarations）
+##  类声明（Class-Declarations）
 
 在 ECMAScript 6 中类存在的最简单的形式就是类声明，它看起来和其他语言中的类无异。
 
@@ -74,7 +104,7 @@ PersonClass 类声明的行为和上个例子中的 PersonType 类似。作为�
 
 <br />
 
-有意思的是，类声明只是上例中自定义类型的语法糖。PersonClass 声明实际上创建了一个行为和 constructor 方法相同的构造函数，这也是 typeof PersonClass 返回 "function" 的原因。sayName() 在本例中作为 PersonClass.prototype 的方法，和上个示例中 sayName() 和 PersonType.prototype 关系一致。这些相似度允许你混合使用自定义类型和类而不需要纠结使用方式。
+有意思的是，{% em %}类声明只是上例中自定义类型的语法糖。{% endem %}PersonClass 声明实际上创建了一个行为和 constructor 方法相同的构造函数，这也是 typeof PersonClass 返回 "function" 的原因。sayName() 在本例中作为 PersonClass.prototype 的方法，和上个示例中 sayName() 和 PersonType.prototype 关系一致。这些相似度允许你混合使用自定义类型和类而不需要纠结使用方式。
 
 
 ### 为何使用类声明（Why to Use the Class Syntax）
@@ -150,7 +180,7 @@ Foo = "baz";
 > 在这段代码中，类构造函数内部的 Foo 和类外部的 Foo 并不是同一个绑定。内部的 Foo 行为类似于 const 声明的变量，因此它不能被重写，否则会抛出错误。不过外部的 Foo 被视作由 let 声明的变量，所以你可以不限次数的重写它。
 
 
-## <a name="Class-Expressions"> 类表达式（Class Expressions）
+##  类表达式（Class Expressions）
 
 
 类和函数的相似之处在于它们都有两种存在形式：声明和表达式。函数和类声明由关键字开始（分别为 function 和 class），之后为标识符。函数表达式不要求在 function 关键字后添加标识符，类表达式同理。设计类表达式的目的主要是为了将它赋值给变量或者传参给函数。
@@ -265,7 +295,7 @@ let PersonClass = (function() {
 ## 作为一等公民的类（Classes as First-Class Citizens） 
 
 
-在编程中，如果某些东西能作为值使用，那么它就被称为一等公民。这意味着它可以传入函数，或作为函数的返回值，亦或能赋值给变量。JavaScript 中的函数就是一等公民（有时它们被称作一等函数），这也是 JavaScript 独特的部分之一。
+{% em %}在编程中，如果某些东西能作为值使用，那么它就被称为一等公民。这意味着它可以传入函数，或作为函数的返回值，亦或能赋值给变量。JavaScript 中的函数就是一等公民（有时它们被称作一等函数），这也是 JavaScript 独特的部分之一。{% endem %}
 
 ECMAScript 6 继续延续该传统并让类也成为了一等公民，允许类以各种不同的方式使用。例如，它们可以作为函数的参数：
 
@@ -286,7 +316,7 @@ obj.sayHi();        // "Hi!"
 
 本例中，createObject() 函数被传入了一个匿名类表达式作为参数，并在 new 调用参数之后返回了这个实例。变量 obj 存储了该它。
 
-类表达式另一个有趣的使用方式是通过立即调用（immediately invoking）类构造函数来创建单例（singleton）。想要这么做的话，你必须联合使用 new 及类表达式并在末尾包含一个圆括号。例如：
+{% em %}类表达式另一个有趣的使用方式是通过立即调用（immediately invoking）类构造函数来创建单例（singleton）。{% endem %}想要这么做的话，你必须联合使用 new 及类表达式并在末尾包含一个圆括号。例如：
 
 ```js
 let person = new class {
@@ -309,10 +339,10 @@ person.sayName();       // "Nicholas"
 本章目前出现的示例仅专注于类和包含的方法。其实你可以使用类似于对象字面量的语法来给类创建访问器属性。
 
 
-## <a id="Accessor-Properties"> 访问器属性（Accessor Properties）
+##  访问器属性（Accessor Properties）
 
 
-虽然自有属性应该在类构造函数中创建，不过类也允许你在原型上创建访问器属性。为了创建一个 getter，需要使用 get 关键字，再加上一个空格和标识符；同理创建 setter 只需将上述步骤的关键字换成 set。例如：
+{% em %}虽然自有属性应该在类构造函数中创建，不过类也允许你在原型上创建访问器属性。为了创建一个 getter，需要使用 get 关键字，再加上一个空格和标识符；同理创建 setter 只需将上述步骤的关键字换成 set。{% endem %}例如：
 
 ```js
 class CustomHTMLElement {
