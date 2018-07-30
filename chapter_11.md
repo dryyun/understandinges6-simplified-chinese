@@ -1,5 +1,32 @@
 ## 学习笔记
 
+- [Promise](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise) 生命周期，pending，fulfilled，rejected
+- 所有 promise 都是 thenable，但不是所有的的 thenable 都是 promise 
+- new Promise(function(resolve, reject) {})
+- Promise.resolve() ，Promise.reject() 
+- 非 promise thenable ，指的是包含 then() 方法的对象，该方法接收 resolve 和 reject 作为参数
+
+```js
+let thenable = {
+    then: function(resolve, reject) {
+        resolve(42);
+    }
+};
+```
+- promise.reject  
+
+```
+> 规范中，如果发生了 reject ，但是没有相应的 rejection 处理，那么这个错误就默默消失了，这对于开发来说不是很好。
+> Node.js 中的改进
+1、unhandledRejection: 在一次事件轮询中，当一个 promise 处于 rejected 状态却没有 rejection 处理它，该事件会被触发。
+2、rejectionHandled: 在一次事件轮询之后，如果存在 rejected 状态的 promise 并已被 rejection 处理过，该事件会被触发。
+> 浏览器中也有类似的 rejection 处理 
+
+```
+- promise.all ，等所有 promise 处理完毕后返回一个已处理的  promise ，如果其中有一个 reject ，那么立即返回，但是其他的 promise 还是会默默执行完
+- promise.race 
+
+
 # Promise 与异步编程（Promises and Asynchronous Programming）
 
 
@@ -12,9 +39,9 @@ Promise 是异步编程的另一种选择，和其它语言一样，它延迟并
 
 ## 异步编程的背景（Asynchronous Programming Background）
 
-JavaScript 的引擎建立在单线程事件轮询（single-threaded event loop）概念之上。单线程意味着一段时间内只能执行一段代码，与 Java 和 C++ 这些允许多段代码同时执行的多线程语言形成了鲜明对比。在基于多线程的软件中，维护并防止能被多段代码同时访问和修改的状态常常是个难题，也是经常制造 bug 的根源之一。
+{% em %}JavaScript 的引擎建立在单线程事件轮询（single-threaded event loop）概念之上。单线程意味着一段时间内只能执行一段代码{% endem %}，与 Java 和 C++ 这些允许多段代码同时执行的多线程语言形成了鲜明对比。在基于多线程的软件中，维护并防止能被多段代码同时访问和修改的状态常常是个难题，也是经常制造 bug 的根源之一。
 
-JavaScript 引擎在相同的时间内只能执行一段代码，所以引擎不需要追踪这些可能运行的代码，而是在它们准备好执行时将它们放置到任务队列（job queue）。当代码由 JavaScript 引擎执行完毕后，引擎通过 event loop 找到并执行队列中的下一个任务。event loop 是 JavaScript 引擎内部的线程用来监控代码的执行情况和管理任务队列。需要牢记的是既然它是个队列，那么任务就会由开始到最后的顺序依次执行。
+JavaScript 引擎在相同的时间内只能执行一段代码，所以引擎不需要追踪这些可能运行的代码，而是在它们准备好执行时将它们放置到任务队列（job queue）。当代码由 JavaScript 引擎执行完毕后，引擎通过 event loop 找到并执行队列中的下一个任务。event loop 是 JavaScript 引擎内部的线程用来监控代码的执行情况和管理任务队列。需要{% em %}牢记的是既然它是个队列，那么任务就会由开始到最后的顺序依次执行。{% endem %}
 
 
 ### 事件模型（The Event Model）
@@ -73,7 +100,7 @@ readFile("example.txt", function(err, contents) {
 
 该段代码中，调用 readFile() 成功之后又出现了另一个异步调用 —— writeFile()，而且它们使用了相同的错误处理模式。当 readFile() 执行完毕后，回调函数被添加到任务队列并在执行后调用 writeFile() 方法（假设没有错误发生）。之后，writeFile() 执行完成并再次向任务队列添加任务（回调函数）。
 
-该模式使用起来感觉相当不错，不过当回调函数嵌套过多时，你很快就会发现自己陷入了回调地狱（callback hell）。像这样：
+该模式使用起来感觉相当不错，不过当回调函数嵌套过多时，你很快就会发现自己陷入了{% em %}回调地狱（callback hell）{% endem %}。像这样：
 
 ```js
 method1(function(err, result) {
@@ -110,7 +137,7 @@ method1(function(err, result) {
 });
 ```
 
-嵌套过多的方法调用会形成错综复杂的代码，难以阅读和调试。回调方法在实现复杂的功能时同样易发生错误。如果你想让两个异步操作并行执行而且在全部完成之后发送通知呢？如果你想让两个异步操作同时执行但是只接受先完成任务的结果呢？
+嵌套过多的方法调用会形成错综复杂的代码，难以阅读和调试。回调方法在实现复杂的功能时同样易发生错误。{% em %}如果你想让两个异步操作并行执行而且在全部完成之后发送通知呢？如果你想让两个异步操作同时执行但是只接受先完成任务的结果呢？{% endem %}
 
 为了实现这些需求，就要追踪多个回调函数并做一些清理工作。promise 极大地降低了实现它们的困难程度。
 
@@ -137,13 +164,11 @@ let promise = readFile("example.txt");
 
 内部属性 [[PromiseState]] 会根据 promise 的状态来决定自身的值，如 "pending"，"fulfilled" *，"rejected"。该属性并未向 promise 对象暴露，所以你无法获取并根据 promise 的状态来进行编程。不过你可以在 promise 所处状态改变之后使用 then() 方法来指定一些操作。
 
-所有的 promise 都包含 then() 方法并接受两个参数。第一个参数是 promise 为 fulfilled 状态下调用的函数，任何于异步操作有关的额外数据都会传给该它。第二个参数是 promise 为 rejected 状态下调用的函数，它会被传入任何与操作未完成有关的数据。
+{% em %}所有的 promise 都包含 then() 方法并接受两个参数。第一个参数是 promise 为 fulfilled 状态下调用的函数，任何于异步操作有关的额外数据都会传给该它。第二个参数是 promise 为 rejected 状态下调用的函数，它会被传入任何与操作未完成有关的数据。{% endem %}
 
 <br />
 
-> 以该种方式实现 then() 方法的对象被称为 thenable 。所有 promise 都是 thenable，但不是所有的的 thenable 都是 promise 。
-
-<br />
+> 以该种方式实现 then() 方法的对象被称为 thenable 。{% em %}所有 promise 都是 thenable，但不是所有的的 thenable 都是 promise 。{% endem %}
 
 then() 中的两个参数都是可选的，所以你可以选择同时对 fulfillment 和 rejection 或其中之一进行监听 。例如，考虑下面调用 then() 的例子：
 
@@ -257,7 +282,7 @@ promise.then(function(contents) {
 
 该例中，Node.js 原生异步 fs.readFile() 函数的调用被 promise 包裹。执行函数分别向 reject() 和 resolve() 传递了 error 对象和 contents 。
 
-需要注意的是执行函数在 readFile() 被调用后会立即执行。当 resolve() 和 reject() 在执行函数内部被调用后，为了处理这个 promise，一个任务会被放置到任务队列中。该种行为被称为任务调度（job scheduling），如果你曾经使用过 setTimeout() 或 setInterval() 函数，那么你已经对其有所了解。在任务调度中，你向任务队列添加了一个任务并声明：“现在不要执行它，以后再说。”例如，setTimeout() 函数允许你延迟将任务放入队列中的时间：
+{% em %}需要注意的是执行函数在 readFile() 被调用后会立即执行。{% endem %}当 resolve() 和 reject() 在执行函数内部被调用后，为了处理这个 promise，一个任务会被放置到任务队列中。该种行为被称为任务调度（job scheduling），如果你曾经使用过 setTimeout() 或 setInterval() 函数，那么你已经对其有所了解。在任务调度中，你向任务队列添加了一个任务并声明：“现在不要执行它，以后再说。”例如，setTimeout() 函数允许你延迟将任务放入队列中的时间：
 
 ```js
 // 500ms 之后将这个函数添加到任务队列
@@ -448,7 +473,7 @@ promise.catch(function(error) {
 
 ## Promise 的全局 Rejection 处理 
 
-promise 最有争议的部分在于如果未提供 rejection 处理，那么 promise 中的错误会悄无声息的发生。有些人认为这是该规范中最大的败笔，因为它是 JavaScript 语言中唯一不会让错误自动浮出水面的场景。
+{% em %}promise 最有争议的部分在于如果未提供 rejection 处理，那么 promise 中的错误会悄无声息的发生。{% endem %}有些人认为这是该规范中最大的败笔，因为它是 JavaScript 语言中唯一不会让错误自动浮出水面的场景。
 
 判断 promise 的 rejection 是否被处理不是很直观，这是 promise 的自身设定所导致的。例如，考虑下面的示例：
 
@@ -897,7 +922,7 @@ p4.then(function(value) {
 
 这里的每个 promise 都带有一个数字。调用 Promise.all() 会创建 p4 promise，并在 p1，p2，p3 fulfilled 之后转变状态为 fulfilled 。传给 p4 的 fulfillment 处理的参数是一个包含所有已处理 promise 的值：42，43，44 的数组。这些值会在各个 promise 处理完成后依次存储到相应的变量中，所以你可以根据 promise 的处理结果来找出对应的 promise。
 
-如果 Promise.all() 中的某个 promise 转变为 rejected 状态，那么会立即返回一个 rejected 状态的 promise 而不用等待其它 promise 完成执行。
+{% em %}如果 Promise.all() 中的某个 promise 转变为 rejected 状态，那么会立即返回一个 rejected 状态的 promise 而不用等待其它 promise 完成执行。{% endem %}
 
 ```js
 let p1 = new Promise(function(resolve, reject) {
@@ -920,7 +945,7 @@ p4.catch(function(value) {
 });
 ```
 
-在本例中，p2 处于 rejected 状态并返回 43 。p4 的 rejection 处理会被立即调用而无需等待 p1 或 p3 执行完毕（它们仍旧会完成执行，只是 p4 不等它们）。
+在本例中，p2 处于 rejected 状态并返回 43 。{% em %}p4 的 rejection 处理会被立即调用而无需等待 p1 或 p3 执行完毕（它们仍旧会完成执行，只是 p4 不等它们）。{% endem %}
 
 rejection 处理总是会接收单个值，而不是数组，并且该值是 rejected 状态的 promise 所返回的。在本例的情况下，rejection 处理接收的参数为 p2 传递的 43 。
 
