@@ -1,5 +1,21 @@
 ## 学习笔记
 
+- [export](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/export) 和 [import](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/import) 
+
+```
+import { identifier1, identifier2 } from "./example.js";
+import { sum } from "./example.js"; // 单个
+import { sum, multiply, magicNumber } from "./example.js"; // 多个
+import * as example from "./example.js"; // 导入所有
+当从模块引入了一个绑定时，该绑定的行为类似于 const，这意味着你不能再次定义一个同名的变量 
+export 和 import 一个很重要的限制是它们必须在语句和函数的外部使用
+```
+
+- export 和 import 的重命名
+- 模块的默认值 default 
+- 无绑定导入，import "./example.js"; 用于修改全局作用域内的对象 
+
+
 # 模块（Encapsulating Code With Modules）
 
 
@@ -78,9 +94,7 @@ import 之后的花括号表示从模块中引入的绑定。from 关键字表�
 
 > import 的绑定序列看起来和解构对象相似，不过它们并无关系。
 
-<br />
-
-当从模块引入了一个绑定时，该绑定的行为类似于 const 。这意味着你不能再次定义一个同名的变量（包括再次引入同名绑定），或在 import 语句之前使用这个标识符，更改它的值也是不被允许的。
+{% em %}当从模块引入了一个绑定时，该绑定的行为类似于 const 。这意味着你不能再次定义一个同名的变量（包括再次引入同名绑定），或在 import 语句之前使用这个标识符，更改它的值也是不被允许的。{% endem %}
 
 
 ### 引入单个绑定（Importing a Single Binding）
