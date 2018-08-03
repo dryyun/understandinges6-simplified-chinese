@@ -17,7 +17,7 @@ function add(first, second = getValue(first))()
 function(a, b, ...theArgs) {
   // ...
 }
-``` 
+```
 - ~~增强的 Function 构造函数~~，的确是用不到
 - [展开语法](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
 ```js
@@ -28,7 +28,11 @@ myFunction(...iterableObj);
 - 如何判断函数的调用方式，ES5 的判断方式，ES6 会有 `new.target` 用于判断
 - 块级函数
 - [箭头函数](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Functions/Arrow_functions)
-- 箭头函数没有 this 绑定，this 只能通过查找作用域决定，降低了很多操作 this 的错误
+- 箭头函数没有 this 绑定，this 只能通过查找作用域决定，降低了很多操作 this 的错误  
+
+```
+this 是按照优先级指定的，不能被修改，不能通过 bind，call 这种方式修改掉
+```
 - 尾调用优化 ，主要使用场景是 递归
 满足条件  
 ```
